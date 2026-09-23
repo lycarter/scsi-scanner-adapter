@@ -1,0 +1,4 @@
+.DS_Store
+# Vendor reference material: large, copyrighted, and contains Mac resource forks git can't store.
+/reference/
+__pycache__/
