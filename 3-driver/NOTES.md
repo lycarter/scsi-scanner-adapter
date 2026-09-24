@@ -126,16 +126,16 @@ Decided with the owner on 2026-09-23:
   CDC serial console. The console **replaces the debug UART header** (2 GPIO saved), and the
   SWD header stays for deep debugging. In-app A/B updates over the FIFO (try-before-you-buy)
   are an optional firmware convenience later. The RP2350's USB_DP/DM need 27 Ω series
-  resistors close to the chip (Hardware design with RP2350). The hub part is TBD (CH334 /
-  FE1.1s class: check LCSC stock). See `blocks/4-usb.md`.
+  resistors close to the chip (Hardware design with RP2350). The hub is a CH334P with a
+  12 MHz crystal (decided 2026-09-24, see "USB hub"). See `blocks/4-usb.md`.
 - **RAM: yes, on board.** A whole scan won't fit (4000 dpi, 16-bit RGB, full area ≈ 12 GB),
   so the RAM is an elastic buffer that rides out host stalls. Working choice: 8 MB QSPI PSRAM on
   the RP2350's second chip select (≈5 s at 1.5 MB/s).
 - **microSD slot** (4-bit SDIO over PIO, as BlueSCSI v2 does). Two uses: (a) a spill target
   if the host falls behind; (b) a development path where scan logic on the MCU writes to
   the card, so the scanner side can be brought up before USB and host software exist. The
-  PSRAM also absorbs SD write-latency spikes. **This interacts with the proposed "generic
-  passthrough" decision (3/4); see open question 6.**
+  PSRAM also absorbs SD write-latency spikes. **Update 2026-09-24 (open question 6): (b) is
+  dropped for now. The SD card is spill only, and a CDB-script runner can be added later.**
 - **Connector: IDC50** (2×25 shrouded box header, ribbon cable), plus an **unpopulated HD50
   footprint** on the same nets. With both fitted, the board could sit mid-chain.
   - IDC50 and HD50 use **different pin numbers for the same signal**: wire the footprints by
@@ -171,6 +171,128 @@ Consequences for us: receivers must be Schmitt triggers (hysteresis). Keep the t
 the connectors to the transceivers short, because they count as a stub. If both the IDC50
 and HD50 are fitted, the bus passes through the board, so run it straight between the two
 connectors and keep the tap short.
+
+### USB hub (decided 2026-09-24): WCH CH334P, with a 12 MHz crystal
+
+- **CH334P, C5373042**: QFN-16 3×3, $0.44, ~38k JLC stock (2026-09-24), extended.
+  USB 2.0 HS 4-port, MTT, internal 5 V→3.3 V LDO, built-in upstream pull-up and downstream
+  pull-downs. No over-current detection, which we don't need (both downstream devices are on
+  board). Reset from an expander pin. Sources: **English datasheet V2.5**
+  (`reference/datasheets/CH334DS1_en.pdf`, the one to use for design review) and the newer
+  Chinese V2.91 (`CH334.pdf`). The owner required an English datasheet so they can validate
+  the design; without one, the FE1.1s or GL850G would have been chosen.
+- **Crystal: fitted, not optional.** Datasheet §6.2: crystal-free mode "may deviate from the USB
+  specification; only suitable for non-precision applications", and it is "not enabled by
+  default on CH335 and some CH334 packages — confirm when ordering". Our HS link carries scan
+  data, so we fit a 12 MHz crystal. The English V2.5 confirms this §6.2 wording. The CH334 has
+  internal load capacitors ("crystal oscillator with built-in capacitor"). The explicit advice
+  to add **no external caps** is in the Chinese V2.91 §6.1 only; confirm it against the
+  English reference schematics when choosing the crystal.
+- Layout: crystal next to XI/XO, short equal traces, solid ground under it with no signals
+  routed beneath, no vias, away from the USB pairs and the SCSI lines.
+- **To check at schematic time:** the crystal CL has to match the internal caps (their value
+  wasn't in the parts I read). Candidate: YXC X322512MSB4SI (C9002, JLC's only basic 12 MHz,
+  3225, CL 20 pF, ESR 80 Ω). Confirm against the English datasheet or a WCH reference
+  design. One crystal type for the whole board is unlikely: the RP2350 guide strongly
+  recommends the ABM8-272-T3 (CL 10 pF, ESR ≤ 50 Ω), and C9002's 80 Ω exceeds that.
+- Rejected: CH334R (same chip in QSOP-16, +$0.12, kept as the pin-compatible-in-function
+  fallback), FE1.1s (crystal required, single TT, 0–70 °C, SSOP-28), GL850G (similar), USB2514B
+  (configurable, but $2.39 and 3.4k stock).
+
+### Terminator LDO (decided 2026-09-24): TI TPS73701 at 2.80 V
+
+- **What the spec forces (SCSI-2 §5.4.1(b), rev 10L):** (b)(3) allows each terminator ≤ 22.4 mA
+  into a line asserted at 0.5 V, so V_term ≤ 0.5 V + 22.4 mA × 110 Ω ≈ **2.96 V**. (b)(4)
+  requires released lines ≥ 2.5 V. (b)(2) requires the terminator to be powered from TERMPWR.
+  So 3.3 V termination is out (25.5 mA per line).
+- Load: (2.8 − 0.5) / 110 ≈ 21 mA per asserted line, ~0.39 A with all 18 asserted.
+  Worst-case dissipation (5.25 − 2.8) × 0.39 ≈ 0.95 W, which needs SOT-223-class copper.
+- **TPS73701DCQR, C56848** (JLC extended; no basic LDO fits), SOT-223-6, $1.10, 7,148 stock
+  (2026-09-24). 2.2–5.5 V in, ~130 mV dropout at 1 A, stable with ≥ 1 µF ceramic, reverse-
+  current protection, current limit, thermal shutdown. Accuracy: 1 % initial, 3 % overall
+  (legacy silicon) / 1.5 % (new).
+- **Set to 2.80 V nominal, not 2.85 V:** with 3 % + 1 % resistors, the worst case is ≈ 2.69–2.91 V,
+  inside the 2.5–2.96 V window. At 2.85 V the worst case would touch 2.96 V.
+- Rejected: **AMS1117-2.85** (BlueSCSI's part, C14791; dropout ~1.1–1.3 V leaves ~0.2 V of
+  margin at 4.25 V TERMPWR, and only 1,077 in stock; BlueSCSI feeds it from 5 V, not
+  TERMPWR); **RT9013** (SOT-23-5 can't dissipate ~0.9 W); BCT2057 (cheap, lesser-known brand,
+  small DFN); TPS7A4501 (more than needed); **a 3.3 V LDO + divider** (owner's question): a
+  divider can't source the 0–0.39 A switching load stiffly. The per-line Thevenin variant
+  (~127 Ω to 3.3 V / ~806 Ω to GND) loads the bus when "disabled", draws ~64 mA all the
+  time, and adds 36 resistors. An AMS1117-3.3 also falls out of regulation below ~4.5 V
+  TERMPWR. The adjustable LDO is the right form of "LDO + divider": the divider sits in the
+  feedback path and carries only µA.
+- **To check when we draw it:** an LDO can't sink. If another device actively drives a
+  released line above our 2.8 V, the current flows back into the rail. Probably fine (SE
+  drivers are open-collector or three-state per §5.4.1.1, and asserted lines draw current
+  from the rail), but add a small bleed load on the rail and scope it at bring-up.
+
+### CC detection (decided 2026-09-24): LM393 dual comparator
+
+CC_OK drives the hardware TERMPWR enable (`CC_OK OR bench present`, no MCU). A copy goes to
+an expander input so firmware can explain a dead bus ("port only offers 500 mA").
+
+- Thresholds (TUSB321 datasheet, the Type-C sink values): **0.66 V** = Default vs. 1.5 A,
+  1.23 V = 1.5 A vs. 3 A. Only 1.5 A is detected, which covers the budget. Window: Default
+  reads ≤ ~0.61 V, 1.5 A reads ≥ ~0.70 V, so the threshold has about ±40 mV of room.
+- Circuit: 5.1 kΩ 1 % Rd from CC1 and CC2 to GND. Each CC goes through a series R + C filter
+  (roughly 100 kΩ / 100 nF, τ ≈ 10 ms: debounce, and the big R keeps the cap off the CC
+  line) into the inverting input of one LM393 half. A shared 0.66 V reference comes from 3.3 V
+  (e.g. 40.2 k / 10 k, 1 %) on the + inputs. The open-collector outputs are wired together
+  with a pull-up to 3.3 V, giving **CC_OK_N (active low)**. A ~1 MΩ feedback resistor from
+  the output to the reference node adds ~20 mV of hysteresis. Values get finalized at
+  schematic time.
+- Part: **LM393DR2G, C7955, JLC basic**, $0.07, ~240k stock. Everything else is basic
+  passives.
+- Error budget: LM393 Vos 5 mV + 1 % dividers + 3.3 V LDO tolerance ≈ ±15–20 mV. That fits the
+  ±40 mV window.
+- **To check when we draw it (unverified):**
+  - Supply the LM393 from the 5 V (ORed) rail, not 3.3 V. Its input common-mode range tops
+    out at Vcc − 1.5 V, and a 3 A port puts up to ~2.04 V on CC. The output pull-up still
+    goes to 3.3 V.
+  - If the host tries PD, its messages swing CC between ~0 and ~1.1 V for about 1 ms. The
+    10 ms RC should average that to a dip of ~20 mV, inside the hysteresis. Verify against
+    the Type-C/PD spec timing.
+  - A legacy USB-A to C cable has a 56 kΩ pull-up, which reads ~0.42 V ("Default"). No
+    TERMPWR from USB then: document it in `USAGE.md` (use the bench input).
+- Rejected: **TUSB321** (C139392; OUT1 is CC_OK directly, but extended, $1.18, a 1.6 mm
+  X2-QFN; the owner preferred the all-basic discrete design); **ADC** (an expander with an ADC or
+  the RP2350 ADC: needs firmware, which breaks the "no MCU in the enable path" decision);
+  **transistor Vbe threshold** (±50 mV spread and −2 mV/°C drift is wider than the window).
+- Zero-cost option for the pin plan, not decided: put the spare GPIO on an ADC-capable pin
+  (GPIO 40–47) for TERMPWR or VBUS monitoring.
+
+### Ideal diodes (decided 2026-09-24): one part type, TI LM66200 ×2
+
+**Goal (owner): every ideal diode on the board uses one part type**, because all 134 ideal-diode
+/ ORing parts at JLC are extended and each unique part costs a loading fee.
+
+- **LM66200DRLR, C3235556**: dual ideal diode with a shared output, SOT-583, $0.48, 30,949
+  JLC stock (2026-09-24). 1.6–5.5 V, 2.5 A per channel, RON 37 typ / 46 max mΩ at 5 V
+  (25 °C). Reverse blocking when VOUT > VINx. Truth table: ON low → higher VIN drives VOUT;
+  **ON high → VOUT Hi-Z**. ST reports which input is in use.
+- **U1, ORing:** VIN1 = USB VBUS, VIN2 = bench input (after its protection), ON = GND,
+  VOUT = 5 V rail. ST → expander ("running on bench / USB").
+- **U2, TERMPWR switch:** VIN = 5 V rail, VOUT → polyfuse → jumper → TERMPWR. **ON pulled up
+  to 5 V, and pulled low (enabled) by a wired-OR of open-drain signals:** the LM393's
+  CC_OK_N output and an N-FET switched on by the bench input. That's `CC_OK OR bench` with
+  no logic gate. The LED sits on the same node.
+- Rejected: **LM66100** (C2869734, $0.23). Its Table 1 says the disabled state is "Diode":
+  the body diode still conducts IN→OUT, so it can't turn TERMPWR off. **TPS2121**
+  (C485916, $1.05, QFN): a mux with an adjustable current limit that could replace the
+  polyfuse. **Fallback if the TERMPWR voltage budget fails.** MAX40200 (1 A, too little);
+  CH213K (no enable); external-FET controllers (LM5050/LM74700 class: more parts, aimed at
+  higher voltages).
+- **To check when we draw it (unverified):**
+  - ON logic thresholds aren't in the datasheet (SLVSG04); pulling ON up to 5 V avoids the
+    question. The copy of CC_OK_N for the expander needs its own 3.3 V path.
+  - U2's unused input: parallel VIN1 and VIN2, or tie VIN2 off? The datasheet doesn't say.
+  - Reverse blocking with our board unpowered while another device drives TERMPWR. Likely
+    (true Hi-Z off), not confirmed.
+  - **TERMPWR voltage budget:** VBUS at the host can be as low as 4.75 V, minus cable drop,
+    minus U1 + U2 (~0.1 V at 0.9 A), minus the polyfuse (~0.1–0.25 V), against SCSI-2's
+    4.25 V minimum. Pick a low-R polyfuse; if it's still short, use a TPS2121. A good use for
+    the spare ADC pin: monitor TERMPWR.
 
 ### GPIO budget (first pass, dedicated pins, no role multiplexing)
 
@@ -224,6 +346,21 @@ connectors and keep the tap short.
 - FT1248 SCLK: plan for 15–25 MHz (150 MHz / 6 = 25 MHz with a clean 50 % duty). Use
   `INPUT_SYNC_BYPASS` on the read pins. The FT232H's FT1248 AC timing isn't in datasheet v2.0 or
   AN_167, so the ceiling is found by measurement.
+- **Expander: TCA9555PWR** (decided 2026-09-24). TI, TSSOP-24, 16 push-pull I/O that power
+  up as inputs, 100 kΩ internal pull-ups, 400 kHz I²C, 4.7 kΩ bus pull-ups. C465732 (JLC
+  extended; every I²C expander at JLC is extended), $0.69, ~40k LCSC stock (2026-09-24).
+  INT goes to a test point + an unfitted 0 Ω link to the spare GPIO; firmware polls by default.
+  Tentative pins: in = card detect, TERMPWR_OK, CC detector ×2 (if used), bench present,
+  USB present; out = 2 status LEDs, TERM_EN (pencilled in), SD power enable (optional),
+  FT232H reset, hub reset. The rest are spare.
+  - **Unpowered behavior (datasheet, not measured):** the TCA9535/9555/6416A and the MCP23017
+    all spec an I/O clamp for VO > VCC, so an unpowered expander pin clamps toward 0 V. None of
+    them fixes the TERM_EN weak spot, so the accepted "documented limitation, no extra parts"
+    stands. If that ever changes, a 74LVC1G34-class Ioff buffer (high-Z at VCC = 0) between
+    the expander and DIP 2 would fix it.
+  - Rejected: MCP23017 (C558584, $1.63, SSOP-28; GPA7/GPB7 output-only per DS20001952D; its
+    interrupt capture and 1.7 MHz I²C aren't needed for slow, polled signals), TCA9535 (no
+    pull-ups, ~2× the price), XL9555 clone (saves ~$0.16, unknown datasheet quality).
 - Only one spare pin. **If pins free up (e.g. the SE front end allows shared data pins, ~8
   saved), switch microSD to 4-bit SDIO first** (+3 pins, ~4× bandwidth, BlueSCSI-proven).
   Going back to the 8-bit FIFO comes second (+5–6 pins).
@@ -299,9 +436,8 @@ throughput at each width is unverified (it's in AN_167, not yet downloaded).
   seldom stocked at JLC (unverified for us); **220/330 Ω passive**, which draws ~13 mA per
   line all the time, and needs a relay or FETs to switch it.
   To check when we draw it (unverified):
-  - **LDO headroom.** Ours is fed from TERMPWR (min 4.25 V). An AMS1117 drops ~1.1–1.3 V,
-    leaving little margin. Worst case is ~24 mA per asserted line, so ~0.3–0.45 A with many
-    lines low. Prefer a lower-dropout 2.85 V part.
+  - ~~LDO headroom~~: **decided 2026-09-24: TI TPS73701DCQR set to 2.80 V** (see "Terminator
+    LDO").
   - **Current per package.** Up to 8 × 24 mA ≈ 190 mA through one '245 Vcc pin. BlueSCSI gets
     away with it, but check the datasheet. The '245 IOH spec (−32 mA) covers one line.
 - **Terminator enable: a DIP switch (decided 2026-09-24).** One switch position grounds
@@ -331,14 +467,15 @@ throughput at each width is unverified (it's in AN_167, not yet downloaded).
   - DIP 1 goes through 1k, not straight to ground, so a push-pull expander output can
     override it. The expander pin must be push-pull, not open-drain.
   - At reset, PCA9555/TCA9535-class expanders power up with their pins as inputs (from
-    memory: verify on the chosen part), so the switch default holds. Firmware reads the
+    memory; verified 2026-09-24 for the TCA9555: "At power on, Pxx is configured as an
+    input"), so the switch default holds. Firmware reads the
     pin to learn the default, then drives it only to change it.
   - A switch that silently lies is the main risk, and DIP 2 answers it: it plainly says
     "firmware may change this".
   - **Known limitation (acceptable; documented in `USAGE.md`):** with DIP 2 closed and our board unpowered, TERMPWR from another
     device keeps the 2.85 V rail alive. The dead expander's protection diodes then pull
-    `/OE` low (on). That only matters in 01. Fix: an expander whose pins stay high-Z when
-    unpowered, if one costs about the same (datasheet check). Otherwise rely on the documented
+    `/OE` low (on). That only matters in 01. Datasheet check done 2026-09-24: no candidate
+    expander stays high-Z when unpowered (see the expander decision). So we rely on the documented
     rule "mid-chain and possibly off: use 00". Expected use is end-of-chain only (owner,
     2026-09-24), which uses 10 or 11 and never hits this. No extra parts for it.
   - Rejected: a two-position open-drain scheme (ON / MCU), where firmware could only turn
@@ -349,22 +486,36 @@ throughput at each width is unverified (it's in AN_167, not yet downloaded).
 1. ~~RP2350 + FT232H vs. Teensy 4.1 vs. STM32 HS~~: decided 2026-09-24: RP2350B + FT232H
    (see "Decision: the brains").
 2. ~~Connector~~: decided on IDC50 plus an unpopulated HD50 footprint (2026-09-23).
-3. Enclosure / form factor?
-4. ~~TERMPWR~~: decided: we supply it via an ideal diode (R2a). Still open: the part choice.
+3. ~~Enclosure / form factor~~: decided 2026-09-24: **3D-printed case, designed around the
+   board later**. Placement (desk box vs. on the scanner) is left open. The v1 board shouldn't
+   wait on it: external connectors (USB-C, IDC50/HD50, bench terminal, termination DIP, LEDs)
+   on one or two edges, M3 mounting holes, and the LA header and SWD reachable with the lid
+   off.
+4. ~~TERMPWR~~: decided: we supply it via an ideal diode (R2a). Part: LM66200 (U2), decided 2026-09-24.
    The owner's pin-26 measurement is now nice-to-have.
 5. SE front end: 74LVT pencilled in, pending the owner's independent research. **When this is
    decided, re-check the GPIO budget: any freed pins go to 4-bit SDIO first.** Terminator part of it decided 2026-09-24 (see front-end section).
-6. microSD vs. "generic passthrough firmware" (decision 3/4): is on-MCU scan logic just a
-   development and standalone mode, or does it change where scanner logic lives long-term?
+6. ~~microSD vs. generic passthrough~~: decided 2026-09-24. Scanner logic lives on the host,
+   always. The firmware is a generic passthrough, and microSD is for **spill only** (option A).
+   Fallback (B), purely additive firmware: a script runner that executes a list of CDBs
+   (host-generated or a recorded G4/SilverFast session) from USB or an SD file. Rejected (C):
+   scanner logic in firmware. Choosing the scan area needs a preview and a UI, which belong
+   on a host, not a board touchscreen. Early bring-up doesn't need B: CDBs can go over the
+   native-USB CDC console before the FT1248 path works.
 7. ~~GPIO budget~~: decided 2026-09-24: FT1248 4-bit + 1-bit SDIO + I²C expander, 47 of 48
    (see the GPIO budget section).
 8. ~~Licensing~~: decided 2026-09-23: redraw from scratch and stay MIT. Use BlueSCSI (and
    ZuluSCSI) only as reading material; don't copy schematic, layout or firmware.
 9. ~~USB PD voltage~~: decided: 5 V only, no step-up, and no PD controller needed. Still open:
-   how to read CC (a dedicated detector vs. the MCU ADC), the ideal-diode/power-mux part, and the
-   bench connector (screw terminal vs. test posts).
+   ~~the bench connector~~ (**decided 2026-09-24: 2-pin 5.08 mm screw terminal plus a test loop
+   per pole**, hand-soldered from LCSC; clear +/− silkscreen. Rejected: loops only (clips pop
+   off mid-scan), binding posts (revisit with the enclosure), barrel jack (9–12 V adapters would
+   push the OV protection to 12–24 V)). **Ideal diodes decided 2026-09-24:
+   LM66200 ×2** (see "Ideal diodes").
+   **CC detection decided 2026-09-24: LM393 comparators** (see "CC detection" under Block
+   architecture).
 10. ~~USB path~~: decided 2026-09-24: a hub chip (see Block architecture). Still open: the
-    hub part choice. Analysis kept for reference (2026-09-24, from the datasheets):
+    hub part choice (**decided 2026-09-24: CH334P + 12 MHz crystal**, see "USB hub"). Analysis kept for reference (2026-09-24, from the datasheets):
     - **Through the FT232H, firmware-mediated: viable.** The running app takes the image over
       the FIFO, writes the inactive half of an A/B partition pair, and reboots with
       FLASH_UPDATE. The bootrom's try-before-you-buy (RP2350 datasheet §5.1.17) rolls back if
@@ -416,3 +567,11 @@ throughput at each width is unverified (it's in AN_167, not yet downloaded).
 - 2026-09-24: Started `USAGE.md` (board docs) with the termination switch settings. Expected use is end-of-chain.
 - 2026-09-24: Accepted RP2350B + FT232H (open question 1). A one-chip STM32 HS was reconsidered for GPIO and rejected (no PIO).
 - 2026-09-24: GPIO budget decided: FT1248 4-bit, 1-bit SDIO, I²C expander (47/48). AN_167 fetched: FT1248 SCLK ≤ 30 MHz.
+- 2026-09-24: Open question 6 decided: passthrough accepted, SD = spill (A), script runner (B) as a later add-on.
+- 2026-09-24: Expander: TCA9555PWR. No expander is high-Z unpowered; the TERM_EN limitation stays documented, with no extra parts.
+- 2026-09-24: CC detection: LM393 comparators (0.66 V threshold, CC_OK_N wired-OR). TUSB321 was the alternative; ADC rejected (needs firmware).
+- 2026-09-24: Ideal diodes: one part type, LM66200 ×2 (U1 ORing, U2 TERMPWR switch with a wired-OR enable). LM66100 rejected (conducts when disabled).
+- 2026-09-24: Terminator LDO: TPS73701 at 2.80 V (SCSI-2 §5.4.1(b)(3) caps V_term at ~2.96 V). 3.3 V + divider rejected.
+- 2026-09-24: Hub: CH334P with a fitted 12 MHz crystal (WCH: crystal-free may break USB spec and may not be enabled).
+- 2026-09-24: Bench connector: 5.08 mm screw terminal + test loops.
+- 2026-09-24: Enclosure: 3D-printed case later; v1 is a bench board with edge connectors and M3 holes.

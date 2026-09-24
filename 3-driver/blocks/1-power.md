@@ -7,31 +7,31 @@ Source: `_src/power.py`.
 ```
   +----------------+                                          +------------------------+
   | USB-C          |                                          | Bench 5 V input        |
-  | receptacle     |                                          | 2 clip terminals       |
-  | VBUS     CC1/2 |                                          | (test posts or screw)  |
+  | receptacle     |                                          | 5.08 mm screw term.    |
+  | VBUS     CC1/2 |                                          | + test loop per pole   |
   +----------------+                                          +------------------------+
       |        |        +------------------------------+                   |
       |        | CC1/2  | CC sense (sink side): 5.1k   |                   v
-      |        +------->| Rd on CC1/CC2 + detector     |      +------------------------+
-      |                 | or comparators -> CC_OK      |      | Reverse-polarity       |
+      |        +------->| Rd on CC1/CC2 + LM393        |      +------------------------+
+      |                 | vs 0.66 V -> CC_OK_N         |      | Reverse-polarity       |
       |VBUS             | (port allows >= 1.5 A)       |      | + over-voltage         |
       |                 +------------------------------+      | protection             |
       |                                                       +------------------------+
       v                                                                    v
   +----------------+                                          +------------------------+
-  | Ideal diode A  |                                          | Ideal diode B          |
+  | U1 ch1 LM66200 |                                          | U1 ch2 LM66200         |
   +----------------+                                          +------------------------+
            |                                                               |
-           |                +5V_SYS  (budget <= 3 A)                       |
+           |                +5V_SYS  (<= 2.5 A: LM66200)                   |
            +--+------------------------------+<----------------------------+
               |                              |
               |                              |
               v                              v
   +------------------------+      +----------------------+    +------------------------+
-  | Ideal diode + enable   |      | 3.3 V regulator      |    | Senses TERMPWR node:   |
-  | + polyfuse (<= 1.5 A)  |      | (LDO or buck)        |    | TERMPWR_OK -> MCU      |
+  | U2 LM66200 (ON low=on) |      | 3.3 V regulator      |    | Senses TERMPWR node:   |
+  | + polyfuse (<= 1.5 A)  |      | (LDO or buck)        |    | TERMPWR_OK -> expander |
   | + disable jumper       |      +----------------------+    | (1 digital in)         |
-  | EN = CC_OK OR BENCH    |                 |                | + LED (< 1 mA draw)    |
+  | ON: CC_OK_N wOR BENCH  |                 |                | + LED (< 1 mA draw)    |
   | + LED: we supply       |                 v                +------------------------+
   +------------------------+      +3V3 -> RP2350B IOVDD (its 1.1 V core comes
               |                      from the RP2350's on-chip regulator),
@@ -41,7 +41,7 @@ Source: `_src/power.py`.
               | SCSI pin 26 (p.2)
               v
   +------------------------+
-  | 2.85 V regulator       |
+  | TPS73701 @ 2.80 V      |
   | -> terminators (p.2)   |
   +------------------------+
 ```
@@ -56,7 +56,7 @@ Source: `_src/power.py`.
 - Ideal diode B → +5V_SYS (net)
 - +5V_SYS (net) → TERMPWR switch (ideal diode + enable + polyfuse)
 - +5V_SYS (net) → 3.3 V regulator
-- TERMPWR switch (ideal diode + enable + polyfuse) → 2.85 V regulator: TERMPWR: 4.25-5.25 V, >= 900 mA, to SCSI pin 26 (p.2)
+- TERMPWR switch (ideal diode + enable + polyfuse) → TPS73701 @ 2.80 V: TERMPWR: 4.25-5.25 V, >= 900 mA, to SCSI pin 26 (p.2)
 - 3.3 V regulator → +3V3 loads: +3V3 -> RP2350B IOVDD (its 1.1 V core comes from the RP2350's on-chip regulator), QSPI flash, PSRAM, microSD, FT232H, USB hub, LVT125 drivers, Schmitt receivers, LA-header buffers
 
 </details>

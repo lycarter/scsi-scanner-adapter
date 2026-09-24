@@ -20,7 +20,7 @@ Source: `_src/scsi.py`.
   | Switchable active    |    | DRIVERS: 4 x 74LVT125    |    | RECEIVERS: 18 Schmitt    |
   | terminator:          |    | A = GND, /OE = MCU pin   |    | (74LVC14-class)          |
   | 18 x 110 ohm to      |    | -> open-drain, >= 48 mA  |    | hysteresis >= 0.2 V      |
-  | 2.85 V, fed from     |    | 14: DB0-7, DBP, ATN,     |    | 5 V-tolerant, Ioff       |
+  | 2.80 V, fed from     |    | 14: DB0-7, DBP, ATN,     |    | 5 V-tolerant, Ioff       |
   | TERMPWR; EN<-DIP sw  |    | ACK, SEL, BSY, RST       |    | all 18, always on        |
   +----------------------+    | pull-ups on /OE keep     |    | out: 3.3 V logic         |
                               | drivers off in reset     |    +--------------------------+
