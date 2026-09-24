@@ -12,6 +12,8 @@ D.box('drv', 30, 10, 28, 9, "DRIVERS: 4 x 74LVT125", "A = GND, /OE = MCU pin",
 D.box('rcv', 62, 10, 28, 8, "RECEIVERS: 18 Schmitt", "(74LVC14-class)", "hysteresis >= 0.2 V",
       "5 V-tolerant, Ioff", "all 18, always on", "out: 3.3 V logic", name="RECEIVERS (18 Schmitt)")
 D.box('rp', 30, 21, 28, 7, "RP2350B PIO", "14 out + 18 in", "= 32 GPIO, one", "32-pin PIO window")
+D.note(2, 21, "Drivers/receivers are", "pencilled in: NOTES", "open question 5.", "",
+       "ESD at the connector:", "18 x H5VUD5BB (0.3 pF),", "SMF6.0A on TERMPWR")
 D.box('la', 67, 25, 24, 5, "LA header 2x16", "(Digital Discovery)", "18 sig + 2 markers")
 
 # The bus runs straight between the two connectors; everything else taps it.

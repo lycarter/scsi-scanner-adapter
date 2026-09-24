@@ -22,21 +22,21 @@ updates over USB). Decision: `../NOTES.md`, open question 10. Source: `_src/usb.
           | D+/D-
           v
 +--------------------+
-| ESD array          |                                                      +----------------------------+
-| (TVS, low-C)       |                                                      | RP2350B                    |
+| ESD: H5VUD5BB x2   |                                                      +----------------------------+
+| (0.3 pF, discrete) |                                                      | RP2350B                    |
 +--------------------+                                                      |                            |
           |                                                                 | native USB on dedicated    |
           | 90 ohm diff pair            +----------------------+            | pins (0 GPIO)              |
-          v                             | FT232H               |  245 FIFO  |                            |
+          v                             | FT232H               |  FT1248 4b |                            |
 +--------------------+  port 1: HS      | USB 2.0 HS bridge    |<---------->| over USB:                  |
-| USB 2.0 HS hub     |----------------->| async 245 FIFO       |12 GPIO PIO1| - ROM BOOTSEL: UF2 /       |
-| CH334P + 12 MHz    |  480 Mbit/s      | <= 8 MB/s            |            |   picotool (can't brick)   |
-| crystal (no caps)  |                  +----------------------+            | - CDC console              |
+| USB 2.0 HS hub     |----------------->| FT1248, 4-bit        |7 GPIO PIO1 | - ROM BOOTSEL: UF2 /       |
+| CH334P, 3.3 V mode |  480 Mbit/s      | VREGIN from 5 V      |            |   picotool (can't brick)   |
+| load caps DNP      |                  +----------------------+            | - CDC console              |
 | 4 ports, 2 used    |--------+                     |                       | - reset-to-BOOTSEL         |
 +--------------------+        |         +----------------------+            |   interface                |
           |                   |         | 93LC56B EEPROM       |            |                            |
-  +----------------+          |         | (sets FIFO mode)     |            +----------------------------+
-  | 12 MHz crystal |          |         | + 12 MHz crystal     |                          ^
+  +----------------+          |         | (sets FT1248 mode)   |            +----------------------------+
+  | ABM8 12 MHz    |          |         | + 12 MHz crystal     |                          ^
   +----------------+          |         +----------------------+                          |
                               |                                                           |
                               |                                                           |
@@ -48,12 +48,12 @@ updates over USB). Decision: `../NOTES.md`, open question 10. Source: `_src/usb.
 
 - Host computer → USB-C receptacle: USB-C cable
 - USB-C receptacle → POWER (p.1): VBUS, CC
-- USB-C receptacle → ESD array: D+/D-
-- ESD array → USB 2.0 HS hub: 90 ohm diff pair
-- USB 2.0 HS hub — 12 MHz crystal
+- USB-C receptacle → ESD: H5VUD5BB x2: D+/D-
+- ESD: H5VUD5BB x2 → USB 2.0 HS hub: 90 ohm diff pair
+- USB 2.0 HS hub — ABM8 12 MHz
 - USB 2.0 HS hub → FT232H: port 1: HS 480 Mbit/s
 - FT232H — 93LC56B EEPROM
-- FT232H ↔ RP2350B: 245 FIFO 12 GPIO PIO1
+- FT232H ↔ RP2350B: FT1248 4b 7 GPIO PIO1
 - USB 2.0 HS hub → RP2350B: port 2: FS 12 Mbit/s; 27 ohm series R x2 near RP2350
 
 </details>
@@ -63,22 +63,23 @@ updates over USB). Decision: `../NOTES.md`, open question 10. Source: `_src/usb.
 
 - **One cable, three USB devices.** The USB-C data pair goes to a **USB 2.0 high-speed hub**
   chip. The host sees the hub, plus two devices behind it:
-  - the **FT232H** (high speed): the scan data path, ≤ 8 MB/s through its async 245 FIFO;
+  - the **FT232H** (high speed): the scan data path, over a 4-bit FT1248 link to the RP2350B (7 GPIO);
   - the **RP2350B's native USB** (full speed): firmware updates and a serial console.
   The hub's transaction translator handles the full-speed device, so the FT232H keeps its
   high-speed bandwidth.
 - **USB-C receptacle:** USB 2.0 only. Both D+/D− pairs are tied together (so the plug works
   either way round) and the SBU pins aren't connected. VBUS and CC go to the power block (page 1).
-- **ESD:** a low-capacitance TVS array on D+/D− at the connector (part TBD).
+- **ESD:** H5VUD5BB (0.3 pF) on D+ and D−, H7VL10B on CC1/CC2, SMF6.0A on VBUS, all at the
+  connector (decided 2026-09-24).
 - **Routing:** D+/D− are 90 Ω differential pairs from the connector through the hub to the
   FT232H. The RP2350's USB_DP/DM need **27 Ω series resistors placed close to the chip**
   (Raspberry Pi, "Hardware design with RP2350").
-- **Hub part: TBD** (CH334 / FE1.1s class; check LCSC stock, the crystal requirement, and
-  whether it has an internal regulator). Two of its four ports are used.
+- **Hub: CH334P** (decided), run in external 3.3 V mode, with an ABM8-272-T3 12 MHz crystal
+  and unfitted load-cap pads. Two of its four ports are used.
 - **FT232H support parts:** a 12 MHz crystal and a **93LC56B EEPROM**. The EEPROM is required:
-  without it the chip starts in UART mode, not FIFO mode. The 93LC46B is incompatible.
-  Program the EEPROM over USB after assembly (FT_PROG, or `ftdi_eeprom`). FIFO pins: `../NOTES.md`,
-  "FT232H pins in detail".
+  without it the chip starts in UART mode, not FT1248 mode. The 93LC46B is incompatible.
+  Program the EEPROM over USB after assembly (FT_PROG, or `ftdi_eeprom`). The FT232H's regulator input (VREGIN) runs
+  from 5 V. Pins: `../NOTES.md`, "FT232H pins in detail" and the FT1248 fallback plan.
 - **What the RP2350's USB is for:**
   - **Updates:** the ROM bootloader (UF2 drag-and-drop, or `picotool`) is in ROM, so it can't
     be bricked. The host can enter it without a button: our firmware calls the ROM
@@ -86,5 +87,5 @@ updates over USB). Decision: `../NOTES.md`, open question 10. Source: `_src/usb.
     (page 3) is the fallback.
   - **Console:** a USB CDC serial port replaces the debug UART header, which saves 2 GPIO. SWD
     (page 3) stays for low-level debugging.
-- **Later, optional:** in-app A/B updates over the FIFO using the bootrom's
+- **Later, optional:** in-app A/B updates over the FT1248 link using the bootrom's
   try-before-you-buy (§5.1.17). This is firmware only; no hardware changes.
