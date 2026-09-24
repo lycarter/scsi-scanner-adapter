@@ -52,3 +52,5 @@ Status: **proposed** (awaiting owner), **accepted**, **superseded**.
 | 2026-09-24 | 3 | Connectors: USB-C footprint HRO TYPE-C-31-M-12 (owner's part, hand-soldered); IDC50 keyed box header (C30006); HD50 generic half-pitch footprint, part sourced later (none stocked); microSD SHOU HAN TF PUSH (C393941) | accepted |
 | 2026-09-24 | 3 | ESD: discrete JLC-preferred diodes, none with a rail pin (so an unpowered board doesn't clamp the bus): H5VUD5BB on USB D± and 18 SCSI lines, H7VL10B on CC, SMF6.0A on VBUS and TERMPWR, SMF15A unfitted on the bench terminal | accepted |
 | 2026-09-24 | 3 | TERMPWR: second TPS259470A eFuse (≈1.2 A limit, OVLO as active-low enable) replaces LM66200 U2 + polyfuse. A PTC can't hold 0.9 A and trip ≤1.5 A | accepted |
+| 2026-09-24 | 3 | FT232H package: FT232HL (LQFP-48, C51997, $9.36); the QFN is out of stock. Cheaper bridges rejected for v1: CH347F (UART too slow, driver), CH32V305 (second firmware; v2 cost-down candidate), FX2LP | accepted |
+| 2026-09-24 | 3 | FT232H crystal: ABM8-272-T3 + 2 × 15 pF, so the board has one crystal part (×3). FTDI's ±30 ppm note is stricter than USB HS needs | accepted |
