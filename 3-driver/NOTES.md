@@ -270,6 +270,9 @@ an expander input so firmware can explain a dead bus ("port only offers 500 mA")
 
 ### Ideal diodes (decided 2026-09-24): one part type, TI LM66200 ×2
 
+**Update 2026-09-24 (proposed): U2 and the polyfuse are replaced by a TPS259470A eFuse; see
+"TERMPWR switch". U1 (the ORing) is unchanged.**
+
 **Goal (owner): every ideal diode on the board uses one part type**, because all 134 ideal-diode
 / ORing parts at JLC are extended and each unique part costs a loading fee.
 
@@ -626,6 +629,88 @@ turned up) and pass only ~4.5–5.5 V on to U1 (LM66200, 6 V absolute maximum).
   loose threshold and 6+ parts to get right); 5.5–6.5 V-rated switches like TPS2553/AP2553 (an
   over-voltage *flag*, but they don't survive 12 V).
 
+### TERMPWR switch and current limit (proposed 2026-09-24): a second TPS259470ARPWR, no polyfuse
+
+The owner asked for a polyfuse. Working it through showed a polyfuse can't meet the spec, and
+the eFuse already chosen for the bench input can.
+
+- **The spec:** SCSI-2 §5.4.3 wants ≥ 900 mA available, and recommends limiting the current
+  to 1.5 A.
+- **Why not a polyfuse:** a PTC trips at roughly 2 × its hold current. Hold ≥ 0.9 A means a trip
+  around 1.8–2.2 A, above the 1.5 A recommendation. It also drops 0.1–0.25 V, which is the
+  weak spot in the TERMPWR voltage budget (see "Ideal diodes").
+- **The eFuse instead (TPS259470ARPWR, C3662799, the same part as the bench input, so no new
+  loading fee).** It replaces U2 (LM66200) and the polyfuse:
+  - Current limit set by R_ILM: the datasheet gives 1.007 A at 3.32 kΩ and 2.03 A at 1.65 kΩ, so
+    **≈ 2.74 kΩ gives ≈ 1.2 A (±10 % above 1 A: 1.08–1.32 A)**. That's ≥ 0.9 A and ≤ 1.5 A.
+    Check the curve and the transient timer (ITIMER) at schematic time.
+  - **R_ON 28 mΩ** (≈ 25 mV at 0.9 A), against LM66200 + polyfuse ≈ 0.15–0.3 V. The TERMPWR
+    voltage-budget worry mostly goes away.
+  - **True reverse-current blocking, including unpowered:** OUT leakage ≤ 4.86 µA with
+    OUT = 12 V and IN = 0 V (datasheet, "Reverse current blocking"). Another device's TERMPWR
+    can't backfeed our board (R2).
+  - **The OVLO pin doubles as an active-low enable** (pin description: "can also be used as an
+    Active Low Enable"). Our existing enable node is already active-low: pulled up to 5 V,
+    pulled low by the wired-OR of CC_OK_N and the bench-present N-FET. So it wires straight to
+    OVLO, with no inverter. Low (< 1.09 V) = on, high (> 1.2 V) = off.
+  - EN/UVLO: a divider from IN sets under-voltage lockout (≈ 4.3 V), with ≥ 350 kΩ total.
+  - FLT (open-drain) → a spare expander input: "TERMPWR fault" (overcurrent or short on the bus).
+  - The TERMPWR LED stays on the enable node. The disable jumper (R2a) stays in series with the
+    output.
+- The TPS2121 fallback is no longer needed. The LM66200 part type stays (U1).
+
+### Connectors (2026-09-24)
+
+- **Board: 4 layers** (owner). Outline, dimensions and placement: the owner does the first
+  layout pass by hand once the schematic exists.
+- **USB-C:** the owner has their own connector kit (hand-soldered). Footprint: **HRO
+  TYPE-C-31-M-12** (16-pin USB 2.0 receptacle, SMD pads + through-hole shell pegs; KiCad
+  `Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12`; LCSC C165948 for reference). It's the
+  most common USB 2.0 Type-C footprint, used on scanlight too. CC1 and CC2 are separate pins,
+  which our LM393 CC detection needs. The owner matches their part to it.
+- **IDC50: a keyed, shrouded 2 × 25 box header, not a bare pin header.** A bare header works
+  electrically (same 2.54 mm grid), but a ribbon can go on backwards. SCSI-2 plans for that
+  (rev 10L connector table): reversed, TERMPWR (pin 26) lands on pin 25, which is **OPEN**, so
+  nothing shorts. But every signal lands on a ground pin and the bus is dead. The shroud's key
+  stops that for $0.19.
+  - Part: BOOMELE C30006 (2 × 25 box header, through-hole; LCSC 280 stock, MOQ 5, $0.20;
+    hand-soldered). Footprint `Connector_IDC:IDC-Header_2x25_P2.54mm_Vertical`.
+- **HD50: no real part stocked at JLC or LCSC** (2026-09-24: the only "SCSI 50P" entries are
+  zero-stock JLC placeholder records; the 1.27 mm hits are 2-row board-to-board headers, not
+  half-pitch SCSI). It's a backup, unfitted footprint, so use a standard **right-angle PCB-mount
+  half-pitch 50-pin female** footprint (e.g. the TE AMPLIMITE .050 or 3M 102xx family) and the
+  owner sources a part to match later. Wire it by signal name: the SCSI-2 table gives HD50
+  pin 38 = TERMPWR (vs. IDC50 pin 26).
+- **microSD: SHOU HAN "TF PUSH", C393941.** Push-push, with card-detect pins, 2 mm tall.
+  JLC extended, 217k stock, $0.066; LCSC 210k. Every microSD socket at JLC is extended (none
+  are basic). Use the EasyEDA/LCSC footprint (pcbparts `cse_get_kicad`) and check it against the
+  drawing. Rejected: Hroparts TF-01A (C91145, $0.19, no card-detect listed), Molex 503398
+  ($1.14).
+
+### ESD protection (2026-09-24)
+
+Goal: protect what a person touches (USB-C, the SCSI connector, the bench terminal) using
+**discrete diodes to ground with no rail pin**. A steering-diode array (SRV05-4 class) has a VCC
+pin; tied to our rail, it would clamp the bus to 0 V when our board is off (violates R2).
+All parts below are JLC **preferred** (no loading fee).
+
+| Where | Part | LCSC | Why |
+|---|---|---|---|
+| USB D+, D− (×2) | H5VUD5BB, SOD-523, bidirectional, 0.3 pF, 5 V V_RWM | C20615820 | 0.3 pF is fine for 480 Mbit/s. Replaces the usual USBLC6-2SC6 (extended at JLC) |
+| USB CC1, CC2 (×2) | H7VL10B, DFN1006, bidirectional, 7 V V_RWM, 20 pF | C20615787 | CC can sit at up to ~5.5 V from a host's pull-up; 7 V leaves room. CC tolerates hundreds of pF |
+| USB VBUS (×1) | SMF6.0A, SOD-123FL, unidirectional, 6 V V_RWM | C19077499 | Above the 5.5 V VBUS maximum |
+| SCSI signals (×18) | H5VUD5BB (same as D±) | C20615820 | 0.3 pF keeps us inside SCSI-2's 25 pF-per-signal budget (§5.4.1.2). 5 V V_RWM covers the ~2.8–3 V terminated bus. Bidirectional, so no conduction during normal swings |
+| TERMPWR (×1) | SMF6.0A | C19077499 | TERMPWR ≤ 5.25 V |
+| Bench terminal (×1, **not fitted**) | SMF15A, SOD-123FL | C19077509 | Clamps at 24.4 V, under the eFuse's 28 V absolute maximum. Unfitted by default because a fitted 15 V TVS would short a 24 V adapter, and the eFuse alone survives up to 28 V |
+
+- Not protected: microSD (inside the case, card only), the LA header (buffered, and goes to a
+  lab instrument), SWD (bench use). Add pads later if needed.
+- Clamping voltages (10–25 V) are well above what the protected chips tolerate for DC. That's
+  normal for ESD parts: they cut a kV-level pulse down to a level the chip's own ~2 kV HBM
+  protection absorbs. Put them right at the connector, before any series resistor.
+- Unverified: the SCSI capacitance budget depends on the front-end chips (undecided). Roughly:
+  transceiver ~5–8 pF + LA buffer ~3–5 pF + terminator output ~5 pF + ESD 0.3 pF + traces ≈ 15–20 pF.
+
 ## SCSI electrical front end (candidates)
 
 - The classic, proven choice: 74LS641-1 (open-collector, 48 mA sink) transceivers, as used by
@@ -808,3 +893,4 @@ turned up) and pass only ~4.5–5.5 V on to U1 (LM66200, 6 V absolute maximum).
 - 2026-09-24: Accepted: 3.3 V = second TPS73701, FT232H VREGIN from 5 V, CH334 in external 3.3 V mode. Inductor: Abracon kept for now; JLC has no no-fee power inductor of any value, and series or external-1.1 V workarounds don't help.
 - 2026-09-24: FT1248 fallback plan: drop microSD + expander to free 6 GPIO for 8-bit FT1248 or the 245 FIFO; pin-order and pad rules recorded under the GPIO budget.
 - 2026-09-24: PSRAM: APS6404L-3SQR-SN (8 MB, 3.3 V). Bench input protection: TPS259470ARPWR eFuse (−15 V/28 V tolerant, adjustable OVLO). Abracon inductor locked in ($0.28).
+- 2026-09-24: 4-layer board; layout is the owner's hand pass after the schematic. Connectors: USB-C footprint HRO TYPE-C-31-M-12 (owner's part), IDC50 keyed box header C30006, HD50 generic footprint (not stocked), microSD C393941. ESD: discrete preferred diodes (no rail pin). TERMPWR: proposed second TPS259470A instead of LM66200 U2 + polyfuse.
