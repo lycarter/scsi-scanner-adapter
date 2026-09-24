@@ -5,7 +5,7 @@ D = Diagram()
 D.box('idc', 2, 0, 22, 4, "IDC50 (fitted)", "to scanner / G4")
 D.box('hd50', 62, 0, 28, 4, "HD50 footprint (DNP)", "pass-through / alt.")
 D.box('term', 2, 10, 24, 7, "Switchable active", "terminator:", "18 x 110 ohm to",
-      "2.85 V, fed from", "TERMPWR; EN<-DIP sw", name="Switchable active terminator")
+      "2.80 V, fed from", "TERMPWR; EN<-DIP sw", name="Switchable active terminator")
 D.box('drv', 30, 10, 28, 9, "DRIVERS: 4 x 74LVT125", "A = GND, /OE = MCU pin",
       "-> open-drain, >= 48 mA", "14: DB0-7, DBP, ATN,", "ACK, SEL, BSY, RST",
       "pull-ups on /OE keep", "drivers off in reset", name="DRIVERS (4 x 74LVT125)")

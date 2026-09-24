@@ -30,8 +30,8 @@ updates over USB). Decision: `../NOTES.md`, open question 10. Source: `_src/usb.
           v                             | FT232H               |  245 FIFO  |                            |
 +--------------------+  port 1: HS      | USB 2.0 HS bridge    |<---------->| over USB:                  |
 | USB 2.0 HS hub     |----------------->| async 245 FIFO       |12 GPIO PIO1| - ROM BOOTSEL: UF2 /       |
-| CH334 / FE1.1s     |  480 Mbit/s      | <= 8 MB/s            |            |   picotool (can't brick)   |
-| class (TBD)        |                  +----------------------+            | - CDC console              |
+| CH334P + 12 MHz    |  480 Mbit/s      | <= 8 MB/s            |            |   picotool (can't brick)   |
+| crystal (no caps)  |                  +----------------------+            | - CDC console              |
 | 4 ports, 2 used    |--------+                     |                       | - reset-to-BOOTSEL         |
 +--------------------+        |         +----------------------+            |   interface                |
           |                   |         | 93LC56B EEPROM       |            |                            |

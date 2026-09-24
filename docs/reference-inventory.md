@@ -52,6 +52,15 @@ rather than storing it here.
 | `hardware-design-with-rp2350.pdf` | Raspberry Pi "Hardware design with RP2350" (25 pp) | Reference schematic: crystal, core regulator, flash, USB |
 | `DS_FT232H.pdf` | FTDI FT232H datasheet **v2.0** (FT_000288). Mirrored from github.com/standardsemiconductor/VELDT-info, because ftdichip.com blocks scripted downloads. FTDI's current version is 2.3 (`ftdichip.com/wp-content/uploads/2025/11/DS_FT232H.pdf`); fetch it in a browser if a detail matters | §3.5 per-mode pin tables, §4.5 async FIFO timing, §4.6 FT1248, §4.8 MPSSE, EEPROM (93LC56B; the 93LC46B won't work) |
 | `AN_167_FT1248-Parallel-Serial-Interface-Basics.pdf` | FTDI AN_167 v1.1 (2018), FT1248 basics | SCLK ≤ 30 MHz, 30 MB/s at 8-bit; 1/2/4/8-bit waveforms; internal pull-ups on MIOSIO |
+| `tca9535.pdf`, `tca9555.pdf`, `tca6416a.pdf` | TI I²C 16-bit I/O expanders | Push-pull P-ports that power up as inputs. The TCA9555 adds 100 kΩ pull-ups. All three spec a P-port clamp for VO > VCC, so an unpowered expander pin clamps toward 0 V |
+| `mcp23017.pdf` | Microchip MCP23017 I²C 16-bit I/O expander, DS20001952D | **GPA7/GPB7 are output-only** (a datasheet revision). Pins are limited to VDD + 0.6 V, with clamps to VDD. Two INT pins, interrupt-on-change, 1.7 MHz I²C |
+| `tusb321.pdf` | TI TUSB321 USB Type-C CC logic (no I²C) | UFP thresholds 0.66 V (≥1.5 A) and 1.23 V (3 A). Open-drain OUT1 = low when the source advertises ≥1.5 A; OUT2 = low at 3 A. Powered from VBUS (4.5–5.5 V) |
+| `lm66100.pdf` | TI LM66100 single ideal diode, 1.5 A | **When disabled, the body diode still conducts IN→OUT** (Table 1), so it can't switch a rail off |
+| `lm66200.pdf` | TI LM66200 dual ideal diode, shared output, 2.5 A/ch, ~40 mΩ | ON high → VOUT Hi-Z (true off). Reverse blocking when VOUT > VINx. ST shows which input is in use. ON thresholds not specified |
+| `tps737.pdf` | TI TPS737 1 A LDO, adjustable, reverse-current protection | 2.2–5.5 V in, ~130 mV dropout at 1 A, stable with 1 µF ceramic. Accuracy 1 % initial, 3 % overall (legacy silicon) / 1.5 % (new) |
+| `CH334DS1_en.pdf` | WCH CH334/CH335, English V2.5 | Same content as the Chinese V2.91 for our purposes: §6.2 crystal-free warning, built-in crystal capacitor, CH334P pinout. Use this one for design review |
+| `CH334.pdf` | WCH CH334/CH335 USB 2.0 HS 4-port hub (Chinese) | Variant table §1.2: CH334P/R are MTT, with crystal-free operation optional (built-in clock), an internal 5 V→3.3 V LDO, built-in pull-up/pull-downs, and no over-current detection |
+| `FE1.1s.pdf` | Terminus FE1.1s USB 2.0 HS 4-port hub | Single TT, needs a 12 MHz crystal, 0–70 °C |
 
 ## Missing but useful (to acquire)
 
