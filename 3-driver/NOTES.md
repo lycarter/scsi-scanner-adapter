@@ -447,6 +447,24 @@ the part is chosen.
   saved), switch microSD to 4-bit SDIO first** (+3 pins, ~4× bandwidth, BlueSCSI-proven).
   Going back to the 8-bit FIFO comes second (+5–6 pins).
 
+**FT1248 fallback plan (2026-09-24, owner: "the retooling can be pretty drastic").** We're not
+testing FT1248 on dev boards first. If it disappoints, the first board gets reworked, not respun.
+The FT232H uses **the same pins** for FT1248 and the 245 FIFO (DS v2.0 Table 3.13 vs. §3.5.3):
+MIOSIO0–7 = D0–D7 = pins 13–20; SCLK/SS_n/MISO = RXF#/TXE#/RD# = pins 21/25/26; the FIFO adds
+WR# (27) and SIWU# (28). Dropping the **microSD (3 GPIO) and the I²C expander (2)**, plus the
+spare (1), frees 6 pins. That's enough for either:
+- **8-bit FT1248** (+4 pins; twice the bus width). The first fallback.
+- **245 async FIFO** (+5, or +6 with SIWU#), if FT1248 itself misbehaves. Mode is an EEPROM setting.
+
+Layout rules that keep this a bodge job, not a respin:
+- **Pin order:** MIOSIO0–3 on GPIO *n*…*n*+3, and the SDIO and I²C pins on *n*+4…*n*+7, so
+  after rework they become MIOSIO4–7 / D4–D7 on consecutive GPIOs (PIO `in`/`out` needs that).
+  Keep all of them inside PIO1's window (GPIO 16–47).
+- Route FT232H pins 17–20, 27 and 28 to pads (test points or DNP 0 Ω links toward those
+  GPIOs), with a pull-up/down as the FT232H needs for unused inputs.
+- Losing the expander loses the LEDs, card detect and TERMPWR_OK readback. The FT232H and hub
+  resets must therefore default to "run" through pull-ups, never rely on the expander.
+
 Verified (RP2350 datasheet, PIO GPIOBASE register, 2026-09-24): each PIO block sees a
 32-GPIO window, and GPIOBASE selects base 0 or 16 only. It is set per block, so the SCSI can
 use PIO0 at base 0 (GPIO 0–31) while the FT232H uses PIO1 at base 16 (GPIO 16–47). The 32
@@ -745,3 +763,4 @@ JLC stock and tier checked 2026-09-24.
 - 2026-09-24: Power budget drafted: 3.3 V ≈165/420 mA, 5 V ≈0.52/1.4 A with TERMPWR. Proposed: a second TPS73701 for 3.3 V, FT232H VREGIN from 5 V, CH334 in external 3.3 V mode.
 - 2026-09-24: FT1248: no dev-board test (owner). Assume it works as advertised; fall back to bodge wires or cut traces on the first board if needed.
 - 2026-09-24: Accepted: 3.3 V = second TPS73701, FT232H VREGIN from 5 V, CH334 in external 3.3 V mode. Inductor: Abracon kept for now; JLC has no no-fee power inductor of any value, and series or external-1.1 V workarounds don't help.
+- 2026-09-24: FT1248 fallback plan: drop microSD + expander to free 6 GPIO for 8-bit FT1248 or the 245 FIFO; pin-order and pad rules recorded under the GPIO budget.
