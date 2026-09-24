@@ -315,7 +315,7 @@ the part is chosen.
 | RP2350B core (VREG_VIN + VREG_AVDD) | 30 | 80 | Datasheet: 14.7 mA for hello_usb at 150 MHz; we run both cores + 3 PIO + DMA. Max = core regulator's 200 mA at 1.1 V, drawn from 3.3 V |
 | RP2350B I/O (IOVDD, QSPI_IOVDD, USB, ADC) | 10 | 40 | Mostly switching current into CMOS inputs; the limits are 100 mA IOVDD and 20 mA QSPI |
 | CH334P hub (external 3.3 V mode, see below) | 50 | 85 | DS: 42 mA with 1 HS downstream, 85 mA with 4 HS; we have 1 HS + 1 FS |
-| PSRAM, 8 MB QSPI* | 10 | 30 | Part not chosen |
+| PSRAM, APS6404L 8 MB QSPI* | 10 | 30 | JLC lists I_cc 7 mA; datasheet not yet read |
 | QSPI flash* | 5 | 25 | W25Q-class read current |
 | microSD* | 30 | 100 | SD default-speed limit (from memory); peaks during writes |
 | SE front end (placeholder) | 20 | 40 | Front end still undecided (open question 5) |
@@ -556,8 +556,8 @@ JLC stock and tier checked 2026-09-24.
     layout allows.
   - Layout rules to carry into KiCad: inductor orientation per datasheet Figure 23; the
     VREG_PGND return path; the ground cut-out under the VREG_LX net on layer 2 (Figure 24).
-- **Core regulator inductor: Abracon kept, accepted for now (owner, 2026-09-24; may search
-  more).** JLC has **no basic or preferred 3.3 µH inductor at all** (searched 2026-09-24), so
+- **Core regulator inductor: Abracon, locked in 2026-09-24** (owner: lock it if under $1; it's
+  $0.28, or $0.22 at 10+). JLC has **no basic or preferred 3.3 µH inductor at all** (searched 2026-09-24), so
   any choice is extended and pays the loading fee. We keep the guide's Abracon part: it's the
   only one on offer that is polarity-marked with a consistent reel orientation, which the
   datasheet says is required ("The inductor must be marked for polarity"). Cheaper extended
@@ -579,9 +579,52 @@ JLC stock and tier checked 2026-09-24.
   - At schematic time: put a polarity mark on the footprint, and check that JLC's placement
     preview shows the dot the way datasheet Figure 23 wants.
 - Still open:
-  - the PSRAM part (out of scope here). The guide's optional U4 footprint sits on
-    XIP_CS1n with the 10 kΩ pull-up above.
+  - nothing; PSRAM decided 2026-09-24 (see "PSRAM" below).
 - 3.3 V regulator: decided 2026-09-24, see "Power budget".
+
+### PSRAM (decided 2026-09-24): AP Memory APS6404L-3SQR-SN
+
+- **C5333729**, 64 Mbit (8 MB) QSPI PSRAM, SOP-8, 2.7–3.6 V (the "-3" in the part number; the
+  "-SQN" parts are 1.8 V and won't work on our 3.3 V QSPI_IOVDD). JLC extended, 5,052 stock, $3.96;
+  LCSC 4,952 stock, $4.01 (2026-09-24).
+- It's the part RP2350 boards with PSRAM commonly use. It sits on XIP_CS1n = GPIO 47 with the
+  fitted 10 kΩ pull-up (see "MCU support parts"). Decouple it with 100 nF + 1 µF (confirm
+  against its datasheet at schematic time).
+- **No basic part, and nothing cheaper in the same class.** JLC's whole PSRAM category is
+  extended. The only other SOIC 3.3 V option is the APS1604M-3SQR-SN (C18214056, 2 MB, $3.28),
+  which would cut the stall buffer from ~5 s to ~1.3 s at 1.5 MB/s to save $0.68. The
+  Lyontek/Espressif clones (LY68L6400, ESP-PSRAM64H) aren't stocked at JLC.
+- Not yet read: the APS6404L datasheet (fetch it and add to `reference/` at schematic time).
+  Its 8 µs maximum CE# low time (tCEM, from memory) limits burst length. The RP2350's QMI
+  handles it with its `max_select` setting.
+
+### Bench 5 V input protection (decided 2026-09-24): TI TPS259470ARPWR eFuse
+
+What R8a needs: survive a wrong supply (reverse polarity, a 12 V or 24 V adapter, a bench knob
+turned up) and pass only ~4.5–5.5 V on to U1 (LM66200, 6 V absolute maximum).
+
+- **TPS259470ARPWR, C3662799**, TI, QFN-10 2 × 2 mm (HotRod, 0.45 mm pitch). JLC extended, 2,747
+  stock, $1.28; LCSC 2,744 stock (2026-09-24). Datasheet SLVSFC9C in `reference/datasheets/`.
+- What it gives (datasheet §1): operates 2.7–23 V, **28 V absolute maximum, withstands −15 V
+  reverse polarity**, back-to-back FETs (28 mΩ) with true reverse-current blocking, **adjustable
+  over-voltage lockout** (1.2 µs response, cuts the output off), adjustable current limit
+  0.5–6 A, adjustable UVLO on EN, slew-rate (inrush) control, and a FLT open-drain output.
+- Variant choice (datasheet §4): **470** = adjustable OVLO + active current limit;
+  **A** = auto-retry after a fault (a bench user just fixes the supply, with no power cycle).
+  Rejected: **472** (fixed 3.8/5.7/13.8 V output *clamp*; footnote 1 of the recommended
+  operating conditions requires the input to stay at or below the clamp, so it doesn't tolerate a
+  sustained 12 V); **474** (circuit breaker instead of current limit; fine, but limiting suits a
+  bench supply better); **L** (latch-off: needs a power cycle).
+- Settings to finish at schematic time: OVLO ≈ 5.7 V (above a 5.5 V bench setting, below U1's
+  6 V absolute maximum; check the threshold tolerance), UVLO ≈ 4.3 V, current limit ≈ 2 A
+  (the whole board's worst case is ~1.4 A), EN pull-up ≥ 350 kΩ because the input can go
+  negative (recommended-conditions footnote 2). FLT goes to a spare expander input
+  ("bench supply fault").
+- Optional: an unfitted TVS footprint across the terminal for hot-plug spikes above 28 V.
+- Rejected: TVS + polyfuse crowbar (all basic, but an SMBJ5.0A clamps near 9 V, above U1's
+  6 V limit); discrete P-FET reverse protection + zener/transistor OV cut-off (all basic, but a
+  loose threshold and 6+ parts to get right); 5.5–6.5 V-rated switches like TPS2553/AP2553 (an
+  over-voltage *flag*, but they don't survive 12 V).
 
 ## SCSI electrical front end (candidates)
 
@@ -764,3 +807,4 @@ JLC stock and tier checked 2026-09-24.
 - 2026-09-24: FT1248: no dev-board test (owner). Assume it works as advertised; fall back to bodge wires or cut traces on the first board if needed.
 - 2026-09-24: Accepted: 3.3 V = second TPS73701, FT232H VREGIN from 5 V, CH334 in external 3.3 V mode. Inductor: Abracon kept for now; JLC has no no-fee power inductor of any value, and series or external-1.1 V workarounds don't help.
 - 2026-09-24: FT1248 fallback plan: drop microSD + expander to free 6 GPIO for 8-bit FT1248 or the 245 FIFO; pin-order and pad rules recorded under the GPIO budget.
+- 2026-09-24: PSRAM: APS6404L-3SQR-SN (8 MB, 3.3 V). Bench input protection: TPS259470ARPWR eFuse (−15 V/28 V tolerant, adjustable OVLO). Abracon inductor locked in ($0.28).
