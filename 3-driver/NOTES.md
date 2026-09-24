@@ -270,7 +270,7 @@ an expander input so firmware can explain a dead bus ("port only offers 500 mA")
 
 ### Ideal diodes (decided 2026-09-24): one part type, TI LM66200 ×2
 
-**Update 2026-09-24 (proposed): U2 and the polyfuse are replaced by a TPS259470A eFuse; see
+**Update 2026-09-24 (accepted): U2 and the polyfuse are replaced by a TPS259470A eFuse; see
 "TERMPWR switch". U1 (the ORing) is unchanged.**
 
 **Goal (owner): every ideal diode on the board uses one part type**, because all 134 ideal-diode
@@ -629,7 +629,7 @@ turned up) and pass only ~4.5–5.5 V on to U1 (LM66200, 6 V absolute maximum).
   loose threshold and 6+ parts to get right); 5.5–6.5 V-rated switches like TPS2553/AP2553 (an
   over-voltage *flag*, but they don't survive 12 V).
 
-### TERMPWR switch and current limit (proposed 2026-09-24): a second TPS259470ARPWR, no polyfuse
+### TERMPWR switch and current limit (accepted 2026-09-24): a second TPS259470ARPWR, no polyfuse
 
 The owner asked for a polyfuse. Working it through showed a polyfuse can't meet the spec, and
 the eFuse already chosen for the bench input can.
@@ -894,3 +894,4 @@ All parts below are JLC **preferred** (no loading fee).
 - 2026-09-24: FT1248 fallback plan: drop microSD + expander to free 6 GPIO for 8-bit FT1248 or the 245 FIFO; pin-order and pad rules recorded under the GPIO budget.
 - 2026-09-24: PSRAM: APS6404L-3SQR-SN (8 MB, 3.3 V). Bench input protection: TPS259470ARPWR eFuse (−15 V/28 V tolerant, adjustable OVLO). Abracon inductor locked in ($0.28).
 - 2026-09-24: 4-layer board; layout is the owner's hand pass after the schematic. Connectors: USB-C footprint HRO TYPE-C-31-M-12 (owner's part), IDC50 keyed box header C30006, HD50 generic footprint (not stocked), microSD C393941. ESD: discrete preferred diodes (no rail pin). TERMPWR: proposed second TPS259470A instead of LM66200 U2 + polyfuse.
+- 2026-09-24: Accepted: TERMPWR eFuse (second TPS259470A) replaces LM66200 U2 + polyfuse. Power diagram updated.
