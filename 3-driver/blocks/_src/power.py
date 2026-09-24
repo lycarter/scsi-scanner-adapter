@@ -6,12 +6,12 @@ D.box('usbc', 2, 0, 18, 5, "USB-C", "receptacle", "VBUS     CC1/2", name="USB-C 
 D.box('bench', 62, 0, 26, 5, "Bench 5 V input", "5.08 mm screw term.", "+ test loop per pole")
 D.box('cc', 24, 5, 32, 6, "CC sense (sink side): 5.1k", "Rd on CC1/CC2 + LM393",
       "vs 0.66 V -> CC_OK_N", "(port allows >= 1.5 A)", name="CC sense")
-D.box('prot', 62, 7, 26, 5, "Reverse-polarity", "+ over-voltage", "protection", name="Reverse-polarity + OV protection")
+D.box('prot', 62, 7, 26, 5, "TPS259470A eFuse", "-15..28 V, OVLO 5.7 V", "ILIM ~2 A", name="Bench eFuse (reverse + OV + current limit)")
 D.box('dA', 2, 13, 18, 3, "U1 ch1 LM66200", name="Ideal diode A")
 D.box('dB', 62, 13, 26, 3, "U1 ch2 LM66200", name="Ideal diode B")
-D.box('tp', 2, 22, 26, 7, "U2 LM66200 (ON low=on)", "+ polyfuse (<= 1.5 A)", "+ disable jumper",
-      "ON: CC_OK_N wOR BENCH", "+ LED: we supply", name="TERMPWR switch (ideal diode + enable + polyfuse)")
-D.box('reg', 34, 22, 24, 4, "3.3 V regulator", "(LDO or buck)")
+D.box('tp', 2, 22, 26, 7, "U2 TPS259470A eFuse", "ILIM ~1.2 A, rev.block", "+ disable jumper",
+      "OVLO=CC_OK_N wOR BENCH", "+ LED: we supply", name="TERMPWR switch (eFuse + enable + current limit)")
+D.box('reg', 34, 22, 24, 4, "3.3 V regulator", "TPS73701 LDO")
 D.box('tsense', 62, 22, 26, 6, "Senses TERMPWR node:", "TERMPWR_OK -> expander", "(1 digital in)",
       "+ LED (< 1 mA draw)", name="TERMPWR sense")
 D.box('t285', 2, 35, 26, 4, "TPS73701 @ 2.80 V", "-> terminators (p.2)")
@@ -31,6 +31,6 @@ D.link('tp', 't285', [(14, 29), (14, 34)], "TERMPWR:\n4.25-5.25 V,\n>= 900 mA, t
 D.link('reg', '@+3V3 loads', [(45, 26), (45, 27)],
        "+3V3 -> RP2350B IOVDD (its 1.1 V core comes\n"
        "   from the RP2350's on-chip regulator),\n"
-       "   QSPI flash, PSRAM, microSD, FT232H,\n"
-       "   USB hub, LVT125 drivers, Schmitt\n"
+       "   QSPI flash, PSRAM, microSD, FT232H\n"
+       "   VCCIO, USB hub, front end,\n"
        "   receivers, LA-header buffers", at=(34, 28))
