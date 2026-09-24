@@ -21,6 +21,19 @@ protocol. See `README.md` for the four phases.
 - Tooling: KiCad for EDA; JLCPCB for fab/assembly; LCSC for parts. Prefer parts that
   JLC can assemble (check LCSC stock and whether the part is "basic" or "extended").
 
+## Parts lookup
+
+LCSC (loose parts) and JLCPCB (assembly) share C-numbers but keep **separate stock**.
+The plan is to have JLC assemble most parts and to buy some loose from LCSC (DNP
+parts, easily hand-soldered connectors), so check the source that matches.
+
+- **Find parts, JLC stock and tier:** the `pcbparts` MCP (`.mcp.json`). Its `jlc_search`
+  does parametric search, and `library_type: "no_fee"` finds basic or preferred parts
+  (no loading fee). `jlc_stock_check` gives live JLC stock.
+- **LCSC store stock, MOQ, price breaks:** `python3 tools/lcsc.py C23186 ...`. It works
+  by C-number only; LCSC's search API is bot-protected.
+- For a 5% resistor, a basic 1% part usually beats an extended 5% part.
+
 ## Context hygiene: phases are separate
 
 Each phase folder has a `NOTES.md` that holds that phase's requirements, decisions, open
@@ -30,6 +43,12 @@ questions, and log. **Read only the phase you're working on**, plus these shared
 - `docs/decisions.md`: short cross-phase decision log (details stay in the phase notes).
 - `docs/reference-inventory.md`: what's in `reference/` and which leads to follow up. Read it
   only when you need the reference material.
+- `docs/sources.md`: where each `reference/` item came from, for rebuilding the folder. Add a
+  row whenever you add a file there.
+
+Block diagrams are ASCII, generated from Python sources (see `3-driver/blocks/_src/`). To
+understand one, read its source or the generated connection list, not the art. To change
+one, edit the source and rerun `build.py`.
 
 When you learn something durable, update the matching file. Put facts in
 `scanner-facts.md`, and a decision in the phase `NOTES.md` with a one-line entry in
@@ -39,6 +58,9 @@ When you learn something durable, update the matching file. Put facts in
 
 - It holds vendor manuals, firmware, and utilities. It is **not tracked in git** (size and
   copyright), so don't assume a fresh clone has it.
+- The Howtek files have no public source, so they can't be downloaded again. When you rely
+  on one, copy the fact itself into `scanner-facts.md` or the phase notes, with a citation.
+  A citation alone isn't enough.
 - Classic Mac apps in it (e.g. `MacUtil 4.0.1`) keep their code in the **resource fork**,
   stored as xattrs (`file/..namedfork/rsrc`). The data fork is 0 bytes. Copying or zipping
   with ordinary tools, or committing to git, silently strips these forks.
