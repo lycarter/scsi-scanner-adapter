@@ -8,24 +8,24 @@ Status: draft, 2026-09-24. Source: `_src/mcu.py`.
 
                                 +--------------------------+          +------------------+
   +----------------------+      |                          |       +->| QSPI flash       |
-  | 12 MHz crystal       |----->|                          | QSPI  |  | (firmware)       |
+  | 12 MHz ABM8-272-T3   |----->|                          | QSPI  |  | W25Q128 16 MB    |
   +----------------------+      |                          |-------+  +------------------+
                                 |                          |       |
                                 |                          |       |  +------------------+
   +----------------------+      |                          |       |  | PSRAM 8 MB       |
-  | SWD header           |<---->|                          |       +->| (APS6404L-class) |
+  | SWD header           |<---->|                          |       +->| APS6404L-3SQR    |
   | (debug probe)        |      | RP2350B                  | CS1      | shares QSPI bus  |
   +----------------------+      | QFN-80, 48 GPIO          |--------->|                  |
                                 | 520 KB SRAM              |          +------------------+
                                 | 3 PIO blocks             |
   +----------------------+      |                          |          +------------------+
-  | BOOTSEL + RUN        |----->|                          | 6 + CD   | microSD socket   |
-  | push buttons         |      |                          |<-------->| 4-bit SDIO (PIO) |
-  +----------------------+      |                          |          | + card detect    |
+  | BOOTSEL + RUN        |----->|                          | 3        | microSD socket   |
+  | buttons (owner THT)  |      |                          |<-------->| 1-bit SDIO, PIO2 |
+  +----------------------+      |                          |          | CD: expander     |
                                 |                          |          +------------------+
   +----------------------+      |                          |
   | 1.1 V core: on-chip  |<---->|                          |          +------------------+
-  | regulator + inductor |      |                          | USB (FS) | USB hub port 2   |
+  | reg + 3.3 uH Abracon |      |                          | USB (FS) | USB hub port 2   |
   +----------------------+      |                          |<-------->| (p.4): updates,  |
                                 +--------------------------+          | CDC console      |
                                               |                       +------------------+
@@ -34,25 +34,25 @@ Status: draft, 2026-09-24. Source: `_src/mcu.py`.
                           +--------------------------------------+
                           | Other GPIO users (see NOTES budget): |
                           | SCSI front end (p.2), PIO0       32  |
-                          | FT232H FIFO (p.4), PIO1       12-13  |
-                          | SDIO + card detect                7  |
-                          | PSRAM CS1                         1  |
-                          | 2 LEDs, 2 LA markers              4  |
-                          | TERMPWR_OK (pencilled in)         1  |
-                          | TOTAL ~57-58 of 48  -> OVER          |
+                          | FT232H FT1248 4-bit, PIO1         7  |
+                          | microSD 1-bit SDIO, PIO2          3  |
+                          | PSRAM CS1 (GPIO 47)               1  |
+                          | I2C to TCA9555 expander           2  |
+                          | LA markers                        2  |
+                          | TOTAL 47 of 48 (1 spare)             |
                           +--------------------------------------+
 ```
 
 <details><summary>Connections (from the source, for readers who'd rather not trace lines)</summary>
 
-- 12 MHz crystal → RP2350B
+- 12 MHz ABM8-272-T3 → RP2350B
 - SWD header ↔ RP2350B
 - BOOTSEL + RUN → RP2350B
 - 1.1 V core: on-chip ↔ RP2350B
 - RP2350B → QSPI flash: QSPI
 - QSPI (net) → PSRAM 8 MB
 - RP2350B → PSRAM 8 MB: CS1
-- RP2350B ↔ microSD socket: 6 + CD
+- RP2350B ↔ microSD socket: 3
 - RP2350B ↔ USB hub port 2: USB (FS)
 - RP2350B → Other GPIO users
 
@@ -64,23 +64,27 @@ Status: draft, 2026-09-24. Source: `_src/mcu.py`.
 - **RP2350B** (QFN-80, 48 GPIO, 520 KB SRAM, 3 PIO blocks) is the SCSI engine. Several of
   its connections use **dedicated pins that don't count against the 48 GPIO**: the crystal
   (XIN/XOUT), SWD (SWCLK/SWDIO), RUN, the QSPI bus, and native USB D+/D−.
-- **Clock:** a 12 MHz crystal (the standard RP2350 reference).
+- **Clock:** a 12 MHz ABM8-272-T3 crystal, 2 × 15 pF, 1 kΩ series (the guide's circuit). The
+  CH334 hub uses the same crystal part.
 - **Core power:** the RP2350's on-chip 1.1 V switching regulator needs an external inductor
-  and caps. It's shown here because it's layout-sensitive.
-- **QSPI bus:** program flash on chip-select 0 (dedicated) and **8 MB PSRAM** on chip-select 1,
+  (Abracon AOTA-B201610S3R3-101-T, polarity-marked) and caps. It's shown here because it's
+  layout-sensitive.
+- **QSPI bus:** program flash (W25Q128JVSIQ, 16 MB) on chip-select 0 (dedicated) and **8 MB
+  PSRAM** (APS6404L-3SQR-SN) on chip-select 1 = GPIO 47,
   which costs one GPIO. The QMI CS1n function exists only on GPIO 0, 8, 19 or 47 (verified in
   the RP2350 datasheet GPIO function table, 2026-09-24). The PSRAM is the stall buffer between
   SCSI and the host.
   - Variant to consider: the RP2354B has flash inside the package (unverified size), which would
     remove the external flash chip.
-- **microSD:** 4-bit SDIO driven by a PIO state machine (the BlueSCSI v2 / ZuluSCSI
-  approach), plus a card-detect GPIO. Uses: spill-over when the host stalls, and standalone
-  scanning during development.
+- **microSD:** 1-bit SDIO driven by PIO2 (3 GPIO); card detect goes to the I²C expander.
+  Use: spill-over when the host stalls. If pins free up, it moves to 4-bit SDIO first.
 - **Debug:** an SWD header for a debug probe. The console is USB CDC over the native USB
   (page 4), so there's no UART header. BOOTSEL and RUN buttons give manual bootloader entry
   and reset; normally the host triggers BOOTSEL in software.
 - **Native USB (full speed):** goes to port 2 of the USB hub (page 4), with 27 Ω series
   resistors close to the chip. It's used for firmware updates and the console. It uses
   dedicated pins, so it costs no GPIO.
-- **GPIO budget is over:** about 58–59 wanted vs. 48 available (no UART; TERMPWR is
-  switched in hardware, so no TERMPWR_EN or CC ADC pins). The detailed table and levers are in `../NOTES.md`.
+- **GPIO budget (decided 2026-09-24): 47 of 48.** SCSI 32 (PIO0), FT1248 4-bit 7 (PIO1),
+  1-bit SDIO 3 (PIO2), PSRAM CS1 1, I²C to the TCA9555 expander 2, LA markers 2. Slow
+  signals (LEDs, card detect, TERMPWR_OK, fault flags, resets) live on the expander. The table,
+  the pin-order rules and the FT1248 rework fallback are in `../NOTES.md`.

@@ -27,13 +27,13 @@ Source: `_src/scsi.py`.
                               +--------------------------+        |                   |
                                             ^ 14 x /OE            |     isolation:    |
                                             |                     |     series R or   |
-                              +--------------------------+        |     2nd buffer    |
-                              | RP2350B PIO              | 18 in  |                   |
-                              | 14 out + 18 in           |<-------+                   |
+  Drivers/receivers are       +--------------------------+        |     2nd buffer    |
+  pencilled in: NOTES         | RP2350B PIO              | 18 in  |                   |
+  open question 5.            | 14 out + 18 in           |<-------+                   |
                               | = 32 GPIO, one           |                            v
-                              | 32-pin PIO window        | markers +----------------------+
-                              |                          |-------->| LA header 2x16       |
-                              +--------------------------+         | (Digital Discovery)  |
+  ESD at the connector:       | 32-pin PIO window        | markers +----------------------+
+  18 x H5VUD5BB (0.3 pF),     |                          |-------->| LA header 2x16       |
+  SMF6.0A on TERMPWR          +--------------------------+         | (Digital Discovery)  |
                                                                    | 18 sig + 2 markers   |
                                                                    +----------------------+
 ```
@@ -59,6 +59,8 @@ Source: `_src/scsi.py`.
   name*, because their pin numbers differ. The bus runs straight between them and each
   tap stays short: SCSI-2 allows at most 0.1 m of stub, including inside the device.
 - **Three things hang off the bus:** a terminator, the drivers and the receivers.
+- **The driver and receiver parts are pencilled in, pending the owner's research (NOTES open
+  question 5).** The description below is the current working design.
 - **Drivers (bus ← MCU): 14 lines, all open-drain.** 4× 74LVT125 with each gate's A input
   tied to GND. The MCU drives each gate's /OE: low means the line is asserted (pulled to
   ~0 V, sinking up to 48 mA); high means released (high-Z, and the terminators pull it up).
@@ -72,12 +74,16 @@ Source: `_src/scsi.py`.
   double-counting. Their inputs must tolerate 5 V and go high-Z when unpowered (Ioff).
   Outputs are 3.3 V logic for the RP2350B.
 - **The MCU side is 32 GPIO in one PIO window**: 14 outputs (/OE) + 18 inputs. RP2350 PIO
-  reaches 32 consecutive GPIOs (base 0 or 16; unverified), so these need a planned layout.
+  reaches 32 consecutive GPIOs (base 0 or 16; verified 2026-09-24), so these need a planned
+  layout.
 - **The LA header gets copies of all 18 received signals**, isolated from the MCU path by
   series resistors or a second buffer bank (open), plus 2 firmware "marker" pins. Pinout
   matches the Digital Discovery 2×16 input connector (R4a).
-- **Terminator:** 18× 110 Ω to a 2.85 V source, switchable with `TERM_EN` so the board works
-  at the end of the chain (on) or in the middle (off). It's powered from TERMPWR (page 1).
+- **Terminator (decided):** a TPS73701 at 2.80 V (fed from TERMPWR, page 1) → 3 × 74LVT245
+  (inputs tied high, `/OE` = enable) → 18 × 110 Ω. A DIP switch sets it on or off, so the
+  board works at the end of the chain (on) or in the middle (off).
+- **ESD (decided):** 18 × H5VUD5BB (0.3 pF, bidirectional, to ground, no rail pin) at the
+  connector, and an SMF6.0A on TERMPWR. No rail pin means an unpowered board doesn't clamp the bus.
 - **Listen-only mode (R4)** is just this hardware with every /OE held high: the receivers
   see everything and nothing is driven.
 
@@ -86,6 +92,4 @@ Source: `_src/scsi.py`.
 - Owner's independent review of the 74LVT choice (and LVT125 Ioff/IOL on the datasheet).
 - Receiver part: 74LVC14 (hex inverter, so software inverts polarity) vs. a non-inverting
   Schmitt buffer (e.g. 74LVC1G17 / '2G17 / '3G17); check 5 V tolerance and Ioff.
-- Terminator implementation: a dedicated active-terminator IC vs. a regulator + resistors +
-  switch (BlueSCSI used LVTH245 outputs as the switch).
 - LA isolation: series resistors vs. a second buffer.

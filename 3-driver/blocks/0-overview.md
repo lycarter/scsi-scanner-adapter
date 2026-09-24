@@ -11,7 +11,7 @@ choices unless `NOTES.md` says they're decided.
 +=====|====================================== DRIVER BOARD =================================|==========+
 |     v                                                                                     v          |
 |  +-----------+     +-------------+     +------------+      +------------+       +------------------+ |
-|  | USB-C     |D+/D-| USB 2.0     | HS  | FT232H     | FIFO | RP2350B    |       | SCSI front end   | |
+|  | USB-C     |D+/D-| USB 2.0     | HS  | FT232H     |FT1248| RP2350B    |       | SCSI front end   | |
 |  | connector |---->| HS hub      |---->| HS bridge  |<---->|            |  PIO  | (p.2)            | |
 |  |           |     | (p.4)       |     | (p.4)      |      | (p.3)      |<----->| drivers,         | |
 |  +-----------+     +-------------+     +------------+      |            |       | receivers,       | |
@@ -35,7 +35,7 @@ choices unless `NOTES.md` says they're decided.
 |                           +------------------------------------------------+                         |
 |                           | MCU support (p.3): QSPI flash, 8 MB PSRAM,     |                         |
 |                           | microSD (SDIO), 12 MHz crystal, SWD header,    |                         |
-|                           | BOOTSEL/RUN buttons, LEDs                      |                         |
+|                           | buttons, TCA9555 I2C expander (LEDs, status)   |                         |
 |                           +------------------------------------------------+                         |
 +======================================================================================================+
 ```
@@ -45,7 +45,7 @@ choices unless `NOTES.md` says they're decided.
 - Host computer → USB-C: USB-C cable (HS data + 5 V)
 - USB-C → USB 2.0 HS hub: D+/D-
 - USB 2.0 HS hub → FT232H: HS
-- FT232H ↔ RP2350B: FIFO
+- FT232H ↔ RP2350B: FT1248
 - USB 2.0 HS hub → RP2350B: FS: updates, console
 - RP2350B ↔ SCSI front end: PIO
 - SCSI front end ↔ D4000 scanner (+ G4): ribbon
@@ -65,9 +65,10 @@ choices unless `NOTES.md` says they're decided.
   the RP2350B and its support parts (page 3), the USB path (page 4: USB-C, hub, FT232H and
   the RP2350's native USB), and the logic-analyzer header (drawn on page 2 because it hangs
   off the receivers).
-- **Data path:** host ⇄ USB-C ⇄ hub ⇄ FT232H ⇄ 8-bit parallel FIFO ⇄ RP2350B ⇄ PIO ⇄ SCSI
+- **Data path:** host ⇄ USB-C ⇄ hub ⇄ FT232H ⇄ FT1248 (4-bit) ⇄ RP2350B ⇄ PIO ⇄ SCSI
   drivers/receivers ⇄ SCSI cable ⇄ scanner. PSRAM and microSD hang off the RP2350B as
-  buffer and storage.
+  buffer and spill storage. A TCA9555 I²C expander handles slow signals (LEDs, card
+  detect, status inputs).
 - **Power path:** USB-C VBUS or a bench 5 V supply are ORed into `+5V_SYS`, which feeds the
   regulators and TERMPWR. The CC pins tell the power block (in hardware, not firmware) whether the USB port allows enough current to switch TERMPWR on.
 - **Everything the bus touches goes through the front end.** The MCU never connects to a
