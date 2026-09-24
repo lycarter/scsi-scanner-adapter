@@ -190,11 +190,17 @@ connectors and keep the tap short.
   English reference schematics when choosing the crystal.
 - Layout: crystal next to XI/XO, short equal traces, solid ground under it with no signals
   routed beneath, no vias, away from the USB pairs and the SCSI lines.
-- **To check at schematic time:** the crystal CL has to match the internal caps (their value
-  wasn't in the parts I read). Candidate: YXC X322512MSB4SI (C9002, JLC's only basic 12 MHz,
-  3225, CL 20 pF, ESR 80 Ω). Confirm against the English datasheet or a WCH reference
-  design. One crystal type for the whole board is unlikely: the RP2350 guide strongly
-  recommends the ABM8-272-T3 (CL 10 pF, ESR ≤ 50 Ω), and C9002's 80 Ω exceeds that.
+- **Internal load caps: about 16 pF** (Chinese V2.91 §6.1, p. 26: "XI 和 XO 引脚已内置约16pF
+  振荡电容，建议晶体X1不加外部振荡电容", "XI and XO have built-in oscillator caps of about 16 pF;
+  we recommend no external caps on crystal X1"). The English V2.5 doesn't give the value. Read as
+  16 pF on each pin, the crystal sees 16/2 + ~2–3 pF stray ≈ 10–11 pF, which matches a
+  **CL = 10 pF** crystal. That reading is likely but unconfirmed: the text doesn't say "per pin".
+- **Crystal choice (accepted 2026-09-24): the ABM8-272-T3 (CL 10 pF, ESR ≤ 50 Ω) fits the CH334
+  better than C9002 (CL 20 pF, ESR 80 Ω)**, so one crystal type can serve the RP2350 and the
+  hub. Why it's low-risk either way: USB HS allows ±500 ppm; the crystal is ±30 ppm, and a few pF
+  of load mismatch pulls it only tens of ppm. Lower ESR only makes start-up easier. Not
+  checked: the CH334's drive level into the ABM8 (the datasheet gives no oscillator drive
+  figure). Cheap insurance: two unfitted 0402 load-cap pads on XI/XO.
 - Rejected: CH334R (same chip in QSOP-16, +$0.12, kept as the pin-compatible-in-function
   fallback), FE1.1s (crystal required, single TT, 0–70 °C, SSOP-28), GL850G (similar), USB2514B
   (configurable, but $2.39 and 3.4k stock).
@@ -402,6 +408,43 @@ needs a 60 MHz synchronous interface, which is too tight for PIO and more than w
 **FT1248** uses SCLK, SS#, MISO plus 1/2/4/8 MIOSIO lines (4, 5, 7 or 11 pins). Its
 throughput at each width is unverified (it's in AN_167, not yet downloaded).
 
+### MCU support parts (decided 2026-09-24, partial)
+
+Part numbers reused from jackw01's **scanlight** (`sl_v4`, an RP2040 board, CERN-OHL-W). We
+copy only the part choices; the schematic gets drawn fresh (MIT, see open question 8). Each part
+below also matches "Hardware design with RP2350" (the guide), so it is valid for the RP2350B.
+JLC stock and tier checked 2026-09-24.
+
+| Function | Part | LCSC | JLC tier, stock | Guide cross-check |
+|---|---|---|---|---|
+| 12 MHz crystal | Abracon ABM8-272-T3 (3225, CL 10 pF, ESR ≤ 50 Ω, ±30 ppm) | C20625731 | extended, 16,990 | §4.1: the recommended crystal; Pico 2 is tuned for it |
+| Crystal load caps ×2 | 15 pF C0G 0402 | C1548 | basic, 1.49 M | §4: 15 pF each (7.5 pF + ~3 pF stray ≈ 10 pF) |
+| Crystal series resistor | 1 kΩ 1 % 0402 | C11702 | basic, 8.7 M | §4: 1 kΩ at IOVDD = 3.3 V stops overdrive |
+| USB D+/D− series ×2 | 27 Ω 1 % **0603** (scanlight: 0402 C25100, extended) | C25190 | preferred (no fee), 126,830 | 27 Ω close to the chip |
+| BOOTSEL + RUN buttons | **Open.** Likely the owner's own through-hole tact switches (~6 mm square, to be checked), hand-soldered and not JLC-assembled | — | — | — |
+| BOOTSEL resistor | 1 kΩ (same as above) | C11702 | basic | QSPI_SS → 1 kΩ → button |
+
+- **Swapped to no-fee parts (2026-09-24, owner: "swap any components that are extended but
+  don't need to be").**
+  - 27 Ω: JLC has no basic or preferred 27 Ω in 0402, so we go up to 0603. That's fine next to
+    the RP2350's USB pins.
+  - Buttons: **deferred (2026-09-24).** The owner has through-hole tact switches in stock
+    (thought to be 6 mm square) and will hand-solder them; they'll check the part before we
+    pick a footprint. The no-fee fallback, if JLC should place them, is the TS-1187A-B-A-B
+    (C318884, basic, 5.1 mm SMD, pressed from the top; used on scanlight `bsl_driver_v1.1`).
+  - **The crystal stays extended.** The only no-fee 12 MHz crystal is YXC C9002 (CL 20 pF,
+    ESR 80 Ω). That exceeds the guide's 50 Ω maximum, and the guide warns that any other
+    crystal circuit "will require extensive testing".
+- The ABM8-272-T3 probably suits the CH334 hub as well (see "USB hub"), giving one crystal type for the board. Accepted 2026-09-24.
+- **Not from scanlight** (the RP2040 has no equivalent, or the part doesn't fit), still open:
+  - the core-regulator parts: 3.3 µH Abracon AOTA-B201610S3R3-101-T (orientation matters),
+    3 × 4.7 µF 0402, 33 Ω + 4.7 µF on VREG_AVDD (guide §2.1);
+  - the QSPI flash size. scanlight uses a W25Q16 (2 MB); the guide uses a W25Q128 (16 MB),
+    and A/B firmware updates need room for two images;
+  - decoupling count for QFN-80 (scanlight's 0.1 µF C307331 and 2.2 µF C12530 can be reused);
+  - the 3.3 V regulator. scanlight's HT7533 is too small for this board; the power budget
+    (pre-KiCad item 1d) decides it.
+
 ## SCSI electrical front end (candidates)
 
 - The classic, proven choice: 74LS641-1 (open-collector, 48 mA sink) transceivers, as used by
@@ -515,7 +558,7 @@ throughput at each width is unverified (it's in AN_167, not yet downloaded).
    **CC detection decided 2026-09-24: LM393 comparators** (see "CC detection" under Block
    architecture).
 10. ~~USB path~~: decided 2026-09-24: a hub chip (see Block architecture). Still open: the
-    hub part choice (**decided 2026-09-24: CH334P + 12 MHz crystal**, see "USB hub"). Analysis kept for reference (2026-09-24, from the datasheets):
+    hub part choice (**decided 2026-09-24: CH334P + 12 MHz crystal (ABM8-272-T3)**, see "USB hub"). Analysis kept for reference (2026-09-24, from the datasheets):
     - **Through the FT232H, firmware-mediated: viable.** The running app takes the image over
       the FIFO, writes the inactive half of an A/B partition pair, and reboots with
       FLASH_UPDATE. The bootrom's try-before-you-buy (RP2350 datasheet §5.1.17) rolls back if
@@ -575,3 +618,6 @@ throughput at each width is unverified (it's in AN_167, not yet downloaded).
 - 2026-09-24: Hub: CH334P with a fitted 12 MHz crystal (WCH: crystal-free may break USB spec and may not be enabled).
 - 2026-09-24: Bench connector: 5.08 mm screw terminal + test loops.
 - 2026-09-24: Enclosure: 3D-printed case later; v1 is a bench board with edge connectors and M3 holes.
+- 2026-09-24: MCU support parts: crystal circuit, USB 27 Ω and buttons reused from scanlight `sl_v4` (part numbers only; it's an RP2040 board, so the core regulator, flash and decoupling are still open).
+- 2026-09-24: Swapped the extended MCU support parts for no-fee ones: 27 Ω → 0603 C25190, buttons deferred (owner's through-hole stock). The ABM8-272-T3 crystal stays (no no-fee crystal meets ESR ≤ 50 Ω).
+- 2026-09-24: CH334 internal load caps are ~16 pF (Chinese V2.91 §6.1), which matches a CL 10 pF crystal. Accepted: ABM8-272-T3 for both the RP2350 and the hub, with unfitted load-cap pads on the hub.
