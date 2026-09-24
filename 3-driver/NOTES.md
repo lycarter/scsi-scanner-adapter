@@ -300,6 +300,82 @@ an expander input so firmware can explain a dead bus ("port only offers 500 mA")
     4.25 V minimum. Pick a low-R polyfuse; if it's still short, use a TPS2121. A good use for
     the spare ADC pin: monitor TERMPWR.
 
+### Power budget (2026-09-24; regulator and supply choices accepted)
+
+Currents per rail, **typical / max**. "Max" adds every part's maximum at once, which won't
+happen in practice, so it's a ceiling rather than a forecast. Sources: RP2350 datasheet §14.9.7
+(Table 1446) and §14.9.6 (I_IOVDD_MAX, I_QSPI_IOVDD_MAX); FT232H DS v2.0 Table 5.2;
+CH334 English DS V2.5 §4.2. Figures marked * are from memory or estimated: check them when
+the part is chosen.
+
+**3.3 V rail**
+
+| Load | Typ (mA) | Max (mA) | Basis |
+|---|---|---|---|
+| RP2350B core (VREG_VIN + VREG_AVDD) | 30 | 80 | Datasheet: 14.7 mA for hello_usb at 150 MHz; we run both cores + 3 PIO + DMA. Max = core regulator's 200 mA at 1.1 V, drawn from 3.3 V |
+| RP2350B I/O (IOVDD, QSPI_IOVDD, USB, ADC) | 10 | 40 | Mostly switching current into CMOS inputs; the limits are 100 mA IOVDD and 20 mA QSPI |
+| CH334P hub (external 3.3 V mode, see below) | 50 | 85 | DS: 42 mA with 1 HS downstream, 85 mA with 4 HS; we have 1 HS + 1 FS |
+| PSRAM, 8 MB QSPI* | 10 | 30 | Part not chosen |
+| QSPI flash* | 5 | 25 | W25Q-class read current |
+| microSD* | 30 | 100 | SD default-speed limit (from memory); peaks during writes |
+| SE front end (placeholder) | 20 | 40 | Front end still undecided (open question 5) |
+| LA header buffers* | 2 | 10 | ~20 lines × C·V·f into the Digital Discovery inputs |
+| LEDs (≈4 at 2 mA) | 6 | 10 | |
+| TCA9555 | 0 | 1 | µA-class |
+| **Total** | **≈165** | **≈420** | |
+
+**5 V rail (`+5V_SYS`, after the ORing diode U1)**
+
+| Load | Typ (mA) | Max (mA) | Basis |
+|---|---|---|---|
+| 3.3 V regulator input (linear, so I_in = I_out) | 165 | 420 | Table above |
+| FT232H (VREGIN = 5 V) | 55 | 80 | DS: I_reg 54 mA at VREGIN 5 V. Max adds margin for the HS PHY |
+| LM393 | 0.5 | 1 | |
+| **Logic subtotal** | **≈220** | **≈500** | |
+| TERMPWR (only when enabled) | ≈300 | 900 | Each asserted line draws ~21 mA from *each* terminator, and the far terminator may be powered from our TERMPWR too. 18 lines × 2 terminators ≈ 0.78 A; 900 mA is the SCSI-2 §5.4.3 capability we must offer |
+| **Total** | **≈0.52 A** | **≈1.4 A** | 1.4 A × 5 V ≈ 7 W (R8 guessed ~6 W) |
+
+**Against each source:**
+
+| Source | Allowed | Fits? |
+|---|---|---|
+| USB-C at 3 A | 3 A | Yes, with lots of room |
+| USB-C at 1.5 A (TERMPWR on) | 1.5 A | Yes: 1.4 A worst ceiling, ~1.3 A realistic worst. Thin but inside |
+| USB-C Default / USB 2.0 (TERMPWR off by design) | 500 mA once configured | Yes typically (≈220 mA). The 500 mA ceiling touches the limit only if every maximum coincides |
+| USB 2.0 before configuration | 100 mA | **No.** The hub, FT232H and RP2350 exceed it at enumeration. Many bus-powered hubs do the same and hosts rarely enforce it. Accepted as a known deviation |
+| Bench 5 V | Supply-limited | Yes. Recommend a supply rated ≥ 2 A |
+
+**Heat, worst case:** 3.3 V LDO (5.25 − 3.3) × 0.42 ≈ 0.8 W (typ ≈ 0.3 W); terminator LDO ≈ 0.95 W
+(see "Terminator LDO"); ideal diodes ≈ 0.1 W. That's ~2 W worst, ~0.8 W typical. It's fine on a
+4-layer board with copper pours under both SOT-223s. The printed case needs vents.
+
+**3.3 V regulator (accepted 2026-09-24): a second TPS73701DCQR (C56848) set to 3.3 V.**
+- It's the same part as the terminator LDO, so there's **no extra loading fee**. That's the same
+  logic as the one-part LM66200 decision.
+- 1 A rating (2.4× the ceiling), ~130 mV dropout at 1 A. It holds 3.3 V down to ~3.5 V in, so a
+  sagging USB supply (≈4.4 V at the board with 1.5 A through a worst-case cable) isn't a problem.
+- Accuracy: typical ±0.5 %; worst over line, load and temperature is ±3 % (legacy silicon) or
+  ±1.5 % (new silicon), plus the feedback resistors.
+- Rejected: **AMS1117-3.3** (C6186, the only basic LDO that can deliver the current): its 1.1–1.3 V
+  dropout gives ≤ 3.1–3.3 V out from a 4.4 V input, below the CH334's 3.2 V minimum.
+  **Buck converter**: the only no-fee part that fits (TPS54331, C9865) is non-synchronous, so it
+  needs a Schottky diode and a large inductor, and it adds switching noise near the USB and crystal
+  circuits. It would save ~0.5 W worst case, which isn't worth it at these currents.
+
+**Supply choices this budget makes (accepted 2026-09-24):**
+- **FT232H VREGIN from 5 V, not 3.3 V.** In 3.3 V mode, VREGIN must be 3.3–3.6 V (DS Table 5.2),
+  and a 3.3 V LDO running slightly low would violate that. The 5 V mode accepts 3.6–5.5 V.
+  VCCIO stays on the 3.3 V rail (2.97–3.63 V). Check the VPHY/VPLL wiring against the datasheet's
+  bus-powered example at schematic time.
+- **CH334P in external 3.3 V mode (V5 and VDD33 both on the 3.3 V rail).** With its internal
+  LDO, V5 must be ≥ 4.5 V (DS §4.2), and the worst-case USB supply (≈4.4 V) misses that. WCH itself
+  suggests this mode for industrial use, because it cuts the hub's dissipation from 85 mA × 5 V
+  to 85 mA × 3.3 V (Chinese V2.91 §6.1). The trade-off: external mode needs 3.2–3.4 V, which is
+  tighter than the LDO's worst-case ±3 % (typical ±0.5 % is well inside). Use 0.1 % feedback
+  resistors to keep the resistor error out of it.
+- The **TERMPWR polyfuse** must hold ≥ 0.9 A and trip at ≤ ~1.5 A (SCSI-2 recommends a 1.5 A limit).
+  That feeds the open TERMPWR voltage-budget check (see "Ideal diodes").
+
 ### GPIO budget (first pass, dedicated pins, no role multiplexing)
 
 | Block | Pins |
@@ -423,6 +499,15 @@ JLC stock and tier checked 2026-09-24.
 | USB D+/D− series ×2 | 27 Ω 1 % **0603** (scanlight: 0402 C25100, extended) | C25190 | preferred (no fee), 126,830 | 27 Ω close to the chip |
 | BOOTSEL + RUN buttons | **Open.** Likely the owner's own through-hole tact switches (~6 mm square, to be checked), hand-soldered and not JLC-assembled | — | — | — |
 | BOOTSEL resistor | 1 kΩ (same as above) | C11702 | basic | QSPI_SS → 1 kΩ → button |
+| RUN button resistor | 1 kΩ in series with the RUN button (guide R4) | C11702 | basic | Guide Appendix B. No external RUN pull-up (the guide fits none) |
+| Core regulator inductor | Abracon AOTA-B201610S3R3-101-T, 3.3 µH, 2016, polarity-marked, Isat 2.4 A, DCR 115 mΩ | C42411119 | extended, 8,685 | Datasheet §6.3.8.2 names it; see conflicts |
+| Regulator CIN, COUT, VREG_AVDD caps ×3 | 4.7 µF X5R 10 V 0402 | C23733 | basic, 2.6 M | Guide §2.1: 3 × 4.7 µF 0402 |
+| VREG_AVDD filter resistor | 33 Ω 1 % 0402 | C25105 | basic, 2.2 M | Guide §2.1: 33 Ω + 4.7 µF |
+| Decoupling ×13 | 100 nF X7R 50 V 0402 | C307331 | basic, 11.7 M | Guide Appendix B: one per supply pin (IOVDD ×8, DVDD ×3, ADC_AVDD), USB_OTP_VDD and QSPI_IOVDD share one (pins 68/69), plus one at the flash |
+| 3.3 V bulk near the MCU | 10 µF X5R 25 V 0805 | C15850 | basic, 5.6 M | Guide C19: 10 µF 0805 X5R |
+| QSPI flash | Winbond W25Q128JVSIQ, 16 MB, SOIC-8 208 mil | C97521 | **basic**, 44,238 | Guide §3.1: the same part; 16 MB is the most the RP2350 addresses |
+| QSPI_SS pull-up | 10 kΩ 0402, **unfitted** (guide R1 is DNF) | C25744 | basic | Guide §3.1: unneeded with this flash; keep the pads |
+| PSRAM CS1 pull-up (GPIO 47) | 10 kΩ 0402, **fitted** | C25744 | basic | Guide §3.2 (R13): "definitely needed", because GPIOs are pulled low at power-up |
 
 - **Swapped to no-fee parts (2026-09-24, owner: "swap any components that are extended but
   don't need to be").**
@@ -436,14 +521,49 @@ JLC stock and tier checked 2026-09-24.
     ESR 80 Ω). That exceeds the guide's 50 Ω maximum, and the guide warns that any other
     crystal circuit "will require extensive testing".
 - The ABM8-272-T3 probably suits the CH334 hub as well (see "USB hub"), giving one crystal type for the board. Accepted 2026-09-24.
-- **Not from scanlight** (the RP2040 has no equivalent, or the part doesn't fit), still open:
-  - the core-regulator parts: 3.3 µH Abracon AOTA-B201610S3R3-101-T (orientation matters),
-    3 × 4.7 µF 0402, 33 Ω + 4.7 µF on VREG_AVDD (guide §2.1);
-  - the QSPI flash size. scanlight uses a W25Q16 (2 MB); the guide uses a W25Q128 (16 MB),
-    and A/B firmware updates need room for two images;
-  - decoupling count for QFN-80 (scanlight's 0.1 µF C307331 and 2.2 µF C12530 can be reused);
-  - the 3.3 V regulator. scanlight's HT7533 is too small for this board; the power budget
-    (pre-KiCad item 1d) decides it.
+- **Rest of the RP2350B support circuit (2026-09-24), from the guide** ("Hardware design with
+  RP2350", RP2350B Minimal, Appendix B) **and datasheet §6.3.8.2**, swapped for JLC basic parts
+  where the spec allows. Those are the rows from "RUN button resistor" down in the table above.
+  - The guide's flash, W25Q128JVSIQ, is itself a JLC basic part (C97521). It costs $2.55, against
+    ~$0.4 for a 2 MB part. A 16 MB part leaves room for A/B images plus logs. Smaller is an
+    option if cost ever matters.
+  - Supply pins on the QFN-80 (guide Appendix B pinout): IOVDD 5, 15, 24, 29, 41, 50, 60, 76;
+    DVDD 10, 32, 51; ADC_AVDD 59; USB_OTP_VDD 68; QSPI_IOVDD 69; VREG_VIN 64, VREG_AVDD 61.
+    The guide ties no filter to ADC_AVDD or USB_OTP_VDD beyond the 100 nF.
+  - scanlight's 2.2 µF (C12530, basic) isn't in the RP2350 guide, so it's not used here.
+  - Datasheet §6.3.8.2 also asks for CIN ≥ 4.7 µF with ≤ 50 mΩ, and COUT 4.7 µF ±20% with
+    ≤ 250 mΩ and ≤ 6 nH. **Unverified:** a 10 V 0402 X5R loses a good share of its capacitance at
+    3.3 V DC bias, so C23733 as CIN may land below 4.7 µF in practice. The guide uses the same
+    0402 size and accepts this. The 0603 C19666 (4.7 µF 16 V, basic) is the fallback if the
+    layout allows.
+  - Layout rules to carry into KiCad: inductor orientation per datasheet Figure 23; the
+    VREG_PGND return path; the ground cut-out under the VREG_LX net on layer 2 (Figure 24).
+- **Core regulator inductor: Abracon kept, accepted for now (owner, 2026-09-24; may search
+  more).** JLC has **no basic or preferred 3.3 µH inductor at all** (searched 2026-09-24), so
+  any choice is extended and pays the loading fee. We keep the guide's Abracon part: it's the
+  only one on offer that is polarity-marked with a consistent reel orientation, which the
+  datasheet says is required ("The inductor must be marked for polarity"). Cheaper extended
+  look-alikes exist (e.g. Coilank APS201610M3R3F, C48783272, $0.03, Isat 3.2 A, DCR 250 mΩ;
+  MetalLions MTQH201612S3R3MBT, C17701150, shielded, Isat 2.7 A, DCR 135 mΩ). Their polarity
+  marking is unknown.
+  - **Why no basic part exists:** JLC's entire no-fee inductor library is 13 parts (checked
+    2026-09-24), all small multilayer signal/RF inductors (3.9 nH–100 µH) rated 2–500 mA. No
+    power inductor of *any* value is basic or preferred. It isn't an RP2350-specific gap.
+  - **Series combination from no-fee parts: no.** 2.2 µH (C1043) + 1 µH (C1042) ≈ 3.2 µH, but
+    each is rated 50 mA against switching peaks of a few hundred mA, the pair's DCR is ~1 Ω
+    against the ≤ 250 mΩ limit, and multilayer chips aren't the "fully shielded" part the
+    datasheet requires (§6.3.8.2).
+  - **Skip the inductor with an external 1.1 V supply: allowed, no gain.** The datasheet
+    (§6.3.2, Figure 21) allows powering DVDD externally with VREG_FB grounded and no inductor.
+    But the only no-fee LDO that goes low is the LM317 (minimum 1.25 V), and the TPS73701's
+    minimum is 1.204 V. So this path also needs a new extended part, loses the firmware's
+    core-voltage control (used for overclocking), and burns ~0.1 W. Rejected.
+  - At schematic time: put a polarity mark on the footprint, and check that JLC's placement
+    preview shows the dot the way datasheet Figure 23 wants.
+- Still open:
+  - the PSRAM part (out of scope here). The guide's optional U4 footprint sits on
+    XIP_CS1n with the 10 kΩ pull-up above.
+- 3.3 V regulator: decided 2026-09-24, see "Power budget".
 
 ## SCSI electrical front end (candidates)
 
@@ -621,3 +741,7 @@ JLC stock and tier checked 2026-09-24.
 - 2026-09-24: MCU support parts: crystal circuit, USB 27 Ω and buttons reused from scanlight `sl_v4` (part numbers only; it's an RP2040 board, so the core regulator, flash and decoupling are still open).
 - 2026-09-24: Swapped the extended MCU support parts for no-fee ones: 27 Ω → 0603 C25190, buttons deferred (owner's through-hole stock). The ABM8-272-T3 crystal stays (no no-fee crystal meets ESR ≤ 50 Ω).
 - 2026-09-24: CH334 internal load caps are ~16 pF (Chinese V2.91 §6.1), which matches a CL 10 pF crystal. Accepted: ABM8-272-T3 for both the RP2350 and the hub, with unfitted load-cap pads on the hub.
+- 2026-09-24: Rest of the RP2350B support parts per the RP2350 guide, basic where possible: W25Q128JVSIQ (basic), 13 × 100 nF, 3 × 4.7 µF, 33 Ω, 10 µF bulk, 10 kΩ pull-ups. Conflict: no basic 3.3 µH inductor exists, so the Abracon part stays (extended).
+- 2026-09-24: Power budget drafted: 3.3 V ≈165/420 mA, 5 V ≈0.52/1.4 A with TERMPWR. Proposed: a second TPS73701 for 3.3 V, FT232H VREGIN from 5 V, CH334 in external 3.3 V mode.
+- 2026-09-24: FT1248: no dev-board test (owner). Assume it works as advertised; fall back to bodge wires or cut traces on the first board if needed.
+- 2026-09-24: Accepted: 3.3 V = second TPS73701, FT232H VREGIN from 5 V, CH334 in external 3.3 V mode. Inductor: Abracon kept for now; JLC has no no-fee power inductor of any value, and series or external-1.1 V workarounds don't help.
