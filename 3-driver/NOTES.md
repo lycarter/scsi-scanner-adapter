@@ -94,6 +94,8 @@ update).
 
 ## Block architecture (in progress)
 
+Parts list for the schematic: `parts-list.md` (the reasoning stays here).
+
 Diagrams: `blocks/0-overview.md`, `1-power.md`, `2-scsi-frontend.md`, `3-mcu-support.md`,
 `4-usb.md`. Each is generated from a page source in `blocks/_src/` (named boxes and links)
 by `python3 3-driver/blocks/_src/build.py`. The build checks the layout (no overlaps, wires
@@ -711,6 +713,23 @@ All parts below are JLC **preferred** (no loading fee).
 - Unverified: the SCSI capacitance budget depends on the front-end chips (undecided). Roughly:
   transceiver ~5–8 pF + LA buffer ~3–5 pF + terminator output ~5 pF + ESD 0.3 pF + traces ≈ 15–20 pF.
 
+### FT232H package and crystal (decided 2026-09-24)
+
+- **Package: FT232HL-REEL (LQFP-48), C51997**, 3,224 at JLC, $9.36. The QFN FT232HQ we'd assumed is
+  out of stock at LCSC (0) and JLC (10 left, at $27). FTDI uses the same pin numbering for both
+  packages (DS v2.0 §3), so the pin tables above still hold. The LQFP is also easier to bodge
+  (see the FT1248 fallback plan).
+- The owner asked about cheaper parts. Rejected for v1: **CH347F** ($3.35; UART tops out at
+  9 Mbaud ≈ 0.9 MB/s, below R3; SPI mode needs WCH's vendor driver and a redesign),
+  **CH32V305 as a bridge MCU** ($1.90–2.98; a second firmware to write; a candidate for a v2
+  cost-down), **FX2LP** ($11). Saving ~$6–7 a board isn't worth that risk at v1 quantities.
+- **Crystal: the same ABM8-272-T3** as the RP2350 and the hub, with 2 × 15 pF. FT232H DS §6.3
+  wants a fundamental-mode, parallel-cut crystal (it is) and load caps chosen per the crystal
+  maker (27 pF is only an example). FTDI writes "12 MHz ± 0.003 %" (±30 ppm). The ABM8 is
+  ±30 ppm at 25 °C plus ±30 ppm over −40…85 °C, so on paper it can exceed that. USB HS itself
+  allows ±500 ppm, and near room temperature the drift is a few ppm. We don't use the features
+  (UART baud accuracy) that FTDI's tighter number protects. Accepted.
+
 ## SCSI electrical front end (candidates)
 
 - The classic, proven choice: 74LS641-1 (open-collector, 48 mA sink) transceivers, as used by
@@ -895,3 +914,4 @@ All parts below are JLC **preferred** (no loading fee).
 - 2026-09-24: PSRAM: APS6404L-3SQR-SN (8 MB, 3.3 V). Bench input protection: TPS259470ARPWR eFuse (−15 V/28 V tolerant, adjustable OVLO). Abracon inductor locked in ($0.28).
 - 2026-09-24: 4-layer board; layout is the owner's hand pass after the schematic. Connectors: USB-C footprint HRO TYPE-C-31-M-12 (owner's part), IDC50 keyed box header C30006, HD50 generic footprint (not stocked), microSD C393941. ESD: discrete preferred diodes (no rail pin). TERMPWR: proposed second TPS259470A instead of LM66200 U2 + polyfuse.
 - 2026-09-24: Accepted: TERMPWR eFuse (second TPS259470A) replaces LM66200 U2 + polyfuse. Power diagram updated.
+- 2026-09-24: FT232H → FT232HL (LQFP; QFN out of stock). FT232H crystal = ABM8-272-T3 (one crystal part ×3). Cheaper bridges (CH347F, CH32V305, FX2LP) rejected for v1. Wrote `parts-list.md`.
