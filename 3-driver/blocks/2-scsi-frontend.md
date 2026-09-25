@@ -1,6 +1,6 @@
 # Block diagram 2: SCSI front end
 
-Status: draft, 2026-09-23. Requirements: R1, R2, R4, R4a, R4b. Background:
+Status: draft, 2026-09-23; drivers decided 2026-09-25. Requirements: R1, R2, R4, R4a, R4b. Background:
 `../prior-art/bluescsi-v2.md` and the SCSI-2 table in `../NOTES.md`.
 Source: `_src/scsi.py`.
 
@@ -17,24 +17,24 @@ Source: `_src/scsi.py`.
             |  (straight run; stub <= 0.1 m)|                              |
             |                               |                              v
   +----------------------+    +--------------------------+    +--------------------------+
-  | Switchable active    |    | DRIVERS: 4 x 74LVT125    |    | RECEIVERS: 18 Schmitt    |
-  | terminator:          |    | A = GND, /OE = MCU pin   |    | (74LVC14-class)          |
-  | 18 x 110 ohm to      |    | -> open-drain, >= 48 mA  |    | hysteresis >= 0.2 V      |
+  | Switchable active    |    | DRIVERS: 14 x FDV301N    |    | RECEIVERS: 18 Schmitt    |
+  | terminator:          |    | N-FET, gate <- MCU pin   |    | (74LVC14-class)          |
+  | 18 x 110 ohm to      |    | open-drain, <=0.5V@48mA  |    | hysteresis >= 0.2 V      |
   | 2.80 V, fed from     |    | 14: DB0-7, DBP, ATN,     |    | 5 V-tolerant, Ioff       |
   | TERMPWR; EN<-DIP sw  |    | ACK, SEL, BSY, RST       |    | all 18, always on        |
-  +----------------------+    | pull-ups on /OE keep     |    | out: 3.3 V logic         |
-                              | drivers off in reset     |    +--------------------------+
+  +----------------------+    | 10k gate pull-downs:     |    | out: 3.3 V logic         |
+                              | off in reset / unpowered |    +--------------------------+
                               +--------------------------+        |                   |
-                                            ^ 14 x /OE            |     isolation:    |
+                                            ^ 14 x gate           |     isolation:    |
                                             |                     |     series R or   |
-  Drivers/receivers are       +--------------------------+        |     2nd buffer    |
-  pencilled in: NOTES         | RP2350B PIO              | 18 in  |                   |
-  open question 5.            | 14 out + 18 in           |<-------+                   |
-                              | = 32 GPIO, one           |                            v
-  ESD at the connector:       | 32-pin PIO window        | markers +----------------------+
-  18 x H5VUD5BB (0.3 pF),     |                          |-------->| LA header 2x16       |
-  SMF6.0A on TERMPWR          +--------------------------+         | (Digital Discovery)  |
-                                                                   | 18 sig + 2 markers   |
+  Receivers pencilled in:     +--------------------------+        |     2nd buffer    |
+  NOTES open question 5.      | RP2350B PIO              | 18 in  |                   |
+  Driver fallback:            | 14 out + 18 in           |<-------+                   |
+  4 x SN74LVTH125             | = 32 GPIO, one           |                            v
+                              | 32-pin PIO window        | markers +----------------------+
+  ESD at the connector:       |                          |-------->| LA header 2x16       |
+  18 x H5VUD5BB (0.3 pF),     +--------------------------+         | (Digital Discovery)  |
+  SMF6.0A on TERMPWR                                               | 18 sig + 2 markers   |
                                                                    +----------------------+
 ```
 
@@ -42,9 +42,9 @@ Source: `_src/scsi.py`.
 
 - IDC50 (fitted) — HD50 footprint (DNP): SCSI bus: 18 signals + TERMPWR + GND
 - SCSI (net) — Switchable active terminator
-- DRIVERS (4 x 74LVT125) → SCSI (net)
+- DRIVERS (14 x FDV301N) → SCSI (net)
 - SCSI (net) → RECEIVERS (18 Schmitt)
-- RP2350B PIO → DRIVERS (4 x 74LVT125): 14 x /OE
+- RP2350B PIO → DRIVERS (14 x FDV301N): 14 x gate
 - RECEIVERS (18 Schmitt) → RP2350B PIO: 18 in
 - RECEIVERS (18 Schmitt) → LA header 2x16: isolation: series R or 2nd buffer
 - RP2350B PIO → LA header 2x16: markers
@@ -59,21 +59,27 @@ Source: `_src/scsi.py`.
   name*, because their pin numbers differ. The bus runs straight between them and each
   tap stays short: SCSI-2 allows at most 0.1 m of stub, including inside the device.
 - **Three things hang off the bus:** a terminator, the drivers and the receivers.
-- **The driver and receiver parts are pencilled in, pending the owner's research (NOTES open
-  question 5).** The description below is the current working design.
-- **Drivers (bus ← MCU): 14 lines, all open-drain.** 4× 74LVT125 with each gate's A input
-  tied to GND. The MCU drives each gate's /OE: low means the line is asserted (pulled to
-  ~0 V, sinking up to 48 mA); high means released (high-Z, and the terminators pull it up).
-  Every data bit plus parity has its own driver, so we can do real SCSI-2 arbitration (put
-  only our ID bit on the bus). BlueSCSI v2 can't do this. We drive ATN, ACK, SEL, BSY and RST.
-  We never drive REQ, MSG, C/D or I/O, because those belong to the target. **Pull-ups on
-  every /OE** keep the drivers off while the MCU is in reset or unprogrammed, so the board
-  can't disturb a live bus while booting.
+- **The receiver part is still pencilled in (NOTES open question 5).** The drivers were
+  decided on 2026-09-25.
+- **Drivers (bus ← MCU): 14 lines, all open-drain, 14 × FDV301N N-MOSFETs.** Each drain
+  sits on a bus line and each source on ground. The MCU drives each gate through 100 Ω: high
+  means the line is asserted (pulled to ≤ 0.43 V at 48 mA even at a 125 °C junction); low
+  means released (the terminators pull it up). Every data bit plus parity has its own
+  driver, so we can do real SCSI-2 arbitration (put only our ID bit on the bus). BlueSCSI v2
+  can't do this. We drive ATN, ACK, SEL, BSY and RST. We never drive REQ, MSG, C/D or I/O,
+  because those belong to the target.
+  - **A 10 kΩ pull-down on every gate** keeps the drivers off while the board is
+    unpowered. The RP2350's own reset pull-downs do the same during reset and boot, so the
+    board can't disturb a live bus while starting.
+  - A DNP 22 pF cap on each gate is there in case bus edges couple enough charge into an
+    idle gate to matter. That's a bench check.
+  - **Fallback:** 4 × SN74LVTH125PWR (A = GND, `/OE` = GPIO, pull-ups on `/OE`) if the
+    routing or placement count gets painful. See NOTES "SCSI drivers".
 - **Receivers (bus → MCU): all 18 lines, always on.** Schmitt-trigger buffers give the
   ≥0.2 V hysteresis SCSI-2 requires, which protects the REQ/ACK edge strobes from
   double-counting. Their inputs must tolerate 5 V and go high-Z when unpowered (Ioff).
   Outputs are 3.3 V logic for the RP2350B.
-- **The MCU side is 32 GPIO in one PIO window**: 14 outputs (/OE) + 18 inputs. RP2350 PIO
+- **The MCU side is 32 GPIO in one PIO window**: 14 outputs (FET gates) + 18 inputs. RP2350 PIO
   reaches 32 consecutive GPIOs (base 0 or 16; verified 2026-09-24), so these need a planned
   layout.
 - **The LA header gets copies of all 18 received signals**, isolated from the MCU path by
@@ -84,12 +90,13 @@ Source: `_src/scsi.py`.
   board works at the end of the chain (on) or in the middle (off).
 - **ESD (decided):** 18 × H5VUD5BB (0.3 pF, bidirectional, to ground, no rail pin) at the
   connector, and an SMF6.0A on TERMPWR. No rail pin means an unpowered board doesn't clamp the bus.
-- **Listen-only mode (R4)** is just this hardware with every /OE held high: the receivers
+- **Listen-only mode (R4)** is just this hardware with every gate held low: the receivers
   see everything and nothing is driven.
 
 ## Open items on this page
 
-- Owner's independent review of the 74LVT choice (and LVT125 Ioff/IOL on the datasheet).
+- ~~Driver choice~~: decided 2026-09-25, FDV301N (fallback SN74LVTH125PWR).
+- Bench: gate kick from bus edges with the board off (fit the 22 pF caps if > ~0.4 V); tune the gate resistor for ringing.
 - Receiver part: 74LVC14 (hex inverter, so software inverts polarity) vs. a non-inverting
   Schmitt buffer (e.g. 74LVC1G17 / '2G17 / '3G17); check 5 V tolerance and Ioff.
 - LA isolation: series resistors vs. a second buffer.

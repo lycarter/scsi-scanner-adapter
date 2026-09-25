@@ -35,7 +35,11 @@ Columns:
 | 1 | Terminator on/off | 2-position DIP switch, SMD (SHOU HAN) | C6331180 | E | JLC | DIP 1 = default, DIP 2 = firmware may override (see `USAGE.md`) |
 | 18 | SCSI ESD | H5VUD5BB SOD-523, 0.3 pF | C20615820 | P | JLC | At the connector |
 | 1 | TERMPWR ESD | SMF6.0A SOD-123FL | C19077499 | P | JLC | |
-| — | **Drivers, receivers** | **Open** (74LVT pencilled in) | — | — | — | NOTES open question 5 (owner researching) |
+| 14 | SCSI drivers (open-drain) | onsemi FDV301N SOT-23 | C15310 | E | JLC | DB0–7, DBP, ATN, ACK, SEL, BSY, RST. GPIO high = asserted. Fallback: 4 × SN74LVTH125PWR (C7042), see NOTES "SCSI drivers" |
+| 14 | Driver gate series R | 100 Ω 1 % 0402 | C25076 | B | JLC | Edge-rate tuning on the bench (0 Ω or larger) |
+| 14 | Driver gate pull-down | 10 kΩ 1 % 0402 | C25744 | B | JLC | Keeps lines released with the board off or the MCU in reset |
+| 14 | Driver gate cap | 22 pF C0G 0402 | C1555 | B | DNP | Fit if the bus-edge kick on an idle gate exceeds ~0.4 V (bench check) |
+| — | **Receivers** | **Open** (74LVC14 vs. '17-class) | — | — | — | NOTES open question 5: check thresholds at 3.3 V |
 | — | **LA header buffers** | **Open** | — | — | — | 18 signals + 2 markers, Schmitt, 3.3 V |
 | 1 | LA header | 2×16 2.54 mm pin header | C124382 | E | Hand | Pinout matches Digital Discovery (to do) |
 
@@ -81,13 +85,13 @@ Columns:
 
 About 17 unique extended parts so far: RP2350B, FT232HL, CH334P, 93LC56B, APS6404L, ABM8-272-T3,
 Abracon inductor, TPS73701, TPS259470A, LM66200, TCA9555, SN74LVTH245A, 110 Ω, 2.74 kΩ
-(R_ILM, if no basic combination works), microSD socket, DIP switch, plus the front-end and
-LA-buffer parts once chosen. JLC's fee is a few dollars per unique extended part per order
+(R_ILM, if no basic combination works), microSD socket, DIP switch, FDV301N, plus the receiver
+and LA-buffer parts once chosen. JLC's fee is a few dollars per unique extended part per order
 (from memory: check the current rate). Parts that appear several times on the board cost one fee.
 
 ## Still open before the schematic is complete
 
-1. SCSI drivers and receivers (NOTES open question 5): the owner's research.
+1. SCSI receivers (NOTES open question 5). Drivers decided 2026-09-25: FDV301N.
 2. LA header buffers and the pinout matched to the Digital Discovery.
 3. SWD connector style.
 4. Resistor values set at schematic time: UVLO/OVLO dividers, R_ILM (prefer a basic series
