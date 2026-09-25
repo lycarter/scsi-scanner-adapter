@@ -41,7 +41,7 @@ Columns:
 | 14 | Driver gate cap | 22 pF C0G 0402 | C1555 | B | DNP | Fit if the bus-edge kick on an idle gate exceeds ~0.4 V (bench check) |
 | 18 | SCSI receivers | **Nexperia** 74LVC1G17GW,125 SOT-353 | C426705 | E | JLC | Nexperia only (other vendors' limits differ). 3.3 V. Fallback: 3 × Nexperia 74LVC14APW (C6066 / -Q100 C548122) |
 | 18 | Receiver decoupling | 100 nF X7R 0402 | C307331 | B | JLC | One per 1G17 |
-| — | **LA header buffers** | **Open** | — | — | — | 18 signals + 2 markers, Schmitt, 3.3 V |
+| 20 | LA tap series R | 100 Ω 1 % 0402 | C25076 | B | JLC | At each 1G17 output (18) and marker GPIO (2); the receivers are the Schmitt buffers, so no second bank |
 | 1 | LA header | 2×16 2.54 mm pin header | C124382 | E | Hand | Pinout matches Digital Discovery (to do) |
 
 ## 3. RP2350B and support (`blocks/3-mcu-support.md`)
@@ -86,14 +86,13 @@ Columns:
 
 About 17 unique extended parts so far: RP2350B, FT232HL, CH334P, 93LC56B, APS6404L, ABM8-272-T3,
 Abracon inductor, TPS73701, TPS259470A, LM66200, TCA9555, SN74LVTH245A, 110 Ω, 2.74 kΩ
-(R_ILM, if no basic combination works), microSD socket, DIP switch, FDV301N, 74LVC1G17, plus the
-LA-buffer parts once chosen. JLC's fee is a few dollars per unique extended part per order
+(R_ILM, if no basic combination works), microSD socket, DIP switch, FDV301N, 74LVC1G17. JLC's fee is a few dollars per unique extended part per order
 (from memory: check the current rate). Parts that appear several times on the board cost one fee.
 
 ## Still open before the schematic is complete
 
 1. ~~SCSI drivers and receivers~~: decided 2026-09-25 (FDV301N, Nexperia 74LVC1G17GW).
-2. LA header buffers and the pinout matched to the Digital Discovery.
+2. LA header pinout matched to the Digital Discovery (buffers settled: 100 Ω series R).
 3. SWD connector style.
 4. Resistor values set at schematic time: UVLO/OVLO dividers, R_ILM (prefer a basic series
    combination over the extended 2.74 kΩ, C33360), LDO feedback dividers, LM393 reference and
