@@ -9,11 +9,11 @@ D.box('term', 2, 10, 24, 7, "Switchable active", "terminator:", "18 x 110 ohm to
 D.box('drv', 30, 10, 28, 9, "DRIVERS: 14 x FDV301N", "N-FET, gate <- MCU pin",
       "open-drain, <=0.5V@48mA", "14: DB0-7, DBP, ATN,", "ACK, SEL, BSY, RST",
       "10k gate pull-downs:", "off in reset / unpowered", name="DRIVERS (14 x FDV301N)")
-D.box('rcv', 62, 10, 28, 8, "RECEIVERS: 18 Schmitt", "(74LVC14-class)", "hysteresis >= 0.2 V",
-      "5 V-tolerant, Ioff", "all 18, always on", "out: 3.3 V logic", name="RECEIVERS (18 Schmitt)")
+D.box('rcv', 62, 10, 28, 8, "RECEIVERS: 18 x", "Nexperia 74LVC1G17", "VT+ <= 2.0, VT- >= 0.8",
+      "5 V-tolerant, Ioff", "all 18, always on", "out: 3.3 V logic", name="RECEIVERS (18 x 74LVC1G17)")
 D.box('rp', 30, 21, 28, 7, "RP2350B PIO", "14 out + 18 in", "= 32 GPIO, one", "32-pin PIO window")
-D.note(2, 21, "Receivers pencilled in:", "NOTES open question 5.", "Driver fallback:",
-       "4 x SN74LVTH125", "",
+D.note(2, 21, "One cluster per line:", "FET + 3 passives +", "1G17 + 100 nF.",
+       "Fallbacks: 4 x LVTH125,", "3 x Nexperia LVC14A", "",
        "ESD at the connector:", "18 x H5VUD5BB (0.3 pF),", "SMF6.0A on TERMPWR")
 D.box('la', 67, 25, 24, 5, "LA header 2x16", "(Digital Discovery)", "18 sig + 2 markers")
 

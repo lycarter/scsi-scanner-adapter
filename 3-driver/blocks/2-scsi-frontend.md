@@ -1,6 +1,6 @@
 # Block diagram 2: SCSI front end
 
-Status: draft, 2026-09-23; drivers decided 2026-09-25. Requirements: R1, R2, R4, R4a, R4b. Background:
+Status: draft, 2026-09-23; drivers and receivers decided 2026-09-25. Requirements: R1, R2, R4, R4a, R4b. Background:
 `../prior-art/bluescsi-v2.md` and the SCSI-2 table in `../NOTES.md`.
 Source: `_src/scsi.py`.
 
@@ -17,9 +17,9 @@ Source: `_src/scsi.py`.
             |  (straight run; stub <= 0.1 m)|                              |
             |                               |                              v
   +----------------------+    +--------------------------+    +--------------------------+
-  | Switchable active    |    | DRIVERS: 14 x FDV301N    |    | RECEIVERS: 18 Schmitt    |
-  | terminator:          |    | N-FET, gate <- MCU pin   |    | (74LVC14-class)          |
-  | 18 x 110 ohm to      |    | open-drain, <=0.5V@48mA  |    | hysteresis >= 0.2 V      |
+  | Switchable active    |    | DRIVERS: 14 x FDV301N    |    | RECEIVERS: 18 x          |
+  | terminator:          |    | N-FET, gate <- MCU pin   |    | Nexperia 74LVC1G17       |
+  | 18 x 110 ohm to      |    | open-drain, <=0.5V@48mA  |    | VT+ <= 2.0, VT- >= 0.8   |
   | 2.80 V, fed from     |    | 14: DB0-7, DBP, ATN,     |    | 5 V-tolerant, Ioff       |
   | TERMPWR; EN<-DIP sw  |    | ACK, SEL, BSY, RST       |    | all 18, always on        |
   +----------------------+    | 10k gate pull-downs:     |    | out: 3.3 V logic         |
@@ -27,15 +27,15 @@ Source: `_src/scsi.py`.
                               +--------------------------+        |                   |
                                             ^ 14 x gate           |     isolation:    |
                                             |                     |     series R or   |
-  Receivers pencilled in:     +--------------------------+        |     2nd buffer    |
-  NOTES open question 5.      | RP2350B PIO              | 18 in  |                   |
-  Driver fallback:            | 14 out + 18 in           |<-------+                   |
-  4 x SN74LVTH125             | = 32 GPIO, one           |                            v
-                              | 32-pin PIO window        | markers +----------------------+
-  ESD at the connector:       |                          |-------->| LA header 2x16       |
-  18 x H5VUD5BB (0.3 pF),     +--------------------------+         | (Digital Discovery)  |
-  SMF6.0A on TERMPWR                                               | 18 sig + 2 markers   |
-                                                                   +----------------------+
+  One cluster per line:       +--------------------------+        |     2nd buffer    |
+  FET + 3 passives +          | RP2350B PIO              | 18 in  |                   |
+  1G17 + 100 nF.              | 14 out + 18 in           |<-------+                   |
+  Fallbacks: 4 x LVTH125,     | = 32 GPIO, one           |                            v
+  3 x Nexperia LVC14A         | 32-pin PIO window        | markers +----------------------+
+                              |                          |-------->| LA header 2x16       |
+  ESD at the connector:       +--------------------------+         | (Digital Discovery)  |
+  18 x H5VUD5BB (0.3 pF),                                          | 18 sig + 2 markers   |
+  SMF6.0A on TERMPWR                                               +----------------------+
 ```
 
 <details><summary>Connections (from the source, for readers who'd rather not trace lines)</summary>
@@ -43,10 +43,10 @@ Source: `_src/scsi.py`.
 - IDC50 (fitted) — HD50 footprint (DNP): SCSI bus: 18 signals + TERMPWR + GND
 - SCSI (net) — Switchable active terminator
 - DRIVERS (14 x FDV301N) → SCSI (net)
-- SCSI (net) → RECEIVERS (18 Schmitt)
+- SCSI (net) → RECEIVERS (18 x 74LVC1G17)
 - RP2350B PIO → DRIVERS (14 x FDV301N): 14 x gate
-- RECEIVERS (18 Schmitt) → RP2350B PIO: 18 in
-- RECEIVERS (18 Schmitt) → LA header 2x16: isolation: series R or 2nd buffer
+- RECEIVERS (18 x 74LVC1G17) → RP2350B PIO: 18 in
+- RECEIVERS (18 x 74LVC1G17) → LA header 2x16: isolation: series R or 2nd buffer
 - RP2350B PIO → LA header 2x16: markers
 
 </details>
@@ -59,8 +59,9 @@ Source: `_src/scsi.py`.
   name*, because their pin numbers differ. The bus runs straight between them and each
   tap stays short: SCSI-2 allows at most 0.1 m of stub, including inside the device.
 - **Three things hang off the bus:** a terminator, the drivers and the receivers.
-- **The receiver part is still pencilled in (NOTES open question 5).** The drivers were
-  decided on 2026-09-25.
+- **Layout idea: one cluster per bus line.** Each driven line gets a FET, its gate resistor,
+  pull-down and DNP cap, plus a 74LVC1G17 and its 100 nF, all sitting on that line's trace
+  by the connector. The 4 receive-only lines get just the 1G17 cluster.
 - **Drivers (bus ← MCU): 14 lines, all open-drain, 14 × FDV301N N-MOSFETs.** Each drain
   sits on a bus line and each source on ground. The MCU drives each gate through 100 Ω: high
   means the line is asserted (pulled to ≤ 0.43 V at 48 mA even at a 125 °C junction); low
@@ -75,10 +76,16 @@ Source: `_src/scsi.py`.
     idle gate to matter. That's a bench check.
   - **Fallback:** 4 × SN74LVTH125PWR (A = GND, `/OE` = GPIO, pull-ups on `/OE`) if the
     routing or placement count gets painful. See NOTES "SCSI drivers".
-- **Receivers (bus → MCU): all 18 lines, always on.** Schmitt-trigger buffers give the
-  ≥0.2 V hysteresis SCSI-2 requires, which protects the REQ/ACK edge strobes from
-  double-counting. Their inputs must tolerate 5 V and go high-Z when unpowered (Ioff).
-  Outputs are 3.3 V logic for the RP2350B.
+- **Receivers (bus → MCU): all 18 lines, always on, 18 × Nexperia 74LVC1G17GW.**
+  Single-gate Schmitt buffers on 3.3 V. The datasheet guarantees VT+ ≤ 1.71 V and
+  VT− ≥ 0.88 V at 3.0 V, and at 3.3 V interpolation gives about ≤ 1.84 / ≥ 0.97 V. That fits
+  SCSI-2's ≤ 2.0 / ≥ 0.8 V with ≥ 0.2 V hysteresis, which protects the REQ/ACK edge strobes
+  from double-counting. The inputs tolerate 5 V, and I_OFF (±2 µA) keeps an unpowered board
+  off the bus (R2). Output low means asserted (non-inverting).
+  - **Vendor matters:** TI's 74LVC14A and Nexperia's 2G17/3G17 fail the thresholds, so the
+    BOM names Nexperia.
+  - **Fallback:** 3 × Nexperia 74LVC14APW (thresholds guaranteed at 3.0–3.6 V, but I_OFF
+    unspecified). See NOTES "SCSI receivers".
 - **The MCU side is 32 GPIO in one PIO window**: 14 outputs (FET gates) + 18 inputs. RP2350 PIO
   reaches 32 consecutive GPIOs (base 0 or 16; verified 2026-09-24), so these need a planned
   layout.
@@ -97,6 +104,6 @@ Source: `_src/scsi.py`.
 
 - ~~Driver choice~~: decided 2026-09-25, FDV301N (fallback SN74LVTH125PWR).
 - Bench: gate kick from bus edges with the board off (fit the 22 pF caps if > ~0.4 V); tune the gate resistor for ringing.
-- Receiver part: 74LVC14 (hex inverter, so software inverts polarity) vs. a non-inverting
-  Schmitt buffer (e.g. 74LVC1G17 / '2G17 / '3G17); check 5 V tolerance and Ioff.
+- ~~Receiver part~~: decided 2026-09-25, Nexperia 74LVC1G17GW (fallback Nexperia 74LVC14APW).
+- Bench: sweep one receiver input slowly and confirm VT+/VT− at the real 3.3 V supply.
 - LA isolation: series resistors vs. a second buffer.

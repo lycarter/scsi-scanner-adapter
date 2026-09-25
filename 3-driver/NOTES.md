@@ -148,8 +148,10 @@ Decided with the owner on 2026-09-23:
     the scanner (§5.2.1). The often-quoted 3 m limit for fast mode is **not** in SCSI-2 rev
     10L; it comes from later standards.
 - **SE drivers (decided 2026-09-25): 14 × onsemi FDV301N discrete N-MOSFETs, open-drain on
-  every line we drive**, with the SN74LVTH125PWR as the recorded fallback. Receivers are still
-  open. See "SCSI drivers" under the front-end section.
+  every line we drive**, with the SN74LVTH125PWR as the recorded fallback. **Receivers
+  (decided 2026-09-25): 18 × Nexperia 74LVC1G17GW**, fallback 3 × Nexperia 74LVC14APW. Each
+  bus line gets its own small cluster of parts. See "SCSI drivers" and "SCSI receivers" under
+  the front-end section.
 
 ### SCSI-2 electrical facts that constrain us (rev 10L, §5)
 
@@ -322,7 +324,7 @@ the part is chosen.
 | PSRAM, APS6404L 8 MB QSPI* | 10 | 30 | JLC lists I_cc 7 mA; datasheet not yet read |
 | QSPI flash* | 5 | 25 | W25Q-class read current |
 | microSD* | 30 | 100 | SD default-speed limit (from memory); peaks during writes |
-| SE front end (placeholder) | 20 | 40 | Front end still undecided (open question 5) |
+| SE front end | 20 | 40 | Kept as margin: FET drivers and 18 × 74LVC1G17 draw < 1 mA static (I_CC ≤ 40 µA each at 125 °C, unverified exact); switching and the LA isolation (open) add a little |
 | LA header buffers* | 2 | 10 | ~20 lines × C·V·f into the Digital Discovery inputs |
 | LEDs (≈4 at 2 mA) | 6 | 10 | |
 | TCA9555 | 0 | 1 | µA-class |
@@ -711,9 +713,9 @@ All parts below are JLC **preferred** (no loading fee).
   protection absorbs. Put them right at the connector, before any series resistor.
 - SCSI capacitance budget (≤ 25 pF per signal, §5.4.1.2). §5.4 says termination is "assumed to
   be external" for these measurements, so our terminator doesn't count. Estimate with the
-  FDV301N drivers: FET C_oss ~10 pF at 2.8 V (typical curve, DS Fig. 8) + receiver ~5 pF
-  (part open) + ESD 0.3 pF + traces ~3 pF ≈ 18 pF. The LA path hangs off the receiver
-  output, not the bus. Receiver figure unverified.
+  FDV301N drivers: FET C_oss ~10 pF at 2.8 V (typical curve, DS Fig. 8) + 74LVC1G17 C_I 5 pF
+  (typ, Nexperia) + ESD 0.3 pF + traces ~3 pF ≈ 18 pF. The LA path hangs off the receiver
+  output, not the bus.
 
 ### FT232H package and crystal (decided 2026-09-24)
 
@@ -844,6 +846,47 @@ problem, or if the owner changes their mind. From TI SCBS703I:
   bus-settle/bus-free budget, and the sniffer would miss edges.
 - A hybrid, with the slow phase lines on a shift register, saves only about 4 pins.
 - Pins would only buy 4-bit SDIO, so it stays **32 dedicated pins: 14 drive + 18 sense.**
+
+### SCSI receivers (decided 2026-09-25): 18 × Nexperia 74LVC1G17GW, fallback 74LVC14APW
+
+**What SCSI-2 asks of a receiver** (§5.4.1.2): V_IL 0–0.8 V, V_IH 2.0–5.25 V, hysteresis
+≥ 0.2 V. For a Schmitt input that means **VT+ ≤ 2.0 V** (a line at 2.0 V always reads
+released), **VT− ≥ 0.8 V** (a line at 0.8 V always reads asserted), and VT+ − VT− ≥ 0.2 V. Our
+own R2 adds: no bus loading or clamping when unpowered.
+
+**Per line (×18), next to that line's FET cluster:** bus → 74LVC1G17 input; output → GPIO
+(and the LA tap, open); 100 nF on VCC; supply 3.3 V. It's non-inverting, so GPIO low means
+asserted (PIO or GPIO INOVER can flip it). The 4 receive-only lines (REQ, MSG, C/D, I/O)
+have just the receiver.
+
+**Datasheets compared (2026-09-25).** Every vendor gives guaranteed limits only at 3.0 V and
+at 3.6 or 4.5 V, never at 3.3 V.
+
+| Part (vendor, datasheet) | Limits near our 3.3 V supply | Unpowered (I_OFF) | Verdict |
+|---|---|---|---|
+| **74LVC1G17 (Nexperia Rev. 16.1)** | At 3.0 V: VT+ 1.29–1.71, VT− 0.88–1.24 (−40…125 °C). Interpolated toward the 4.5 V row: at 3.3 V ≈ VT+ ≤ 1.84, VT− ≥ 0.97 | **±2 µA, specified** | **Chosen**: meets R2; ~0.16 V threshold margin (interpolated, not guaranteed at 3.3 V) |
+| 74LVC14A (Nexperia Rev. 11; -Q100 Rev. 5 identical) | At 3.0 V **and** 3.6 V: VT+ 1.2–2.0, VT− 0.8–1.5, hysteresis 0.3–1.2 | Not specified (inputs tolerate 5.5 V; I_I only at V_CC = 3.6 V) | **Fallback**: thresholds guaranteed, R2 unverified |
+| 74LVC14A (TI SCAS285AC) | VT− min **0.6 V** at 3.0 V | Not specified (TI removed I_off from its feature list) | Rejected: fails VT− |
+| 74LVC3G17 / 2G17 (Nexperia) | VT+ max **2.2 V** at 3.0 V | ±2 µA | Rejected: fails VT+ |
+| 74LVC3G17 (TI SCES470F) | At 3.0 V: VT+ ≤ 1.87, VT− ≥ 0.84 (0.04 V margin) | ±2 µA | Rejected: marginal, low stock |
+
+**Lesson: a generic "74LVC14" or "74LVC1G17" isn't enough.** Vendors publish different
+guaranteed limits for the same part number, so the BOM must name the Nexperia MPN, and any
+substitute needs the same check.
+
+**Parts:** 74LVC1G17GW,125 (Nexperia, SOT-353), C426705, extended, $0.11, ~19k at JLC. C_I
+5 pF typ. Cost ≈ $2.00 per board, plus 18 × 100 nF.
+
+**Fallback: 3 × Nexperia 74LVC14APW** (C6066, $0.23, 2.9k; or the -Q100 version C548122,
+15.4k). It saves 15 packages and 15 caps. Polarity is inverted (GPIO high = asserted). Use it
+if placement count matters more than a specified unpowered state.
+
+**Owner's reason for B:** besides meeting R2, one cluster of parts per bus line (FET, three
+passives, 1G17, 100 nF) is a clean repeated layout that sits on its own trace by the
+connector, which keeps stubs short.
+
+**Bench check:** on the first board, sweep one input slowly and confirm VT+/VT− at our real
+3.3 V supply.
 - **Termination (decided 2026-09-24): BlueSCSI v2's logic-chip terminator, redrawn.**
   A 2.85 V LDO feeds 74LVT245s whose A inputs are tied high, and their B outputs drive
   18 × 110 Ω to the bus lines. `/OE` is the enable. Two '245s give 16 channels. BlueSCSI
@@ -929,8 +972,8 @@ problem, or if the owner changes their mind. From TI SCBS703I:
 4. ~~TERMPWR~~: decided: we supply it via an ideal diode (R2a). Part: LM66200 (U2), decided 2026-09-24.
    The owner's pin-26 measurement is now nice-to-have.
 5. SE front end: terminator decided 2026-09-24; **drivers decided 2026-09-25 (14 × FDV301N,
-   fallback SN74LVTH125PWR)**. Still open: the receiver part (74LVC14 vs. '17-class; check the
-   thresholds at 3.3 V against VIL ≤ 0.8 V / VIH ≥ 2.0 V / ≥ 0.2 V hysteresis) and LA isolation.
+   fallback SN74LVTH125PWR)**; **receivers decided 2026-09-25 (18 × Nexperia 74LVC1G17GW,
+   fallback 3 × Nexperia 74LVC14APW)**. Still open: LA isolation (series R vs. a second buffer).
    GPIO re-check done: sharing pins was rejected (see "SCSI drivers"), so it stays 32 dedicated
    pins and no pins are freed.
 6. ~~microSD vs. generic passthrough~~: decided 2026-09-24. Scanner logic lives on the host,
@@ -1026,3 +1069,4 @@ problem, or if the owner changes their mind. From TI SCBS703I:
 - 2026-09-24: Accepted: TERMPWR eFuse (second TPS259470A) replaces LM66200 U2 + polyfuse. Power diagram updated.
 - 2026-09-24: FT232H → FT232HL (LQFP; QFN out of stock). FT232H crystal = ABM8-272-T3 (one crystal part ×3). Cheaper bridges (CH347F, CH32V305, FX2LP) rejected for v1. Wrote `parts-list.md`.
 - 2026-09-25: SCSI drivers: 14 × FDV301N (open-drain on every driven line), SN74LVTH125PWR as the fallback. Pin sharing and a serial input expander were considered and rejected; it stays 32 dedicated GPIO. Corrected the capacitance budget (the terminator is excluded per §5.4).
+- 2026-09-25: SCSI receivers: 18 × Nexperia 74LVC1G17GW (I_OFF specified; thresholds guaranteed at 3.0 V, interpolated at 3.3 V). Fallback 3 × Nexperia 74LVC14APW. TI's LVC14A fails VT− and Nexperia's 2G17/3G17 fail VT+, so the BOM must pin the vendor.
