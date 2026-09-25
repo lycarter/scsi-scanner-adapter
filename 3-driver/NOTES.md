@@ -324,8 +324,8 @@ the part is chosen.
 | PSRAM, APS6404L 8 MB QSPI* | 10 | 30 | JLC lists I_cc 7 mA; datasheet not yet read |
 | QSPI flash* | 5 | 25 | W25Q-class read current |
 | microSD* | 30 | 100 | SD default-speed limit (from memory); peaks during writes |
-| SE front end | 20 | 40 | Kept as margin: FET drivers and 18 × 74LVC1G17 draw < 1 mA static (I_CC ≤ 40 µA each at 125 °C, unverified exact); switching and the LA isolation (open) add a little |
-| LA header buffers* | 2 | 10 | ~20 lines × C·V·f into the Digital Discovery inputs |
+| SE front end | 20 | 40 | Kept as margin: FET drivers and 18 × 74LVC1G17 draw < 1 mA static (I_CC ≤ 40 µA each at 125 °C, unverified exact); switching adds a little |
+| LA header drive (via 100 Ω)* | 2 | 10 | ~20 lines × C·V·f into the Digital Discovery inputs |
 | LEDs (≈4 at 2 mA) | 6 | 10 | |
 | TCA9555 | 0 | 1 | µA-class |
 | **Total** | **≈165** | **≈420** | |
@@ -887,6 +887,21 @@ connector, which keeps stubs short.
 
 **Bench check:** on the first board, sweep one input slowly and confirm VT+/VT− at our real
 3.3 V supply.
+
+**LA tap (decided 2026-09-25): one 100 Ω series resistor per receiver output**, placed at
+the 1G17 output and running to the LA header. The MCU trace comes straight off the same
+output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in total, C25076
+(basic).
+- The receivers are already Schmitt buffers at 3.3 V CMOS, so R4a needs no second buffer
+  bank. That rejects 3 extra chips.
+- A short or a mis-plugged probe at the header draws at most 3.3 V / 100 Ω = 33 mA, inside
+  the 1G17's ±50 mA absolute maximum (Nexperia Rev. 16.1). The MCU input stays valid.
+- 100 Ω plus the 1G17's roughly 20–25 Ω output resistance roughly matches a ribbon or jumper
+  lead (about 100–150 Ω, typical, not measured). That source-terminates the lead and damps
+  ringing.
+- The Digital Discovery probably has its own input protection (owner; not checked against
+  Digilent's reference manual). The resistors cost nothing either way.
+- Still to do: the header pinout matched to the Digital Discovery's 2×16 input connector.
 - **Termination (decided 2026-09-24): BlueSCSI v2's logic-chip terminator, redrawn.**
   A 2.85 V LDO feeds 74LVT245s whose A inputs are tied high, and their B outputs drive
   18 × 110 Ω to the bus lines. `/OE` is the enable. Two '245s give 16 channels. BlueSCSI
@@ -973,7 +988,7 @@ connector, which keeps stubs short.
    The owner's pin-26 measurement is now nice-to-have.
 5. SE front end: terminator decided 2026-09-24; **drivers decided 2026-09-25 (14 × FDV301N,
    fallback SN74LVTH125PWR)**; **receivers decided 2026-09-25 (18 × Nexperia 74LVC1G17GW,
-   fallback 3 × Nexperia 74LVC14APW)**. Still open: LA isolation (series R vs. a second buffer).
+   fallback 3 × Nexperia 74LVC14APW)**. **LA isolation decided 2026-09-25: 100 Ω series resistors** (see "SCSI receivers"). Question closed.
    GPIO re-check done: sharing pins was rejected (see "SCSI drivers"), so it stays 32 dedicated
    pins and no pins are freed.
 6. ~~microSD vs. generic passthrough~~: decided 2026-09-24. Scanner logic lives on the host,
@@ -1070,3 +1085,4 @@ connector, which keeps stubs short.
 - 2026-09-24: FT232H → FT232HL (LQFP; QFN out of stock). FT232H crystal = ABM8-272-T3 (one crystal part ×3). Cheaper bridges (CH347F, CH32V305, FX2LP) rejected for v1. Wrote `parts-list.md`.
 - 2026-09-25: SCSI drivers: 14 × FDV301N (open-drain on every driven line), SN74LVTH125PWR as the fallback. Pin sharing and a serial input expander were considered and rejected; it stays 32 dedicated GPIO. Corrected the capacitance budget (the terminator is excluded per §5.4).
 - 2026-09-25: SCSI receivers: 18 × Nexperia 74LVC1G17GW (I_OFF specified; thresholds guaranteed at 3.0 V, interpolated at 3.3 V). Fallback 3 × Nexperia 74LVC14APW. TI's LVC14A fails VT− and Nexperia's 2G17/3G17 fail VT+, so the BOM must pin the vendor.
+- 2026-09-25: LA tap: 100 Ω series resistor per receiver output (and on the 2 markers); no second buffer bank. Closes open question 5.

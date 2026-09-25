@@ -26,8 +26,8 @@ Source: `_src/scsi.py`.
                               | off in reset / unpowered |    +--------------------------+
                               +--------------------------+        |                   |
                                             ^ 14 x gate           |     isolation:    |
-                                            |                     |     series R or   |
-  One cluster per line:       +--------------------------+        |     2nd buffer    |
+                                            |                     |     20 x 100 ohm  |
+  One cluster per line:       +--------------------------+        |     series R      |
   FET + 3 passives +          | RP2350B PIO              | 18 in  |                   |
   1G17 + 100 nF.              | 14 out + 18 in           |<-------+                   |
   Fallbacks: 4 x LVTH125,     | = 32 GPIO, one           |                            v
@@ -46,7 +46,7 @@ Source: `_src/scsi.py`.
 - SCSI (net) → RECEIVERS (18 x 74LVC1G17)
 - RP2350B PIO → DRIVERS (14 x FDV301N): 14 x gate
 - RECEIVERS (18 x 74LVC1G17) → RP2350B PIO: 18 in
-- RECEIVERS (18 x 74LVC1G17) → LA header 2x16: isolation: series R or 2nd buffer
+- RECEIVERS (18 x 74LVC1G17) → LA header 2x16: isolation: 20 x 100 ohm series R
 - RP2350B PIO → LA header 2x16: markers
 
 </details>
@@ -90,8 +90,10 @@ Source: `_src/scsi.py`.
   reaches 32 consecutive GPIOs (base 0 or 16; verified 2026-09-24), so these need a planned
   layout.
 - **The LA header gets copies of all 18 received signals**, isolated from the MCU path by
-  series resistors or a second buffer bank (open), plus 2 firmware "marker" pins. Pinout
-  matches the Digital Discovery 2×16 input connector (R4a).
+  a 100 Ω series resistor at each 1G17 output (decided 2026-09-25), plus 2 firmware "marker"
+  pins, also through 100 Ω. The receivers are the Schmitt buffers R4a asks for, so there's
+  no second buffer bank. A shorted probe draws ≤ 33 mA, and the resistor also damps ringing on
+  the LA lead. Pinout matches the Digital Discovery 2×16 input connector (to do).
 - **Terminator (decided):** a TPS73701 at 2.80 V (fed from TERMPWR, page 1) → 3 × 74LVT245
   (inputs tied high, `/OE` = enable) → 18 × 110 Ω. A DIP switch sets it on or off, so the
   board works at the end of the chain (on) or in the middle (off).
@@ -106,4 +108,5 @@ Source: `_src/scsi.py`.
 - Bench: gate kick from bus edges with the board off (fit the 22 pF caps if > ~0.4 V); tune the gate resistor for ringing.
 - ~~Receiver part~~: decided 2026-09-25, Nexperia 74LVC1G17GW (fallback Nexperia 74LVC14APW).
 - Bench: sweep one receiver input slowly and confirm VT+/VT− at the real 3.3 V supply.
-- LA isolation: series resistors vs. a second buffer.
+- ~~LA isolation~~: decided 2026-09-25, 100 Ω series resistors.
+- LA header pinout matched to the Digital Discovery.
