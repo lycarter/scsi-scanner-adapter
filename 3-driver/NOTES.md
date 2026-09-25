@@ -147,10 +147,9 @@ Decided with the owner on 2026-09-23:
   - SE SCSI-2 allows 6 m of total bus length, counting the cable inside the G4 and inside
     the scanner (§5.2.1). The often-quoted 3 m limit for fast mode is **not** in SCSI-2 rev
     10L; it comes from later standards.
-- **SE front end (pencilled in): 74LVT family on a ~2.85 V or 3.3 V rail**, following
-  BlueSCSI v2 but with per-bit open-drain drive for real arbitration, plus ATN and RST
-  outputs. See `prior-art/bluescsi-v2.md`. **Owner follow-up:** research this choice
-  independently before we commit.
+- **SE drivers (decided 2026-09-25): 14 × onsemi FDV301N discrete N-MOSFETs, open-drain on
+  every line we drive**, with the SN74LVTH125PWR as the recorded fallback. Receivers are still
+  open. See "SCSI drivers" under the front-end section.
 
 ### SCSI-2 electrical facts that constrain us (rev 10L, §5)
 
@@ -710,8 +709,11 @@ All parts below are JLC **preferred** (no loading fee).
 - Clamping voltages (10–25 V) are well above what the protected chips tolerate for DC. That's
   normal for ESD parts: they cut a kV-level pulse down to a level the chip's own ~2 kV HBM
   protection absorbs. Put them right at the connector, before any series resistor.
-- Unverified: the SCSI capacitance budget depends on the front-end chips (undecided). Roughly:
-  transceiver ~5–8 pF + LA buffer ~3–5 pF + terminator output ~5 pF + ESD 0.3 pF + traces ≈ 15–20 pF.
+- SCSI capacitance budget (≤ 25 pF per signal, §5.4.1.2). §5.4 says termination is "assumed to
+  be external" for these measurements, so our terminator doesn't count. Estimate with the
+  FDV301N drivers: FET C_oss ~10 pF at 2.8 V (typical curve, DS Fig. 8) + receiver ~5 pF
+  (part open) + ESD 0.3 pF + traces ~3 pF ≈ 18 pF. The LA path hangs off the receiver
+  output, not the bus. Receiver figure unverified.
 
 ### FT232H package and crystal (decided 2026-09-24)
 
@@ -736,7 +738,112 @@ All parts below are JLC **preferred** (no loading fee).
   PiSCSI. It runs on 5 V and needs level care toward the 3.3 V MCU.
 - Alternative: MOSFET/open-drain drivers plus Schmitt receivers (74LVC14 class). Study the
   ZuluSCSI and BlueSCSI schematics before choosing; check their licenses before reusing
-  anything.
+  anything. **Chosen for the drivers on 2026-09-25 (below).**
+
+### SCSI drivers (decided 2026-09-25): 14 × FDV301N, fallback SN74LVTH125PWR
+
+**What SCSI-2 asks of a driver** (rev 10L, read 2026-09-25):
+- Asserting a line (§5.4.1.1): V_OL 0–0.5 V while sinking 48 mA, at our connector.
+- Negating a line: V_OH 2.5–5.25 V. With open-drain drivers **we never drive it.** The
+  terminators hold released lines at ≥ 2.5 V (§5.4.1(b)(4)). There's no high-side current spec.
+- Released line (§5.4.1.2): I_IH 0–0.1 mA at 2.7 V, I_IL 0 to −0.4 mA at 0.5 V, ≤ 25 pF. SCSI-2
+  *recommends* meeting I_IL/I_IH when powered off too.
+- **Open-drain everywhere.** §5.6.2 requires BSY, SEL and RST to be OR-tied and allows either
+  kind on the other lines. But in arbitration (Table 6, "S ID"; §5.7 note 20) a device may
+  assert only its own ID bit, must release the other seven, and must never drive DB(P) false.
+  BlueSCSI's whole-bus push-pull '245 with one `DIR` pin can't do that. Open-drain on all 14
+  lines uses one GPIO per line and makes bus fights impossible. The only cost is a slower
+  rising edge (terminator into cable capacitance), which doesn't matter at our speeds.
+
+**Circuit, per line (×14: DB0–7, DBP, ATN, ACK, SEL, BSY, RST):**
+
+```
+RP2350 GPIO ──100 Ω──┬── G  FDV301N  D ──── bus line (connector, ESD, terminator, receiver)
+                     │               S ──── GND
+                   10 kΩ ─ GND
+                   22 pF ─ GND  (DNP)
+```
+
+GPIO high = line asserted. We never drive REQ, MSG, C/D or I/O (Table 6: target-only), so
+those 4 have receivers only.
+
+**FDV301N (C15310)**: onsemi SOT-23, extended, $0.037, ~495k at JLC (2026-09-25). Checked
+against its datasheet:
+- V_GS(th) 0.70–1.06 V. R_DS(on) ≤ 5 Ω at V_GS = 2.7 V at 25 °C, and ≤ 9 Ω at T_J = 125 °C
+  (I_D = 0.2 A). So **V_OL ≤ 0.24 V at 48 mA (25 °C) and ≤ 0.43 V at 125 °C**, inside
+  SCSI-2's 0.5 V. The LVTH125 only guarantees 0.55 V at 48 mA.
+- I_DSS ≤ 1 µA (10 µA at 55 °C). Released and unpowered, it leaks far less than the LVTH's
+  ±100 µA I_off, which sits exactly at the 0.1 mA I_IH limit.
+- No supply pin, so there's no power sequencing. The body diode (source = GND) only conducts
+  if the bus goes below about −0.6 V.
+- C_oss is 6 pF at 10 V but about 10 pF at 2.8 V (typical curve, Fig. 8). That's about 3.5 pF
+  more than the LVTH125 (6.5 pF typ). Budget ≈ 18 of 25 pF (see ESD section).
+
+**Safe at power-up, and a known weak spot:**
+- RP2350 GPIOs reset with the pull-down on and the pad isolated (datasheet Table 853:
+  PDE = 1, ISO = 1, IE = 0). That holds the gates low, so the lines stay released during
+  reset and boot. The 10 kΩ pull-down keeps them low when the board is off. With the LVTH
+  it's the other way round: the same reset pull-down pulls `/OE` low, which *enables* the
+  drivers, so external pull-ups would have to overpower it.
+- Weak spot, inferred from typical curves: a rising bus edge couples through C_rss
+  (~2.5 pF at 2.8 V) into a gate held only by the resistor (board off, or MCU in reset). The
+  kick is ~2.8 V × 2.5/11 ≈ 0.6 V, close to the 0.70 V minimum V_th, and V_th drops about
+  2.1 mV/°C when hot. The DNP 22 pF cap cuts it to about 0.2 V. **Bench check:** watch a
+  gate on the scope with the board off while the G4 drives the bus. Fit the caps if the kick
+  exceeds ~0.4 V.
+- The 100 Ω gate resistor limits ringing and edge rate. It can be swapped for 0 Ω or a larger
+  value to tune slew on the bench.
+
+**Cost and area per board, 2026-09-25:**
+
+| Option | Parts | Cost (10+) | Rough area |
+|---|---|---|---|
+| **14 × FDV301N (chosen)** | 14 SOT-23 + 14 × 10 kΩ + 14 × 100 Ω + 14 DNP 22 pF | ≈ $0.55 | ≈ 170–230 mm² |
+| 4 × SN74LVTH125PWR (fallback) | 4 TSSOP-14 + 4 × 100 nF + 14 pull-ups | ≈ $2.05 | ≈ 180 mm² |
+| 7 × DMN2004DWK-7 (dual, C156343) | 7 SOT-363 + the same passives | ≈ $1.10 | ≈ 100 mm² |
+
+- One extended part either way, so the loading fee is the same.
+- Discretes can sit right on each bus trace by the connector, which keeps stubs short.
+- The dual DMN2004DWK wasn't checked: its C_oss at low V_DS is unverified, and it has only
+  5.2k in stock.
+
+**Fallback: SN74LVTH125PWR (C7042)**, TSSOP-14, extended, $0.50 at 10+, ~3.0k at JLC. With
+A = GND and `/OE` = GPIO, it's the same open-drain logic with inverted polarity (GPIO
+low = asserted). Switch to it if the routing gets hairy, if per-placement cost becomes a
+problem, or if the owner changes their mind. From TI SCBS703I:
+- V_OL ≤ 0.55 V at 48 mA, a 50 mV miss of the letter of SCSI-2. The real load is two
+  2.80 V/110 Ω terminators, about 42 mA at 0.5 V.
+- I_off ±100 µA. Power-up 3-state is **specified**: I_OZPU/I_OZPD ±50 µA below V_CC 1.5 V.
+- C_o 6.5 pF. Rated 64 mA on every output at once, so about 180 mA through one package is
+  fine (inferred; there's no per-GND-pin figure).
+- Needs a pull-up on each `/OE` strong enough to beat the RP2350's reset pull-down (e.g.
+  10 kΩ), and a 100 nF cap per package. Run it from 3.3 V.
+- Prefer it over the SN74LVT125PWR (C2675577): the plain LVT's datasheet (SCBS133F) doesn't
+  specify power-up 3-state and has 8 pF C_o, for about $0.18 more.
+
+**Rejected:**
+- **2N7002:** V_th up to 2.5 V, so it isn't guaranteed to turn on from 3.3 V.
+- **2SK3018:** 13 Ω at 2.5 V.
+- **AO3400-class logic FETs:** C_oss around 100 pF.
+- **FDV301N clone C20069151:** "preferred" tier, but only 9.5k in stock and the datasheet
+  language is unknown.
+- **74LS641-1:** 5 V TTL, needs level shifting.
+- **74LVC07-class open-drain buffers:** only 24 mA I_OL.
+
+**GPIO sharing and serial inputs (considered and rejected on 2026-09-25):**
+- The RP2350 *can* change pin direction every cycle (PIO `set`/`out`/`mov pindirs`, side-set
+  pindirs). The obstacle is outside the chip. A receiver output is always driving, so on a
+  shared net it either fights the GPIO or, with the GPIO as input, drives the FET gate. That
+  makes a loop from bus to receiver to gate: an inverting receiver latches the line asserted,
+  and a non-inverting one oscillates.
+- Breaking the loop needs output-enabled receivers plus a mode pin, as BlueSCSI does with its
+  role signal. That saves about 8 pins, but it breaks arbitration (drive our ID bit while
+  reading the other seven) and listen-only mode (all 18 receivers on).
+- A shift-register input expander is too slow in *latency*. An 18-bit shift at ~50 MHz is
+  ~360 ns, which is longer than a ~330 ns byte cycle at 3 MB/s, eats into the 400/800 ns
+  bus-settle/bus-free budget, and the sniffer would miss edges.
+- A hybrid, with the slow phase lines on a shift register, saves only about 4 pins.
+- Pins would only buy 4-bit SDIO, so it stays **32 dedicated pins: 14 drive + 18 sense.**
 - **Termination (decided 2026-09-24): BlueSCSI v2's logic-chip terminator, redrawn.**
   A 2.85 V LDO feeds 74LVT245s whose A inputs are tied high, and their B outputs drive
   18 × 110 Ω to the bus lines. `/OE` is the enable. Two '245s give 16 channels. BlueSCSI
@@ -821,8 +928,11 @@ All parts below are JLC **preferred** (no loading fee).
    off.
 4. ~~TERMPWR~~: decided: we supply it via an ideal diode (R2a). Part: LM66200 (U2), decided 2026-09-24.
    The owner's pin-26 measurement is now nice-to-have.
-5. SE front end: 74LVT pencilled in, pending the owner's independent research. **When this is
-   decided, re-check the GPIO budget: any freed pins go to 4-bit SDIO first.** Terminator part of it decided 2026-09-24 (see front-end section).
+5. SE front end: terminator decided 2026-09-24; **drivers decided 2026-09-25 (14 × FDV301N,
+   fallback SN74LVTH125PWR)**. Still open: the receiver part (74LVC14 vs. '17-class; check the
+   thresholds at 3.3 V against VIL ≤ 0.8 V / VIH ≥ 2.0 V / ≥ 0.2 V hysteresis) and LA isolation.
+   GPIO re-check done: sharing pins was rejected (see "SCSI drivers"), so it stays 32 dedicated
+   pins and no pins are freed.
 6. ~~microSD vs. generic passthrough~~: decided 2026-09-24. Scanner logic lives on the host,
    always. The firmware is a generic passthrough, and microSD is for **spill only** (option A).
    Fallback (B), purely additive firmware: a script runner that executes a list of CDBs
@@ -915,3 +1025,4 @@ All parts below are JLC **preferred** (no loading fee).
 - 2026-09-24: 4-layer board; layout is the owner's hand pass after the schematic. Connectors: USB-C footprint HRO TYPE-C-31-M-12 (owner's part), IDC50 keyed box header C30006, HD50 generic footprint (not stocked), microSD C393941. ESD: discrete preferred diodes (no rail pin). TERMPWR: proposed second TPS259470A instead of LM66200 U2 + polyfuse.
 - 2026-09-24: Accepted: TERMPWR eFuse (second TPS259470A) replaces LM66200 U2 + polyfuse. Power diagram updated.
 - 2026-09-24: FT232H → FT232HL (LQFP; QFN out of stock). FT232H crystal = ABM8-272-T3 (one crystal part ×3). Cheaper bridges (CH347F, CH32V305, FX2LP) rejected for v1. Wrote `parts-list.md`.
+- 2026-09-25: SCSI drivers: 14 × FDV301N (open-drain on every driven line), SN74LVTH125PWR as the fallback. Pin sharing and a serial input expander were considered and rejected; it stays 32 dedicated GPIO. Corrected the capacitance budget (the terminator is excluded per §5.4).

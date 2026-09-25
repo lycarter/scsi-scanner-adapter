@@ -23,7 +23,7 @@ Status: **proposed** (awaiting owner), **accepted**, **superseded**.
 | 2026-09-23 | 3 | MCU is the RP2350B (48 GPIO) | accepted |
 | 2026-09-23 | 3 | microSD slot (SDIO), for spill-over and for standalone scan development | accepted |
 | 2026-09-23 | 3 | Supply TERMPWR (required of initiators by SCSI-2 §5.4.3: 4.25–5.25 V, ≥900 mA) through an ideal diode, polyfuse and jumper | accepted |
-| 2026-09-23 | 3 | SE front end: 74LVT family with per-bit open-drain data, following BlueSCSI v2 | proposed (owner researching) |
+| 2026-09-23 | 3 | SE front end: 74LVT family with per-bit open-drain data, following BlueSCSI v2 | superseded (drivers: FDV301N, 2026-09-25) |
 | 2026-09-23 | 3 | Hardware redrawn from scratch and kept MIT; BlueSCSI (CERN-OHL-S) and ZuluSCSI/BlueSCSI firmware (GPL-3) are reference only | accepted |
 | 2026-09-23 | 3 | TERMPWR enable is hardware logic (CC ≥1.5 A OR bench present) with a status LED; no MCU pin | accepted |
 | 2026-09-24 | 3 | USB 2.0 hub chip behind the USB-C: FT232H (HS data) + RP2350 native USB (FS: ROM-bootloader updates, CDC console replacing the debug UART) | accepted |
@@ -54,3 +54,4 @@ Status: **proposed** (awaiting owner), **accepted**, **superseded**.
 | 2026-09-24 | 3 | TERMPWR: second TPS259470A eFuse (≈1.2 A limit, OVLO as active-low enable) replaces LM66200 U2 + polyfuse. A PTC can't hold 0.9 A and trip ≤1.5 A | accepted |
 | 2026-09-24 | 3 | FT232H package: FT232HL (LQFP-48, C51997, $9.36); the QFN is out of stock. Cheaper bridges rejected for v1: CH347F (UART too slow, driver), CH32V305 (second firmware; v2 cost-down candidate), FX2LP | accepted |
 | 2026-09-24 | 3 | FT232H crystal: ABM8-272-T3 + 2 × 15 pF, so the board has one crystal part (×3). FTDI's ±30 ppm note is stricter than USB HS needs | accepted |
+| 2026-09-25 | 3 | SCSI drivers: 14 × onsemi FDV301N (C15310), open-drain on every driven line (GPIO → 100 Ω → gate, 10 kΩ pull-down, DNP 22 pF). Meets V_OL ≤ 0.5 V at 48 mA hot; the RP2350's reset pull-downs keep them off. Fallback: 4 × SN74LVTH125PWR (C7042) if routing, placement cost or preference changes. Pin sharing and a serial input expander rejected: stays 32 dedicated GPIO | accepted |
