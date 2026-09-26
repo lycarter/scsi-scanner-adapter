@@ -1,6 +1,6 @@
 """Regenerate the diagrams in ../*.md from the page sources in this folder.
 
-Run from anywhere: python3 3-driver/blocks/_src/build.py
+Run from anywhere: python3 design_docs/3-driver/blocks/_src/build.py
 Each page source (e.g. usb.py) builds a Diagram named D. Its art and connection list
 replace the generated block between the BEGIN/END markers in the matching .md.
 """

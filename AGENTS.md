@@ -46,7 +46,7 @@ questions, and log. **Read only the phase you're working on**, plus these shared
 - `docs/sources.md`: where each `reference/` item came from, for rebuilding the folder. Add a
   row whenever you add a file there.
 
-Block diagrams are ASCII, generated from Python sources (see `3-driver/blocks/_src/`). To
+Block diagrams are ASCII, generated from Python sources (see `design_docs/3-driver/blocks/_src/`). To
 understand one, read its source or the generated connection list, not the art. To change
 one, edit the source and rerun `build.py`.
 
@@ -65,7 +65,7 @@ When you learn something durable, update the matching file. Put facts in
   stored as xattrs (`file/..namedfork/rsrc`). The data fork is 0 bytes. Copying or zipping
   with ordinary tools, or committing to git, silently strips these forks.
 - Scanned PDFs need page rendering. PyMuPDF (`pip install pymupdf`) or poppler works.
-- Treat firmware as read-only. Put analysis output under `2-reverse-engineering/`, never in
+- Treat firmware as read-only. Put analysis output under `design_docs/2-reverse-engineering/`, never in
   `reference/`.
 
 ## Safety notes

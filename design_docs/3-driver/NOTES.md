@@ -3,7 +3,7 @@
 Goal: a board that plugs into a modern computer over USB-C and acts as the SCSI
 **initiator** for the D4000. It also serves as the **bus snooper**. The separate snooper PCB
 was dropped on 2026-09-23: the G4, the scanner and this board share one multi-initiator
-chain (see `1-bus-capture/NOTES.md` for the topology).
+chain (see `design_docs/1-bus-capture/NOTES.md` for the topology).
 
 ## Requirements (draft)
 
@@ -33,7 +33,7 @@ chain (see `1-bus-capture/NOTES.md` for the topology).
   Windows. That means vendor-class bulk with WinUSB/MS OS 2.0 descriptors, or CDC/NCM.
   (Still the requirement, owner 2026-09-26. The FT232H path uses FTDI's own Windows Update
   driver on Windows and, preferably, Apple's built-in serial driver on macOS; a bench test
-  decides the macOS path, see `4-software/NOTES.md` and design review R052/R053.)
+  decides the macOS path, see `design_docs/4-software/NOTES.md` and design review R052/R053.)
 - R6: Firmware updates over USB without special hardware. SWD for debugging (Tag-Connect TC2030 pads, decided 2026-09-25).
 - R7: Everything JLC-assemblable from LCSC stock where possible.
 - R8: **5 V power from USB-C.** Typical hosts are computers that offer 5 V at 1.5 A, maybe
@@ -105,7 +105,7 @@ Parts list for the schematic: `parts-list.md` (the reasoning stays here).
 
 Diagrams: `blocks/0-overview.md`, `1-power.md`, `2-scsi-frontend.md`, `3-mcu-support.md`,
 `4-usb.md`, `5-rp2350-pinout.md` (the pin map, drawn with `chip45()`). Each is generated from a page source in `blocks/_src/` (named boxes and links)
-by `python3 3-driver/blocks/_src/build.py`. The build checks the layout (no overlaps, wires
+by `python3 design_docs/3-driver/blocks/_src/build.py`. The build checks the layout (no overlaps, wires
 touch the boxes they name) and writes a connection list under each diagram. To learn what a
 diagram says, read its source or that list rather than the art.
 

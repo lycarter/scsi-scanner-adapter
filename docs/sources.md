@@ -14,7 +14,7 @@ re-download them. The rule is:
 
 - **Anything we rely on gets written into our own notes**, with a citation to the file and
   section it came from. D4000 facts go in `scanner-facts.md`. Phase-specific findings go in
-  that phase's `NOTES.md`. Firmware analysis output goes under `2-reverse-engineering/`.
+  that phase's `NOTES.md`. Firmware analysis output goes under `design_docs/2-reverse-engineering/`.
 - Assume a reader of the repo doesn't have the originals. A citation says where a fact came
   from; the note has to carry the fact itself.
 - The firmware archives are listed below by SHA-256 so that a copy found later can be
