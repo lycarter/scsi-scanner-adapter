@@ -51,7 +51,7 @@ Two layers:
   between the serial node, root, and a custom PID.
 - **Firmware rules from the Phase 3 design review (2026-09-26):** bus-release deadlines, SRAM-resident
   code, no flash writes during a SCSI session, FT1248 mode check, TERMPWR checks, sniffer modes.
-  They live in `3-driver/NOTES.md`, "Firmware rules from the design review", next to the PIO sketch.
+  They live in `design_docs/3-driver/NOTES.md`, "Firmware rules from the design review", next to the PIO sketch.
 - The host library should be cross-platform, e.g. Python for exploration and Rust or C
   later if needed. Consider **SANE backend** compatibility so existing frontends (and
   VueScan-style workflows) could work.

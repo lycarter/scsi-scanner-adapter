@@ -38,7 +38,7 @@ Where each item came from, and how to rebuild the folder, is in `sources.md`.
 
 | Path | What | Notes |
 |---|---|---|
-| `BlueSCSI-v2/` | Shallow clone of github.com/BlueSCSI/BlueSCSI-v2 @ `92db68f` (2026-08-22) | KiCad hardware (CERN-OHL-S v2) and RP2040/RP2350 firmware (GPL-3), including initiator mode and SDIO. Analysis: `3-driver/prior-art/bluescsi-v2.md` |
+| `BlueSCSI-v2/` | Shallow clone of github.com/BlueSCSI/BlueSCSI-v2 @ `92db68f` (2026-08-22) | KiCad hardware (CERN-OHL-S v2) and RP2040/RP2350 firmware (GPL-3), including initiator mode and SDIO. Analysis: `design_docs/3-driver/prior-art/bluescsi-v2.md` |
 | `BlueSCSI-v2_Desktop_50_Pin_schematic.pdf`, `…_netlist.xml` | Exported with `kicad-cli` 9.0 | The quickest way to read the front end |
 
 ## Datasheets (`reference/datasheets/`)

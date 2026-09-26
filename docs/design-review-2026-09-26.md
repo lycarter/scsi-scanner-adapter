@@ -22,8 +22,8 @@ and 4 are covered where they affect the board.
 - **Low:** doc issue or nice-to-have.
 - **Info:** checked and OK (logged so the check isn't repeated).
 
-There's no schematic yet. The review checks `3-driver/NOTES.md`, `3-driver/blocks/`,
-`3-driver/parts-list.md` and the other phase notes, against the datasheets in
+There's no schematic yet. The review checks `design_docs/3-driver/NOTES.md`, `design_docs/3-driver/blocks/`,
+`design_docs/3-driver/parts-list.md` and the other phase notes, against the datasheets in
 `reference/datasheets/` and SCSI-2 rev 10L.
 
 ## Summary
@@ -168,11 +168,11 @@ The answers to the follow-up questions, and the resolutions that follow from the
 - **R013:** the protocol-mode sniffer must also trace DATA phases (per-handshake records).
 - **Still undecided, no schematic impact:** R102, R105, R113 (firmware notes), R109, R110 (Phase 1 docs).
 
-**Applied (2026-09-26).** All approved fixes are now in `3-driver/NOTES.md` (sections updated in
+**Applied (2026-09-26).** All approved fixes are now in `design_docs/3-driver/NOTES.md` (sections updated in
 place, a new "Power mux" section, and "Firmware rules from the design review" after the PIO
-sketch), `3-driver/parts-list.md` (rewritten), the block pages and diagram sources (rebuilt),
-`3-driver/USAGE.md` (power, first programming, bring-up checks), `docs/decisions.md` and
-`4-software/NOTES.md`. Values chosen while applying them (all from JLC's no-fee range):
+sketch), `design_docs/3-driver/parts-list.md` (rewritten), the block pages and diagram sources (rebuilt),
+`design_docs/3-driver/USAGE.md` (power, first programming, bring-up checks), `docs/decisions.md` and
+`design_docs/4-software/NOTES.md`. Values chosen while applying them (all from JLC's no-fee range):
 bench string 510 k / (39 k + 3.9 k) / (150 k + 10 k), OVLO 5.35 V (5.14–5.59 V); terminator
 divider (39 k + 5.6 k) / 33 k = 2.831 V; OVLO divider 56 k / 47 k; LDO EN 100 k / 75 k; PR1
 100 k / 39 k; ADC divider 100 k / 100 k; CJ431 bias 470 Ω (430 Ω isn't no-fee); bench ILIM 1.5 k
@@ -564,7 +564,7 @@ Walk-through, USB-C to a Mac or a Windows PC:
 - **Owner comment:** we talked about this in another thread and I think it's fine.
 
 ### R053 [Question] Host: which OS gets the "driverless" FT232H path, and is R5 still the requirement as written?
-- **Evidence:** R5 (NOTES Requirements) says "no custom kernel drivers on macOS, Linux or Windows. That means vendor-class bulk with WinUSB/MS OS 2.0 descriptors, or CDC/NCM." The FT232H provides neither: its descriptors are fixed (no BOS/MS OS 2.0), and on Windows it relies on FTDI's own kernel driver (ftdibus.sys), which `4-software/NOTES.md` already accepted because it installs from Windows Update. So R5 is already relaxed in practice on Windows, and the previous finding shows macOS needs a decision too.
+- **Evidence:** R5 (NOTES Requirements) says "no custom kernel drivers on macOS, Linux or Windows. That means vendor-class bulk with WinUSB/MS OS 2.0 descriptors, or CDC/NCM." The FT232H provides neither: its descriptors are fixed (no BOS/MS OS 2.0), and on Windows it relies on FTDI's own kernel driver (ftdibus.sys), which `design_docs/4-software/NOTES.md` already accepted because it installs from Windows Update. So R5 is already relaxed in practice on Windows, and the previous finding shows macOS needs a decision too.
 - **Question:** (a) Update R5 to "no *user-installed* drivers: FTDI's Windows Update driver is OK", and (b) pick one macOS path: Apple serial node (test early), root, or a custom PID with a Windows-side cost. A bench test of option 1 on the first board (or on any FT232H module in FIFO mode now, for ~$15) would settle it cheaply.
 - **Confidence:** n/a (owner's call).
 - **Owner decision:** approved (2026-09-26)
@@ -924,7 +924,7 @@ Walk-through, USB-C to a Mac or a Windows PC:
 - **Confidence:** high.
 
 ### R099 [Low] Power: doc slips found while checking
-- **Evidence:** `3-driver/blocks/1-power.md` Description still says "through a **2.85 V** regulator" (decided 2.80 V). NOTES "Ideal diodes" says LM66200 ON thresholds "aren't in the datasheet" (they are: V_ON 0.8/1.0/1.2 V, SLVSG04 §6.5). NOTES "CC detection" says CJ431 = 2.495 V / ±0.5 % incl. ±0.8 % tempco (see the CJ431 entry). NOTES "Resistor values" TERMPWR I_LIM spread 1.06–1.39 A (datasheet row gives 1.02–1.41 A). NOTES "TERMPWR switch and current limit" earlier text "R_ON 28 mΩ": that's 25 °C typ at 12 V/3 A; the max over temperature is 45 mΩ (§6.5).
+- **Evidence:** `design_docs/3-driver/blocks/1-power.md` Description still says "through a **2.85 V** regulator" (decided 2.80 V). NOTES "Ideal diodes" says LM66200 ON thresholds "aren't in the datasheet" (they are: V_ON 0.8/1.0/1.2 V, SLVSG04 §6.5). NOTES "CC detection" says CJ431 = 2.495 V / ±0.5 % incl. ±0.8 % tempco (see the CJ431 entry). NOTES "Resistor values" TERMPWR I_LIM spread 1.06–1.39 A (datasheet row gives 1.02–1.41 A). NOTES "TERMPWR switch and current limit" earlier text "R_ON 28 mΩ": that's 25 °C typ at 12 V/3 A; the max over temperature is 45 mΩ (§6.5).
 - **Fix:** Correct when next editing those sections.
 - **Confidence:** high.
 - **Owner decision:** approved (2026-09-26)
@@ -973,7 +973,7 @@ Walk-through, USB-C to a Mac or a Windows PC:
   - The two-SM scheme (sniff raises IRQ 0; stamp pushes into its own FIFO) can **desync**. If stamp's FIFO is full or it is still busy when the next IRQ comes, one stream drops a word and every later state/time pair is misaligned. The NOTES already mark it unverified.
 - **Impact:** R4 "long-capture protocol sniffer" isn't met by the sketch. It works for short edge-level bursts (commands, status, messages, the start of a data phase).
 - **Fix:** two modes.
-  1. **Protocol mode** for long captures, as `1-bus-capture/NOTES.md` already describes: one record per REQ/ACK handshake (byte + parity + phase bits + coarse time), sampled on REQ (DATA IN) or ACK (DATA OUT), with per-phase counts, the first N bytes and a checksum. About 4 B per handshake, so 6 MB/s at 1.5 MB/s. That fits FT1248 and PSRAM, and FS USB once data phases are summarised.
+  1. **Protocol mode** for long captures, as `design_docs/1-bus-capture/NOTES.md` already describes: one record per REQ/ACK handshake (byte + parity + phase bits + coarse time), sampled on REQ (DATA IN) or ACK (DATA OUT), with per-phase counts, the first N bytes and a checksum. About 4 B per handshake, so 6 MB/s at 1.5 MB/s. That fits FT1248 and PSRAM, and FS USB once data phases are summarised.
   2. **Edge mode** into SRAM/PSRAM for short triggered windows.
 
   Put the time and the state in **one** SM's words (e.g. 18 state bits + a 14-bit delta count in one push) so the streams can't desync.
@@ -1021,7 +1021,7 @@ Walk-through, USB-C to a Mac or a Windows PC:
 - **Owner decision:** approved (2026-09-26)
 
 ### R109 [Low] Phase1: "total bus length ≤ 3 m" contradicts Phase 3's reading of SCSI-2 rev 10L
-- **Evidence:** `1-bus-capture/NOTES.md` cabling plan: "Total bus length should stay ≤ 3 m. That's the SE limit once sync above 5 MB/s is negotiated." SCSI-2 rev 10L §5.2.1: "The maximum cumulative cable length shall be 6,0 m" for SE, with no fast-mode exception there. Phase 3 NOTES already says the 3 m figure "is not in SCSI-2 rev 10L; it comes from later standards" (SPI's Fast-20 limits of 3 m / 1.5 m). The AHA-2930CU can do Fast-20, but the WD33C93A caps negotiation at ≤ 10 MB/s, so Fast-20 won't happen on this chain.
+- **Evidence:** `design_docs/1-bus-capture/NOTES.md` cabling plan: "Total bus length should stay ≤ 3 m. That's the SE limit once sync above 5 MB/s is negotiated." SCSI-2 rev 10L §5.2.1: "The maximum cumulative cable length shall be 6,0 m" for SE, with no fast-mode exception there. Phase 3 NOTES already says the 3 m figure "is not in SCSI-2 rev 10L; it comes from later standards" (SPI's Fast-20 limits of 3 m / 1.5 m). The AHA-2930CU can do Fast-20, but the WD33C93A caps negotiation at ≤ 10 MB/s, so Fast-20 won't happen on this chain.
 - **Impact:** none electrically; ≤ 3 m is a conservative target. Just two notes disagree.
 - **Fix:** reword Phase 1 to "SCSI-2 allows 6 m SE; keep ≤ 3 m as margin (Fast-20 rules from SPI don't apply because the WD33C93A can't do Fast-20)".
 - **Confidence:** high.
