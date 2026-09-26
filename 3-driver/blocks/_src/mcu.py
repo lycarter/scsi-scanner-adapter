@@ -13,9 +13,9 @@ D.box('sd', 70, 14, 20, 5, "microSD socket", "1-bit SDIO, PIO2", "CD: expander")
 D.box('usb', 70, 20, 20, 5, "USB hub port 2", "(p.4): updates,", "CDC console")
 budget = [("SCSI front end (p.2), PIO0", "32"), ("FT232H FT1248 4-bit, PIO1", "7"),
           ("microSD 1-bit SDIO, PIO2", "3"), ("PSRAM CS1 (GPIO 47)", "1"),
-          ("I2C to TCA9555 expander", "2"), ("LA markers", "2")]
-D.box('gpio', 26, 27, 40, 10, "Other GPIO users (see NOTES budget):",
-      *[f"{k:<30}{v:>5}" for k, v in budget], "TOTAL 47 of 48 (1 spare)", name="Other GPIO users")
+          ("I2C to TCA9555 expander", "2"), ("LA markers", "2"), ("TERMPWR ADC (GPIO 46)", "1")]
+D.box('gpio', 26, 27, 40, 11, "Other GPIO users (see NOTES budget):",
+      *[f"{k:<30}{v:>5}" for k, v in budget], "TOTAL 48 of 48 (none spare)", name="Other GPIO users")
 
 D.link('xtal', 'rp', [(26, 4), (31, 4)])
 D.link('swd', 'rp', [(26, 9), (31, 9)], arrow='<>')

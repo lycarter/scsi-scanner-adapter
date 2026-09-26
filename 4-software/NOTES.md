@@ -33,6 +33,25 @@ Two layers:
   scanner knowledge lives in host software, where it's easy to iterate on. The firmware stays
   dumb and generic. It's the same split as Linux `sg` / ASPI, and it means the board could
   also drive other SCSI devices.
+- **macOS data path: Apple's serial node is an option (2026-09-26, decide on hardware).** Apple's
+  built-in DriverKit FTDI driver (`com.apple.DriverKit-AppleUSBFTDI`) binds 0403:6014, so D2XX
+  and libusb may need root. Instead, the host tool could open `/dev/cu.usbserial-*` raw and use
+  it as the byte pipe. Read from the driver code on macOS 26 (Darwin 25.6), not tested:
+  - The data path doesn't care about the chip mode; it strips 2 status bytes per packet.
+  - It keeps only one 512 B read in flight, so throughput vs. R3's 1.5 MB/s is unknown. The
+    guess is 3–10 MB/s before the tty layer. A slow host costs speed, not data (flow control).
+  - The latency timer is set with `ioctl(IOSSDATALAT)`; firmware can also send the FT1248
+    flush command (0x4) after short replies.
+  - The driver opens the interface only while the tty is open, so unprivileged pyftdi might
+    work when the port is closed. That's unverified.
+  - FTDI's own VCP dext may also be installed and compete for the chip.
+
+  Details: `docs/design-review-2026-09-26.md` R052. **Bench test when hardware exists:** measure
+  `/dev/cu.*` throughput, and try pyftdi without sudo while the port is closed. Then choose
+  between the serial node, root, and a custom PID.
+- **Firmware rules from the Phase 3 design review (2026-09-26):** bus-release deadlines, SRAM-resident
+  code, no flash writes during a SCSI session, FT1248 mode check, TERMPWR checks, sniffer modes.
+  They live in `3-driver/NOTES.md`, "Firmware rules from the design review", next to the PIO sketch.
 - The host library should be cross-platform, e.g. Python for exploration and Rust or C
   later if needed. Consider **SANE backend** compatibility so existing frontends (and
   VueScan-style workflows) could work.
@@ -51,3 +70,4 @@ Two layers:
 - 2026-09-23: Placeholder created.
 - 2026-09-24: Passthrough accepted. Protocol notes: self-contained command messages (replayable), with data-in allowed after the command completes.
 - 2026-09-24: Host OSes macOS + Windows; UI = web UI served by the host tool.
+- 2026-09-26: macOS data path via Apple's serial node recorded as an option (driver read from code, untested); decide after a bench test.

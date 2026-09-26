@@ -39,7 +39,8 @@ Status: draft, 2026-09-24. Source: `_src/mcu.py`.
                           | PSRAM CS1 (GPIO 47)               1  |
                           | I2C to TCA9555 expander           2  |
                           | LA markers                        2  |
-                          | TOTAL 47 of 48 (1 spare)             |
+                          | TERMPWR ADC (GPIO 46)             1  |
+                          | TOTAL 48 of 48 (none spare)          |
                           +--------------------------------------+
 ```
 
@@ -69,9 +70,13 @@ Status: draft, 2026-09-24. Source: `_src/mcu.py`.
 - **Core power:** the RP2350's on-chip 1.1 V switching regulator needs an external inductor
   (Abracon AOTA-B201610S3R3-101-T, polarity-marked) and caps. It's shown here because it's
   layout-sensitive.
+  Four 4.7 µF caps: CIN, COUT, the VREG_AVDD filter, and a second one on DVDD at pin 32 (bottom
+  edge, away from LX), as datasheet §6.3.8.1 recommends. The package's only ground is the
+  exposed pad (EP, "pin 81"): via array, with VREG_PGND and the CIN return going straight into it.
 - **QSPI bus:** program flash (W25Q128JVSIQ, 16 MB) on chip-select 0 (dedicated) and **8 MB
   PSRAM** (APS6404L-3SQR-SN) on chip-select 1 = GPIO 47,
-  which costs one GPIO. The QMI CS1n function exists only on GPIO 0, 8, 19 or 47 (verified in
+  which costs one GPIO. CS1 has a **3.3 kΩ** pull-up (10 kΩ didn't guarantee the PSRAM's VIH against
+  the RP2350's reset pull-down). The QMI CS1n function exists only on GPIO 0, 8, 19 or 47 (verified in
   the RP2350 datasheet GPIO function table, 2026-09-24). The PSRAM is the stall buffer between
   SCSI and the host.
   - Variant to consider: the RP2354B has flash inside the package (unverified size), which would
@@ -85,7 +90,8 @@ Status: draft, 2026-09-24. Source: `_src/mcu.py`.
 - **Native USB (full speed):** goes to port 2 of the USB hub (page 4), with 27 Ω series
   resistors close to the chip. It's used for firmware updates and the console. It uses
   dedicated pins, so it costs no GPIO.
-- **GPIO budget (decided 2026-09-24): 47 of 48.** SCSI 32 (PIO0), FT1248 4-bit 7 (PIO1),
-  1-bit SDIO 3 (PIO2), PSRAM CS1 1, I²C to the TCA9555 expander 2, LA markers 2. Slow
-  signals (LEDs, card detect, TERMPWR_OK, fault flags, resets) live on the expander. The table,
+- **GPIO budget (decided 2026-09-24; 48 of 48 since 2026-09-26).** SCSI 32 (PIO0), FT1248 4-bit 7
+  (PIO1), 1-bit SDIO 3 (PIO2), PSRAM CS1 1, I²C to the TCA9555 expander 2, LA markers 2, and the
+  TERMPWR ADC on GPIO 46 (the former spare). Slow signals (LEDs, card detect, fault flags,
+  power source, resets) live on the expander. The table,
   the pin-order rules and the FT1248 rework fallback are in `../NOTES.md`.

@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design Review Triage</title>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<style>
+:root {
+  --bg: #f7f7f5; --panel: #ffffff; --ink: #1d1d1b; --muted: #6b6b66; --line: #e2e1dc;
+  --accent: #2f5bd3; --accent-ink: #ffffff;
+  --ok: #1f7a4d; --ok-bg: #e3f3ea; --no: #7a6a5c; --no-bg: #efebe6;
+  --blocker: #8f1d1d; --high: #c2410c; --med: #a16207; --low: #3f6b8f; --info: #6b7280; --q: #7c3aed;
+  --code-bg: #f0efea;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615; --panel: #1f1f1d; --ink: #ebeae6; --muted: #9b9a94; --line: #34332f;
+    --accent: #7b9cff; --accent-ink: #0e1220;
+    --ok: #6fd3a0; --ok-bg: #173026; --no: #b8a898; --no-bg: #2c2824;
+    --blocker: #ff8a8a; --high: #fb923c; --med: #facc15; --low: #7fb5e0; --info: #9ca3af; --q: #c4a5ff;
+    --code-bg: #2a2a27;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161615; --panel: #1f1f1d; --ink: #ebeae6; --muted: #9b9a94; --line: #34332f;
+  --accent: #7b9cff; --accent-ink: #0e1220;
+  --ok: #6fd3a0; --ok-bg: #173026; --no: #b8a898; --no-bg: #2c2824;
+  --blocker: #ff8a8a; --high: #fb923c; --med: #facc15; --low: #7fb5e0; --info: #9ca3af; --q: #c4a5ff;
+  --code-bg: #2a2a27;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }
+code { font: 0.9em ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--code-bg); padding: 0.05em 0.3em; border-radius: 4px; }
+a { color: var(--accent); }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 16px 80px; }
+header.top { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+.bar { max-width: 980px; margin: 0 auto; padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.bar h1 { font-size: 17px; margin: 0; margin-right: auto; }
+.status { font-size: 13px; color: var(--muted); }
+.status.err { color: var(--blocker); }
+button, select, input[type=search] { font: inherit; font-size: 14px; }
+button { cursor: pointer; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 6px 12px; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+button:disabled { opacity: 0.5; cursor: default; }
+.progress { height: 4px; background: var(--line); }
+.progress > div { height: 100%; background: var(--ok); width: 0; transition: width .2s; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; align-items: center; }
+.filters select, .filters input { background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+.filters input[type=search] { flex: 1 1 220px; min-width: 0; }
+.counts { font-size: 13px; color: var(--muted); margin-left: auto; }
+.empty { text-align: center; padding: 60px 16px; color: var(--muted); }
+.empty p { max-width: 560px; margin: 8px auto; }
+details.summary { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 4px 16px; margin: 16px 0; }
+details.summary > summary { cursor: pointer; padding: 10px 0; font-weight: 600; }
+.md table { border-collapse: collapse; width: 100%; font-size: 13.5px; display: block; overflow-x: auto; }
+.md th, .md td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; text-align: left; }
+.md h3 { font-size: 15px; margin: 18px 0 6px; }
+.md ul { padding-left: 20px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--sev, var(--line)); border-radius: 12px; padding: 14px 16px; margin: 10px 0; }
+.card.approved { background: linear-gradient(0deg, var(--ok-bg), var(--ok-bg)); }
+.card.ignored { opacity: 0.72; }
+.card.flash { outline: 2px solid var(--accent); }
+.head { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
+.chip { font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; color: var(--sev); white-space: nowrap; }
+.rid { font: 12px ui-monospace, Menlo, monospace; color: var(--muted); }
+.area { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.tag { font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 0 5px; }
+.title { font-weight: 600; flex-basis: 100%; }
+.fix { margin: 8px 0 4px; font-size: 14px; }
+.fix b { color: var(--muted); font-weight: 600; }
+.fix p { margin: 4px 0; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"].approve { background: var(--ok); color: var(--panel); }
+.seg button[aria-pressed="true"].ignore { background: var(--no); color: var(--panel); }
+.seg button[aria-pressed="true"].undecided { background: var(--line); }
+textarea { width: 100%; min-height: 64px; margin-top: 8px; font: inherit; font-size: 14px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px; resize: vertical; }
+details.body { margin-top: 8px; }
+details.body > summary { cursor: pointer; font-size: 13px; color: var(--muted); }
+details.body .md { font-size: 14px; }
+.sev-Blocker { --sev: var(--blocker); } .sev-High { --sev: var(--high); } .sev-Med { --sev: var(--med); }
+.sev-Low { --sev: var(--low); } .sev-Info { --sev: var(--info); } .sev-Question { --sev: var(--q); }
+.hint { font-size: 12.5px; color: var(--muted); }
+@media (max-width: 560px) { .bar h1 { flex-basis: 100%; } .counts { margin-left: 0; flex-basis: 100%; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <h1 id="docTitle">Design review triage</h1>
+    <span class="status" id="status">No file open</span>
+    <button class="primary" id="openBtn">Open review .md</button>
+    <button id="reopenBtn" hidden>Reopen last file</button>
+    <button id="downloadBtn" hidden>Download .md</button>
+  </div>
+  <div class="progress"><div id="prog"></div></div>
+</header>
+<main class="wrap">
+  <div id="empty" class="empty">
+    <p><strong>Open <code>docs/design-review-2026-09-26.md</code></strong> (or drop it on this page).</p>
+    <p>Each finding gets <em>Approve fix</em>, <em>Ignore</em> or a comment. Decisions are written back into the markdown under each finding, as <code>- **Owner decision:**</code> and <code>- **Owner comment:**</code> lines, and saved automatically.</p>
+    <p class="hint">Saving in place needs Chrome or Edge (File System Access API). In other browsers, use “Download .md” and replace the file.</p>
+  </div>
+  <div id="app" hidden>
+    <details class="summary" id="summaryBox"><summary>Summary (from the document)</summary><div class="md" id="summaryMd"></div></details>
+    <div class="filters">
+      <select id="fSev" aria-label="Severity"><option value="">All severities</option></select>
+      <select id="fArea" aria-label="Area"><option value="">All areas</option></select>
+      <select id="fState" aria-label="Decision">
+        <option value="">Any decision</option>
+        <option value="undecided">Undecided</option>
+        <option value="approved">Approved</option>
+        <option value="ignored">Ignored</option>
+        <option value="commented">Has comment</option>
+      </select>
+      <input type="search" id="fText" placeholder="Search findings…">
+      <span class="counts" id="counts"></span>
+    </div>
+    <div id="list"></div>
+  </div>
+</main>
+<script>
+(() => {
+  const SEV_ORDER = ["Blocker", "High", "Med", "Question", "Low", "Info"];
+  const DEC_RE = /^- \*\*Owner decision:\*\* (approved|ignored)\b/;
+  const COM_PREFIX = "- **Owner comment:** ";
+  const $ = (id) => document.getElementById(id);
+  const state = { handle: null, fileName: "", text: "", findings: [], dirty: new Set(), saving: false, saveTimer: null };
+
+  const md = (s) => {
+    try { if (window.marked) return marked.parse(s, { gfm: true, breaks: false }); } catch (e) {}
+    const esc = s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+    return `<pre style="white-space:pre-wrap">${esc}</pre>`;
+  };
+  const today = () => new Date().toISOString().slice(0, 10);
+  const setStatus = (msg, err) => { const el = $("status"); el.textContent = msg; el.classList.toggle("err", !!err); };
+
+  // ---------- parsing ----------
+  function isOwnerLine(l) { return DEC_RE.test(l) || l.startsWith(COM_PREFIX) || l.startsWith("- **Owner decision:**"); }
+
+  function blockRange(lines, id) {
+    const start = lines.findIndex((l) => l.startsWith(`### ${id} `));
+    if (start < 0) return null;
+    let end = lines.length;
+    for (let i = start + 1; i < lines.length; i++) if (/^#{1,3} /.test(lines[i])) { end = i; break; }
+    return [start, end];
+  }
+
+  // Split a block into body lines and the owner decision/comment.
+  function splitOwner(block) {
+    const body = []; let status = "undecided"; let comment = null;
+    for (let i = 0; i < block.length; i++) {
+      const l = block[i];
+      const d = l.match(DEC_RE);
+      if (d) { status = d[1]; continue; }
+      if (l.startsWith("- **Owner decision:**")) continue;
+      if (l.startsWith(COM_PREFIX)) {
+        const parts = [l.slice(COM_PREFIX.length)];
+        while (i + 1 < block.length && block[i + 1].startsWith("  ")) parts.push(block[++i].slice(2));
+        comment = parts.join("\n");
+        continue;
+      }
+      body.push(l);
+    }
+    return { body, status, comment: comment || "" };
+  }
+
+  function parse(text) {
+    const lines = text.split("\n");
+    const title = (lines.find((l) => l.startsWith("# ")) || "# Design review").slice(2);
+    const sumStart = lines.findIndex((l) => l.trim() === "## Summary");
+    const rawStart = lines.findIndex((l) => l.startsWith("## Raw log"));
+    const summary = sumStart >= 0 ? lines.slice(sumStart + 1, rawStart >= 0 ? rawStart : undefined).join("\n") : "";
+    // Map finding IDs to summary row labels (H1, M3, F2, ...), expanding ranges like R009–R013.
+    const groups = {};
+    summary.split("\n").forEach((l) => {
+      const m = l.match(/^\|\s*([A-Z]\d+)\s*\|/);
+      if (!m) return;
+      const add = (n) => { const id = "R" + String(n).padStart(3, "0"); (groups[id] = groups[id] || []).push(m[1]); };
+      l.replace(/R(\d{3})\s*[–-]\s*R(\d{3})/g, (_, a, b) => { for (let n = +a; n <= +b; n++) add(n); return ""; })
+       .replace(/R(\d{3})/g, (_, a) => { add(+a); return ""; });
+    });
+    const findings = [];
+    lines.forEach((l, i) => {
+      const m = l.match(/^### (R\d{3}) \[([^\]]+)\] (.*)$/);
+      if (!m) return;
+      const [, id, sev, rest] = m;
+      const range = blockRange(lines, id);
+      const { body, status, comment } = splitOwner(lines.slice(range[0] + 1, range[1]));
+      const colon = rest.indexOf(": ");
+      const area = colon > 0 && colon < 30 ? rest.slice(0, colon) : "";
+      const ttl = colon > 0 && colon < 30 ? rest.slice(colon + 2) : rest;
+      const bodyText = body.join("\n").trim();
+      const fixM = bodyText.match(/^- \*\*(?:Fix|Options)[^*]*:\*\*[\s\S]*?(?=\n- \*\*|\s*(?![\s\S]))/m);
+      findings.push({ id, sev, area: area.split(/[|/]/)[0].trim() || "General", title: ttl, bodyText,
+        fix: fixM ? fixM[0].replace(/^- \*\*(?:Fix|Options)[^*]*:\*\*[ \t]*\n?/, "").replace(/^ {2}/gm, "") : "", status, comment,
+        groups: [...new Set(groups[id] || [])] });
+    });
+    return { title, summary, findings };
+  }
+
+  // ---------- writing ----------
+  function applyDecision(text, f) {
+    const lines = text.split("\n");
+    const r = blockRange(lines, f.id);
+    if (!r) return text;
+    const block = lines.slice(r[0] + 1, r[1]);
+    let { body } = splitOwner(block);
+    while (body.length && body[body.length - 1].trim() === "") body.pop();
+    const out = [...body];
+    if (f.status !== "undecided") out.push(`- **Owner decision:** ${f.status} (${today()})`);
+    const c = f.comment.trim();
+    if (c) { const [first, ...more] = c.split("\n"); out.push(COM_PREFIX + first, ...more.map((x) => "  " + x)); }
+    out.push("");
+    lines.splice(r[0] + 1, r[1] - r[0] - 1, ...out);
+    return lines.join("\n");
+  }
+
+  async function save() {
+    if (!state.dirty.size) return;
+    const changed = state.findings.filter((f) => state.dirty.has(f.id));
+    state.dirty.clear();
+    if (!state.handle || !state.handle.createWritable) {
+      changed.forEach((f) => (state.text = applyDecision(state.text, f)));
+      setStatus("Changes kept in the page: use “Download .md” to save");
+      return;
+    }
+    state.saving = true; setStatus("Saving…");
+    try {
+      if ((await state.handle.queryPermission({ mode: "readwrite" })) !== "granted" &&
+          (await state.handle.requestPermission({ mode: "readwrite" })) !== "granted") throw new Error("Write permission denied");
+      let text = await (await state.handle.getFile()).text();   // re-read so outside edits survive
+      changed.forEach((f) => (text = applyDecision(text, f)));
+      const w = await state.handle.createWritable();
+      await w.write(text); await w.close();
+      state.text = text;
+      setStatus(`Saved to ${state.fileName} at ${new Date().toLocaleTimeString()}`);
+    } catch (e) {
+      changed.forEach((f) => state.dirty.add(f.id));
+      setStatus(`Save failed: ${e.message}. Click to retry.`, true);
+    } finally { state.saving = false; }
+  }
+  const scheduleSave = () => { clearTimeout(state.saveTimer); state.saveTimer = setTimeout(save, 500); };
+
+  // ---------- rendering ----------
+  function linkIds(html) {
+    return html.replace(/\bR(\d{3})\b/g, '<a href="#R$1" data-jump="R$1">R$1</a>');
+  }
+
+  function render() {
+    const { findings } = state;
+    const fSev = $("fSev").value, fArea = $("fArea").value, fState = $("fState").value, q = $("fText").value.trim().toLowerCase();
+    const list = $("list"); list.textContent = "";
+    const shown = findings.filter((f) =>
+      (!fSev || f.sev === fSev) && (!fArea || f.area === fArea) &&
+      (!fState || (fState === "commented" ? !!f.comment.trim() : f.status === fState)) &&
+      (!q || (f.id + " " + f.title + " " + f.bodyText + " " + f.comment).toLowerCase().includes(q)));
+    shown.sort((a, b) => SEV_ORDER.indexOf(a.sev) - SEV_ORDER.indexOf(b.sev) || a.id.localeCompare(b.id));
+    for (const f of shown) list.appendChild(card(f));
+    const decided = findings.filter((f) => f.status !== "undecided").length;
+    $("prog").style.width = findings.length ? `${(100 * decided) / findings.length}%` : "0";
+    $("counts").textContent = `${shown.length} shown · ${decided}/${findings.length} decided · ${findings.filter((f) => f.status === "approved").length} approved · ${findings.filter((f) => f.status === "ignored").length} ignored`;
+  }
+
+  function card(f) {
+    const el = document.createElement("article");
+    el.className = `card sev-${f.sev} ${f.status}`; el.id = f.id;
+    const approveLabel = f.sev === "Info" ? "Acknowledge" : f.sev === "Question" ? "Resolved" : "Approve fix";
+    el.innerHTML = `
+      <div class="head">
+        <span class="chip">${f.sev}</span><span class="rid">${f.id}</span><span class="area"></span>
+        ${f.groups.map((g) => `<span class="tag" title="Summary row">${g}</span>`).join("")}
+        <div class="title md"></div>
+      </div>
+      ${f.fix ? `<div class="fix md"><b>Suggested fix</b>${md(f.fix)}</div>` : ""}
+      <div class="actions">
+        <div class="seg" role="group" aria-label="Decision">
+          <button class="approve" data-s="approved">${approveLabel}</button>
+          <button class="ignore" data-s="ignored">Ignore</button>
+          <button class="undecided" data-s="undecided">Undecided</button>
+        </div>
+        <button class="cbtn">${f.comment ? "Edit comment" : f.sev === "Question" ? "Answer" : "Add comment"}</button>
+      </div>
+      <textarea placeholder="${f.sev === "Question" ? "Your answer…" : "Comment (saved under the finding)…"}" ${f.comment ? "" : "hidden"}></textarea>
+      <details class="body"><summary>Full finding</summary><div class="md"></div></details>`;
+    el.querySelector(".area").textContent = f.area;
+    el.querySelector(".title").innerHTML = md(f.title).replace(/^<p>|<\/p>\s*$/g, "");
+    el.querySelectorAll(".seg button").forEach((b) => {
+      b.setAttribute("aria-pressed", String(b.dataset.s === f.status));
+      b.onclick = () => { f.status = b.dataset.s; state.dirty.add(f.id); scheduleSave(); render(); };
+    });
+    const ta = el.querySelector("textarea");
+    ta.value = f.comment;
+    el.querySelector(".cbtn").onclick = () => { ta.hidden = false; ta.focus(); };
+    ta.oninput = () => { f.comment = ta.value; state.dirty.add(f.id); scheduleSave(); };
+    ta.onblur = () => { if (!ta.value.trim()) ta.hidden = true; save(); };
+    const body = el.querySelector("details.body");
+    body.addEventListener("toggle", () => { if (body.open && !body.dataset.r) { body.querySelector(".md").innerHTML = linkIds(md(f.bodyText)); body.dataset.r = 1; } });
+    return el;
+  }
+
+  function load(text, name) {
+    state.text = text; state.fileName = name;
+    const p = parse(text);
+    if (!p.findings.length) { setStatus(`No findings (### Rnnn [Severity] …) in ${name}`, true); return; }
+    state.findings = p.findings;
+    $("docTitle").textContent = p.title;
+    $("summaryMd").innerHTML = linkIds(md(p.summary));
+    const fill = (sel, vals) => { sel.length = 1; vals.forEach((v) => sel.add(new Option(v, v))); };
+    fill($("fSev"), SEV_ORDER.filter((s) => p.findings.some((f) => f.sev === s)));
+    fill($("fArea"), [...new Set(p.findings.map((f) => f.area))].sort());
+    $("empty").hidden = true; $("app").hidden = false; $("downloadBtn").hidden = false;
+    setStatus(state.handle && state.handle.createWritable ? `Editing ${name} in place` : `Opened ${name} (read-only: download to save)`);
+    render();
+  }
+
+  // ---------- file handling ----------
+  const DB = "review-triage", STORE = "h";
+  function idb(mode, fn) {
+    return new Promise((res, rej) => {
+      try {
+        const r = indexedDB.open(DB, 1);
+        r.onupgradeneeded = () => r.result.createObjectStore(STORE);
+        r.onsuccess = () => { const tx = r.result.transaction(STORE, mode); const q = fn(tx.objectStore(STORE)); tx.oncomplete = () => res(q && q.result); tx.onerror = () => rej(tx.error); };
+        r.onerror = () => rej(r.error);
+      } catch (e) { rej(e); }
+    });
+  }
+  const remember = (h) => idb("readwrite", (s) => s.put(h, "last")).catch(() => {});
+
+  async function openHandle(h) {
+    state.handle = h;
+    load(await (await h.getFile()).text(), h.name);
+    remember(h);
+  }
+
+  $("openBtn").onclick = async () => {
+    if (window.showOpenFilePicker) {
+      try {
+        const [h] = await showOpenFilePicker({ types: [{ description: "Markdown", accept: { "text/markdown": [".md"] } }] });
+        await openHandle(h);
+      } catch (e) { if (e.name !== "AbortError") setStatus(e.message, true); }
+    } else {
+      const inp = Object.assign(document.createElement("input"), { type: "file", accept: ".md,text/markdown" });
+      inp.onchange = async () => { const f = inp.files[0]; if (f) { state.handle = null; load(await f.text(), f.name); } };
+      inp.click();
+    }
+  };
+
+  $("reopenBtn").onclick = async () => {
+    try {
+      const h = await idb("readonly", (s) => s.get("last"));
+      if (!h) return;
+      if ((await h.requestPermission({ mode: "readwrite" })) !== "granted") throw new Error("Permission denied");
+      await openHandle(h);
+    } catch (e) { setStatus(`Couldn't reopen: ${e.message}`, true); }
+  };
+  idb("readonly", (s) => s.get("last")).then((h) => { if (h) { $("reopenBtn").hidden = false; $("reopenBtn").textContent = `Reopen ${h.name}`; } }).catch(() => {});
+
+  $("downloadBtn").onclick = () => {
+    let text = state.text;
+    state.findings.forEach((f) => (text = applyDecision(text, f)));
+    const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(new Blob([text], { type: "text/markdown" })), download: state.fileName || "design-review.md" });
+    a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  $("status").onclick = () => { if ($("status").classList.contains("err")) save(); };
+
+  document.addEventListener("dragover", (e) => e.preventDefault());
+  document.addEventListener("drop", async (e) => {
+    e.preventDefault();
+    const item = [...e.dataTransfer.items].find((i) => i.kind === "file");
+    if (!item) return;
+    try {
+      const h = item.getAsFileSystemHandle ? await item.getAsFileSystemHandle() : null;
+      if (h && h.kind === "file") { await openHandle(h); return; }
+    } catch (err) {}
+    const f = item.getAsFile(); state.handle = null; load(await f.text(), f.name);
+  });
+
+  ["fSev", "fArea", "fState"].forEach((id) => ($(id).onchange = render));
+  $("fText").oninput = render;
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("[data-jump]"); if (!a) return;
+    e.preventDefault();
+    let el = $(a.dataset.jump);
+    if (!el) { ["fSev", "fArea", "fState"].forEach((id) => ($(id).value = "")); $("fText").value = ""; render(); el = $(a.dataset.jump); }
+    if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 1200); }
+  });
+  window.addEventListener("beforeunload", (e) => { if (state.dirty.size || state.saving) { save(); e.preventDefault(); } });
+})();
+</script>
+</body>
+</html>

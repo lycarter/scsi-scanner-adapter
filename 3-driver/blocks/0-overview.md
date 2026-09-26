@@ -69,7 +69,8 @@ choices unless `NOTES.md` says they're decided.
   drivers/receivers ⇄ SCSI cable ⇄ scanner. PSRAM and microSD hang off the RP2350B as
   buffer and spill storage. A TCA9555 I²C expander handles slow signals (LEDs, card
   detect, status inputs).
-- **Power path:** USB-C VBUS or a bench 5 V supply are ORed into `+5V_SYS`, which feeds the
+- **Power path:** USB-C VBUS and a bench 5 V supply meet in a priority power mux (TPS2116;
+  the bench wins whenever it's connected) that makes `+5V_SYS`, which feeds the
   regulators and TERMPWR. The CC pins tell the power block (in hardware, not firmware) whether the USB port allows enough current to switch TERMPWR on.
 - **Everything the bus touches goes through the front end.** The MCU never connects to a
   SCSI line directly.

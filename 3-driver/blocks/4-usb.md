@@ -13,7 +13,7 @@ updates over USB). Decision: `../NOTES.md`, open question 10. Source: `_src/usb.
           | USB-C cable
           v                     +----------------------+
 +--------------------+ VBUS, CC | POWER (p.1)          |
-| USB-C receptacle   |--------->| VBUS ORing, CC_OK    |
+| USB-C receptacle   |--------->| VBUS mux, CC_OK      |
 | USB 2.0 only:      |          +----------------------+
 | both D+/D- pairs   |
 | tied; SBU n/c      |
@@ -27,10 +27,10 @@ updates over USB). Decision: `../NOTES.md`, open question 10. Source: `_src/usb.
 +--------------------+                                                      |                            |
           |                                                                 | native USB on dedicated    |
           | 90 ohm diff pair            +----------------------+            | pins (0 GPIO)              |
-          v                             | FT232H               |  FT1248 4b |                            |
+          v                             | FT232H               |  FT1248 4b,|33R                         |
 +--------------------+  port 1: HS      | USB 2.0 HS bridge    |<---------->| over USB:                  |
 | USB 2.0 HS hub     |----------------->| FT1248, 4-bit        |7 GPIO PIO1 | - ROM BOOTSEL: UF2 /       |
-| CH334P, 3.3 V mode |  480 Mbit/s      | VREGIN from 5 V      |            |   picotool (can't brick)   |
+| CH334P, 3.3 V mode |  480 Mbit/s      | 5 V in, own 3.3 V    |            |   picotool (can't brick)   |
 | load caps DNP      |                  +----------------------+            | - CDC console              |
 | 4 ports, 2 used    |--------+                     |                       | - reset-to-BOOTSEL         |
 +--------------------+        |         +----------------------+            |   interface                |
@@ -53,7 +53,7 @@ updates over USB). Decision: `../NOTES.md`, open question 10. Source: `_src/usb.
 - USB 2.0 HS hub — ABM8 12 MHz
 - USB 2.0 HS hub → FT232H: port 1: HS 480 Mbit/s
 - FT232H — 93LC56B EEPROM
-- FT232H ↔ RP2350B: FT1248 4b 7 GPIO PIO1
+- FT232H ↔ RP2350B: FT1248 4b, 33R 7 GPIO PIO1
 - USB 2.0 HS hub → RP2350B: port 2: FS 12 Mbit/s; 27 ohm series R x2 near RP2350
 
 </details>
@@ -74,12 +74,33 @@ updates over USB). Decision: `../NOTES.md`, open question 10. Source: `_src/usb.
 - **Routing:** D+/D− are 90 Ω differential pairs from the connector through the hub to the
   FT232H. The RP2350's USB_DP/DM need **27 Ω series resistors placed close to the chip**
   (Raspberry Pi, "Hardware design with RP2350").
-- **Hub: CH334P** (decided), run in external 3.3 V mode, with an ABM8-272-T3 12 MHz crystal
-  and unfitted load-cap pads. Two of its four ports are used.
-- **FT232H support parts:** a 12 MHz crystal and a **93LC56B EEPROM**. The EEPROM is required:
-  without it the chip starts in UART mode, not FT1248 mode. The 93LC46B is incompatible.
-  Program the EEPROM over USB after assembly (FT_PROG, or `ftdi_eeprom`). The FT232H's regulator input (VREGIN) runs
-  from 5 V. Pins: `../NOTES.md`, "FT232H pins in detail" and the FT1248 fallback plan.
+- **Hub: CH334P** (decided), run in external 3.3 V mode (V5 and VDD33 both on the 3.3 V rail,
+  10 µF + 100 nF there, because its low-voltage reset can trip as high as 3.2 V), with an
+  ABM8-272-T3 12 MHz crystal and unfitted load-cap pads. Two of its four ports are used.
+  - RESET#: no external pull-up (WCH: a pin driven high at power-up enables CDP charging mode
+    and turns off hub sleep). Its internal ~25 kΩ pull-up means "run". Expander P14 pulls it low
+    through a Schottky (cathode at the expander), so the expander's own pull-up can't drive it high.
+  - Known minor flaw (accepted): the CH334P has no VBUS sense, so with the board on the bench
+    supply and the host switched off, its 1.5 kΩ D+ pull-up back-drives the host (USB 2.0
+    §7.1.5). Switch the bench supply off before the host.
+- **FT232H power (DS v2.0 Fig. 6.2, copied exactly):** VREGIN from +5V_SYS. **VCCD is then an
+  output** (the FT232H's own 3.3 V, net `FT_3V3`) that feeds VCCIO ×3, VPHY and VPLL (each
+  through a 600 Ω ferrite) and the EEPROM. **VCCD never connects to the board 3.3 V.** The
+  FT232H's I/O at its own 3.3 V talks to the RP2350's 3.3 V directly.
+- **FT232H support parts:** REF = 12 kΩ 1 % to GND; TEST to GND; RESET# 10 kΩ to FT_3V3 +
+  10 nF (and expander P13); 0.1 µF on VCCA and VCORE; 4.7 µF + 0.1 µF on VREGIN and VCCD; a
+  12 MHz crystal with 2 × 15 pF; and a **93LC56B EEPROM** (DO pulled up with 10 kΩ, DO → DI
+  through 2.2 kΩ). The EEPROM is required: without it the chip starts in UART mode, not FT1248
+  mode. The 93LC46B is incompatible. Keep "Suspend on ACBus7 Low" off.
+- **FT1248 link:** 33 Ω series resistors on the 7 nets at the RP2350 end. They damp ringing at
+  25 MHz and limit contention if the FT232H is in the wrong mode (blank EEPROM = UART mode, which
+  drives pins 13 and 15). Firmware drives the MIOSIO lines only after confirming FT1248 mode.
+- **Programming the EEPROM (first time):** over USB, after assembly. Easiest is FT_PROG once on
+  a Windows PC, saving the 256-byte image; from macOS, write that image with libftdi's
+  `ftdi_eeprom` (`flash_raw`, `eeprom_type = 0x56`, run as root because Apple's FTDI driver
+  holds the interface). `ftdi_eeprom` can set FT1248 mode but not its clock-polarity / bit-order
+  / flow-control bits. Steps: `../USAGE.md`. Pins: `../NOTES.md`, "FT232H pins in detail" and
+  the FT1248 fallback plan.
 - **What the RP2350's USB is for:**
   - **Updates:** the ROM bootloader (UF2 drag-and-drop, or `picotool`) is in ROM, so it can't
     be bricked. The host can enter it without a button: our firmware calls the ROM
