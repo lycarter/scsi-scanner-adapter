@@ -7,15 +7,15 @@ D = Diagram()
 # All P pins power up as inputs with ~100 k pull-ups: resets read high (run), LEDs are off
 # (they sink into the pin), and TERM_EN leaves the DIP default alone.
 pins = {
-    1: ('INT', 'test point; DNP 0R to GPIO 46'),
+    1: ('INT', 'test point (firmware polls)'),
     2: ('A1', 'GND (addr 0x20)'),
     3: ('A2', 'GND'),
     4: ('P00', 'in: SD_CD (socket switch)'),
     5: ('P01', 'in: TERMPWR_EN_N (enable node)'),
-    6: ('P02', 'in: PWR_SRC (LM66200 ST)'),
+    6: ('P02', 'in: PWR_SRC (TPS2116 ST, 1 = bench)'),
     7: ('P03', 'in: BENCH_FLT_N (eFuse)'),
     8: ('P04', 'in: TERMPWR_FLT_N (eFuse)'),
-    9: ('P05', 'in: TERMPWR_OK'),
+    9: ('P05', 'spare in/out'),
     10: ('P06', 'spare in/out'),
     11: ('P07', 'spare in/out'),
     12: ('GND', 'GND'),
@@ -23,7 +23,7 @@ pins = {
     14: ('P11', 'out: LED2_N (activity)'),
     15: ('P12', 'out/in: TERM_EN (DIP 2)'),
     16: ('P13', 'out: FT_RESET_N'),
-    17: ('P14', 'out: HUB_RESET_N'),
+    17: ('P14', 'out: HUB_RESET_N (Schottky)'),
     18: ('P15', 'out: SD_PWR_EN (optional)'),
     19: ('P16', 'spare in/out'),
     20: ('P17', 'spare in/out'),

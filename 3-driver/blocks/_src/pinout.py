@@ -22,7 +22,8 @@ PADS.update({5: 'IOVDD', 6: 'GPIO8', 7: 'GPIO9', 8: 'GPIO10', 9: 'GPIO11', 10: '
              71: 'QSPI_SCLK', 72: 'QSPI_SD0', 73: 'QSPI_SD2', 74: 'QSPI_SD1', 75: 'QSPI_SS',
              76: 'IOVDD', 77: 'GPIO0', 78: 'GPIO1', 79: 'GPIO2', 80: 'GPIO3'})
 
-# What each GPIO carries (accepted 2026-09-25). Both SCSI blocks follow the SCSI-2 connector
+# What each GPIO carries (accepted 2026-09-25; review changes 2026-09-26: ATN on PIO0 out+9,
+# GPIO 46 = TERMPWR ADC, CS1 pull-up 3.3k). Both SCSI blocks follow the SCSI-2 connector
 # order (Table 2: DB0-7, DBP, ATN, BSY, ACK, RST, MSG, SEL, C/D, REQ, I/O). "in" = receiver output (INOVER: 1 = asserted),
 # "gate" = FDV301N gate (1 = asserted).
 DB = ['DB0', 'DB1', 'DB2', 'DB3', 'DB4', 'DB5', 'DB6', 'DB7', 'DBP']
@@ -34,7 +35,7 @@ for k, s in enumerate(['ATN', 'BSY', 'ACK', 'RST', 'MSG', 'SEL', 'C/D', 'REQ', '
 for k, s in enumerate(DB):
     GPIO[18 + k] = (f"{s} gate", f"PIO0 out+{k}")
 GPIO.update({
-    27: ('ATN gate', 'CPU'), 28: ('BSY gate', 'CPU'), 29: ('ACK gate', 'PIO0 side-set'),
+    27: ('ATN gate', 'PIO0 out+9'), 28: ('BSY gate', 'CPU'), 29: ('ACK gate', 'PIO0 side-set'),
     30: ('RST gate', 'CPU only'), 31: ('SEL gate', 'CPU'),
     32: ('FT MIOSIO0', 'PIO1; FIFO D0'), 33: ('FT MIOSIO1', 'PIO1; FIFO D1'),
     34: ('FT MIOSIO2', 'PIO1; FIFO D2'), 35: ('FT MIOSIO3', 'PIO1; FIFO D3'),
@@ -45,8 +46,8 @@ GPIO.update({
     40: ('SD D0', '0R >> FIFO WR# (FT 27)'),
     41: ('FT SCLK', 'PIO1; FIFO RXF#'), 42: ('FT SS_n', 'PIO1; FIFO TXE#'),
     43: ('FT MISO', 'PIO1; FIFO RD#'),
-    44: ('LA marker 0', 'CPU'), 45: ('LA marker 1', 'CPU'), 46: ('spare', '0R >> FIFO SIWU# (FT 28)'),
-    47: ('PSRAM CS1', 'QMI'),
+    44: ('LA marker 0', 'CPU'), 45: ('LA marker 1', 'CPU'), 46: ('TERMPWR ADC', 'ADC6, 100k/100k'),
+    47: ('PSRAM CS1', 'QMI, 3.3k up'),
 })
 OTHER = {
     'IOVDD': '3.3 V', 'DVDD': '1.1 V core', 'ADC_AVDD': '3.3 V', 'USB_OTP_VDD': '3.3 V',
@@ -71,4 +72,4 @@ for num, pad in PADS.items():
 
 D.chip45('rp', 0, 0, 20, pins, name='RP2350B',
          inner=["RP2350B", "QFN-80, top view", "", "rotated 45 deg CCW:", "package top edge",
-                "faces upper-left", "", "* = pin 1"])
+                "faces upper-left", "", "* = pin 1", "EP (81) = GND"])

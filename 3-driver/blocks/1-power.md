@@ -14,99 +14,116 @@ Source: `_src/power.py`.
       |        | CC1/2  | CC sense (sink side): 5.1k   |                   v
       |        +------->| Rd on CC1/CC2 + LM393        |      +------------------------+
       |                 | vs 0.66 V (CJ431 ref)        |      | TPS259470A eFuse       |
-      |VBUS             | -> CC_OK_N (>= 1.5 A)        |      | -15..28 V, OVLO 5.7 V  |
-      |                 +------------------------------+      | ILIM ~2 A              |
+      |VBUS             | -> CC_OK_N (>= 1.5 A)        |      | -15..28 V, OVLO 5.35 V |
+      |                 +------------------------------+      | ILIM ~2.2 A, EN zener  |
       |                                                       +------------------------+
       v                                                                    v
   +----------------+                                          +------------------------+
-  | U1 ch1 LM66200 |                                          | U1 ch2 LM66200         |
+  | U1 TPS2116 IN2 |                                          | U1 TPS2116 IN1 (prio)  |
   +----------------+                                          +------------------------+
            |                                                               |
-           |                +5V_SYS  (<= 2.5 A: LM66200)                   |
+           |                +5V_SYS  (<= 2.5 A: TPS2116)                   |
            +--+------------------------------+<----------------------------+
               |                              |
               |                              |
               v                              v
   +------------------------+      +----------------------+    +------------------------+
   | U2 TPS259470A eFuse    |      | 3.3 V regulator      |    | Senses TERMPWR node:   |
-  | ILIM ~1.2 A, rev.block |      | TPS73701 LDO         |    | TERMPWR_OK -> expander |
-  | + disable jumper       |      +----------------------+    | (1 digital in)         |
-  | OVLO=CC_OK_N wOR BENCH |                 |                | + LED (< 1 mA draw)    |
-  | (3.3V pull-up) + LED   |                 v                +------------------------+
+  | ILIM ~1.2 A, rev.block |      | TPS73701 LDO         |    | 100k/100k -> GPIO 46   |
+  | + disable jumper       |      +----------------------+    | (ADC6)                 |
+  | OVLO<-CC_OK_N or BENCH |                 |                | + LED (< 1 mA draw)    |
+  | 3.3V pull-up + divider |                 v                +------------------------+
   +------------------------+      +3V3 -> RP2350B IOVDD (its 1.1 V core comes
               |                      from the RP2350's on-chip regulator),
-              | TERMPWR:             QSPI flash, PSRAM, microSD, FT232H
-              | 4.25-5.25 V,         VCCIO, USB hub, front end,
-              | >= 900 mA, to        receivers, LA-header buffers
+              | TERMPWR:             QSPI flash, PSRAM, microSD, USB hub,
+              | 4.25-5.25 V,         front end, receivers, expander
+              | >= 900 mA, to        (FT232H makes its own 3.3 V: VCCD)
               | SCSI pin 26 (p.2)
               v
   +------------------------+
-  | TPS73701 @ 2.80 V      |
+  | TPS73701 @ 2.83 V      |
   | -> terminators (p.2)   |
   +------------------------+
 ```
 
 <details><summary>Connections (from the source, for readers who'd rather not trace lines)</summary>
 
-- USB-C receptacle → Ideal diode A: VBUS
+- USB-C receptacle → Power mux input 2 (USB): VBUS
 - USB-C receptacle → CC sense: CC1/2
 - Bench 5 V input → Bench eFuse (reverse + OV + current limit)
-- Bench eFuse (reverse + OV + current limit) → Ideal diode B
-- Ideal diode A → +5V_SYS (net)
-- Ideal diode B → +5V_SYS (net)
+- Bench eFuse (reverse + OV + current limit) → Power mux input 1 (bench, priority)
+- Power mux input 2 (USB) → +5V_SYS (net)
+- Power mux input 1 (bench, priority) → +5V_SYS (net)
 - +5V_SYS (net) → TERMPWR switch (eFuse + enable + current limit)
 - +5V_SYS (net) → 3.3 V regulator
-- TERMPWR switch (eFuse + enable + current limit) → TPS73701 @ 2.80 V: TERMPWR: 4.25-5.25 V, >= 900 mA, to SCSI pin 26 (p.2)
-- 3.3 V regulator → +3V3 loads: +3V3 -> RP2350B IOVDD (its 1.1 V core comes from the RP2350's on-chip regulator), QSPI flash, PSRAM, microSD, FT232H VCCIO, USB hub, front end, receivers, LA-header buffers
+- TERMPWR switch (eFuse + enable + current limit) → TPS73701 @ 2.83 V: TERMPWR: 4.25-5.25 V, >= 900 mA, to SCSI pin 26 (p.2)
+- 3.3 V regulator → +3V3 loads: +3V3 -> RP2350B IOVDD (its 1.1 V core comes from the RP2350's on-chip regulator), QSPI flash, PSRAM, microSD, USB hub, front end, receivers, expander (FT232H makes its own 3.3 V: VCCD)
 
 </details>
 <!-- END generated -->
 
 ## Description (plain English, for readers and future agents)
 
-- **Two 5 V sources, ORed.** USB-C VBUS and a bench 5 V input each pass through their own
-  ideal diode into one rail, `+5V_SYS`. Whichever is higher supplies the board, and neither
-  can push current back into the other. This matters because a USB device must never drive
-  VBUS. The bench input also gets reverse-polarity and over-voltage protection first, in
-  case the leads are swapped or the knob is set too high.
+- **Two 5 V sources, bench first.** USB-C VBUS and a bench 5 V input meet in a TI TPS2116
+  power mux (U1; changed from the LM66200 ORing diode after the 2026-09-26 design review). The
+  bench input (after its eFuse) is the **priority** input: whenever it's present, it powers the
+  whole board, TERMPWR included, whatever the USB voltage is. Without it, USB powers the board.
+  USB stays plugged in either way, because it's also the data link. The mux blocks reverse
+  current both ways, so a USB device never drives VBUS. The bench input gets reverse-polarity,
+  over-voltage (trip 5.35 V) and current-limit (≈ 2.2 A) protection first, in case the leads are
+  swapped or the knob is set too high. Set the bench supply to 5.0 V (`../USAGE.md`).
+- **VBUS plug-in ringing** is damped by a 1 Ω + 4.7 µF snubber next to the mux's 1 µF, keeping
+  the total VBUS capacitance under USB's 10 µF. The mux is only rated 6 V absolute, and no TVS
+  can clamp below that (the SMF6.0A starts at 6.67 V).
 - **The board learns its USB budget from CC.** Being a USB-C *sink* means putting a 5.1 kΩ
   pull-down (Rd) on each CC pin. The voltage the host's pull-up creates on CC tells us whether
   the port allows default current (0.5/0.9 A), 1.5 A or 3 A. **This is decided in hardware,
-  not by the MCU:** a CC-detector chip with digital outputs, or a pair of comparators (one
-  per CC pin, because only one is active depending on cable orientation), produces `CC_OK`
-  when the port allows ≥1.5 A. No USB PD controller is used. **Built (2026-09-25):** an LM393
-  against a 0.66 V reference from a CJ431 shunt reference, with 10 kΩ / 1 µF filters, ~11 mV
-  hysteresis and +15 mV worst-case margin. Values: NOTES "CC detection".
+  not by the MCU:** a pair of comparators (one per CC pin, because only one is active
+  depending on cable orientation) produces `CC_OK` when the port allows ≥1.5 A. No USB PD
+  controller is used. **Built:** an LM393 against a 0.65 V reference from a CJ431 shunt
+  reference (2.500 V), with 10 kΩ / 1 µF filters and ~10 mV of hysteresis; worst-case margin
+  +6 to +11 mV inside the 0.61–0.70 V window. Values: NOTES "CC detection".
 - **TERMPWR is switched by hardware logic, not firmware.** `+5V_SYS` goes through a
   TPS259470A eFuse (current limit ≈1.2 A, within SCSI-2's ≤1.5 A recommendation; true
   reverse blocking even when unpowered), then a disable jumper, to TERMPWR on both SCSI
-  connectors (IDC50 pin 26, HD50 pin 38). Its OVLO pin is used as an active-low enable.
-  **EN = CC_OK OR BENCH_PRESENT**, an active-low node pulled up to 3.3 V that the expander
-  also reads (TERMPWR_EN_N): on when the USB port
-  allows ≥1.5 A or the bench supply is connected. An LED on EN shows "we are supplying
-  TERMPWR". Because no firmware is involved, TERMPWR is up even while the MCU is in reset or
-  the bootloader, and it drops at once if the host lowers its current advertisement.
-  SCSI-2 requires 4.25–5.25 V and ≥900 mA from an initiator.
-- **TERMPWR_OK (expander P05, via a 22 k / 33 k divider) and a second LED (6.8 kΩ, ≤ 0.5 mA)** watch the TERMPWR *node* (which any
-  device on the bus may be powering), not our enable. That lets firmware report "the bus
-  terminators are unpowered" instead of misreading a floating bus. The LED must draw
-  < 1 mA from TERMPWR, or be driven from our own rail through a buffer: SCSI-2 §5.4.3 limits
-  what a device may draw from TERMPWR, apart from terminators.
-- **Our own terminator is powered from TERMPWR** through a 2.85 V regulator, as SCSI-2
-  §5.4.1 requires ("terminators shall be powered by the TERMPWR line"). Side effect: if
-  another device supplies TERMPWR while our board is off, our terminator still has power.
-  Whether it's then enabled depends on the TERM_EN default (open question).
+  connectors (IDC50 pin 26, HD50 pin 38).
+  - The enable is an active-low node, **TERMPWR_EN_N = CC_OK_N wired-OR BENCH_PRESENT**,
+    pulled up to 3.3 V. It's on when the USB port allows ≥1.5 A or the bench supply is
+    connected; with the TPS2116's priority mode, "bench connected" means the bench really is
+    powering the board.
+  - The node reaches the eFuse's OVLO pin through a 56 k / 47 k divider, which keeps OVLO in its
+    0.5–1.5 V recommended range (1.31–1.43 V when off, ≤ 0.32 V when on). The expander reads
+    the node itself.
+  - An LED on the node shows "we are supplying TERMPWR". Because no firmware is involved,
+    TERMPWR is up even while the MCU is in reset or the bootloader, and it drops at once if
+    the host lowers its current advertisement. SCSI-2 requires 4.25–5.25 V and ≥900 mA from
+    an initiator.
+- **TERMPWR sense: GPIO 46 (ADC6) through 100 k / 100 k**, and a second LED (10 kΩ, ≈ 0.35 mA),
+  watch the TERMPWR *node* (which any device on the bus may be powering), not our enable. The
+  ADC lets firmware report "no TERMPWR" and warn when TERMPWR sags toward SCSI-2's 4.25 V
+  minimum (on a long cable at 1.5 A it can). Our non-terminator draw from TERMPWR stays under
+  SCSI-2 §5.4.3's 1.0 mA: LED 0.35 mA + divider 0.03 mA + eFuse leakage ≤ 0.44 mA.
+  (Replaced the 22 k / 33 k digital TERMPWR_OK input on the expander, which could read high on
+  a floating TERMPWR and back-fed the 3.3 V rail.)
+- **Our own terminator is powered from TERMPWR** through a 2.83 V regulator (TPS73701), as SCSI-2
+  §5.4.1 requires ("terminators shall be powered by the TERMPWR line"). A 270 Ω bleed keeps
+  it at ≥ 10 mA of load, inside the LDO's accuracy spec and able to absorb current pushed in
+  from the bus. Side effect: if another device supplies TERMPWR while our board is off, our
+  terminator still has power. Whether it's then enabled depends on the termination DIP switch
+  (see `../USAGE.md`).
 - **Logic runs from one 3.3 V regulator** (a TPS73701 LDO, the same part as the
-  terminator's). That covers the RP2350B I/O, flash, PSRAM, microSD, the FT232H's I/O, the
-  CH334 hub (external 3.3 V mode) and the front-end logic. The FT232H's own regulator runs
-  from 5 V (VREGIN). The RP2350B's 1.1 V core comes from its own
-  on-chip regulator (external inductor, page 3).
+  terminator's). That covers the RP2350B I/O, flash, PSRAM, microSD, the CH334 hub (external
+  3.3 V mode), the expander and the front-end logic. The FT232H runs from 5 V (VREGIN) and makes
+  its own 3.3 V on VCCD for its I/O, PHY and EEPROM (FTDI's documented configuration). The
+  RP2350B's 1.1 V core comes from its own on-chip regulator (external inductor, page 3).
+- Both LDO EN pins come from 100 k / 75 k dividers on their inputs, so each LDO turns on only
+  above ≈ 4 V in (a clean UVLO; no EN-tied-to-IN overshoot on slow ramps).
 
 ## Open items on this page
 
-Decided 2026-09-24 (see `NOTES.md`): LM66200 (U1 ORing), TPS259470A eFuses (bench input and
-TERMPWR), TPS73701 at 3.3 V and 2.80 V, LM393 CC detection, 5.08 mm screw terminal, power
-budget.
+Decided (see `NOTES.md`): TPS2116 (U1 power mux, 2026-09-26; replaced the LM66200), TPS259470A
+eFuses (bench input and TERMPWR), TPS73701 at 3.3 V and 2.83 V, LM393 CC detection, 5.08 mm
+screw terminal, power budget, all resistor values (updated 2026-09-26 after the design review).
 
-- Default state of TERM_EN at power-up and while the MCU is in reset.
-- Resistor values (UVLO/OVLO dividers, R_ILM, LDO feedback) at schematic time.
+- Bring-up: scope VBUS at plug-in, the 3.3 V rail under load, TERMPWR at the connector under
+  load with a long cable, and TERMPWR at plug-in on a 500 mA port (should show no pulse).

@@ -18,8 +18,8 @@ The pin-1 corner is the left point (`*`). On the real board, rotate back 45° cl
                                                              .
 core reg (33R+4u7)     ----------------------- VREG_AVDD 61 / \ 60 IOVDD -------------------------- 3.3 V
 core reg GND           ---------------------- VREG_PGND 62 /   \ 59 ADC_AVDD ---------------------- 3.3 V
-core reg L             ----------------------- VREG_LX 63 /     \ 58 GPIO47_ADC7 ------------------ PSRAM CS1   QMI
-core reg 3.3 V in      --------------------- VREG_VIN 64 /       \ 57 GPIO46_ADC6 ----------------- spare       0R >> FIFO SIWU# (FT 28)
+core reg L             ----------------------- VREG_LX 63 /     \ 58 GPIO47_ADC7 ------------------ PSRAM CS1   QMI, 3.3k up
+core reg 3.3 V in      --------------------- VREG_VIN 64 /       \ 57 GPIO46_ADC6 ----------------- TERMPWR ADC ADC6, 100k/100k
 core reg -> DVDD       --------------------- VREG_FB 65 /         \ 56 GPIO45_ADC5 ---------------- LA marker 1 CPU
 hub port 2 D-          --------------------- USB_DM 66 /           \ 55 GPIO44_ADC4 --------------- LA marker 0 CPU
 hub port 2 D+          -------------------- USB_DP 67 /             \ 54 GPIO43_ADC3 -------------- FT MISO     PIO1; FIFO RD#
@@ -40,7 +40,7 @@ DB4 in      PIO0 in+4  -------- GPIO4  1 \ *         package top edge           
 DB5 in      PIO0 in+5  --------- GPIO5  2 \          faces upper-left           / 39 GPIO31 ------- SEL gate    CPU
 DB6 in      PIO0 in+6  ---------- GPIO6  3 \                                   / 38 GPIO30 -------- RST gate    CPU only
 DB7 in      PIO0 in+7  ----------- GPIO7  4 \            * = pin 1            / 37 GPIO29 --------- ACK gate    PIO0 side-set
-3.3 V                  ------------ IOVDD  5 \                               / 36 GPIO28 ---------- BSY gate    CPU
+3.3 V                  ------------ IOVDD  5 \         EP (81) = GND         / 36 GPIO28 ---------- BSY gate    CPU
 DBP in      PIO0 in+8  ------------- GPIO8  6 \                             / 35 RUN -------------- RUN btn; TC2030 pad 3
 ATN in      PIO0 in+9  -------------- GPIO9  7 \                           / 34 SWDIO ------------- TC2030 pad 2
 BSY in      PIO0 in+10 -------------- GPIO10  8 \                         / 33 SWCLK -------------- TC2030 pad 4
@@ -48,7 +48,7 @@ ACK in      PIO0 in+11 --------------- GPIO11  9 \                       / 32 DV
 1.1 V core             ------------------ DVDD 10 \                     / 31 XOUT ----------------- 12 MHz crystal
 RST in      PIO0 in+12 ----------------- GPIO12 11 \                   / 30 XIN ------------------- 12 MHz crystal
 MSG in      PIO0 in+13 ------------------ GPIO13 12 \                 / 29 IOVDD ------------------ 3.3 V
-SEL in      PIO0 in+14 ------------------- GPIO14 13 \               / 28 GPIO27 ------------------ ATN gate    CPU
+SEL in      PIO0 in+14 ------------------- GPIO14 13 \               / 28 GPIO27 ------------------ ATN gate    PIO0 out+9
 C/D in      PIO0 in+15 -------------------- GPIO15 14 \             / 27 GPIO26 ------------------- DBP gate    PIO0 out+8
 3.3 V                  ---------------------- IOVDD 15 \           / 26 GPIO25 -------------------- DB7 gate    PIO0 out+7
 REQ in      PIO0 in+16 ---------------------- GPIO16 16 \         / 25 GPIO24 --------------------- DB6 gate    PIO0 out+6
@@ -88,7 +88,7 @@ DB2 gate    PIO0 out+2 -------------------------- GPIO20 20 \ / 21 GPIO21 ------
 - pin 25 GPIO24: DB6 gate PIO0 out+6
 - pin 26 GPIO25: DB7 gate PIO0 out+7
 - pin 27 GPIO26: DBP gate PIO0 out+8
-- pin 28 GPIO27: ATN gate CPU
+- pin 28 GPIO27: ATN gate PIO0 out+9
 - pin 29 IOVDD: 3.3 V
 - pin 30 XIN: 12 MHz crystal
 - pin 31 XOUT: 12 MHz crystal
@@ -117,8 +117,8 @@ DB2 gate    PIO0 out+2 -------------------------- GPIO20 20 \ / 21 GPIO21 ------
 - pin 54 GPIO43_ADC3: FT MISO PIO1; FIFO RD#
 - pin 55 GPIO44_ADC4: LA marker 0 CPU
 - pin 56 GPIO45_ADC5: LA marker 1 CPU
-- pin 57 GPIO46_ADC6: spare 0R >> FIFO SIWU# (FT 28)
-- pin 58 GPIO47_ADC7: PSRAM CS1 QMI
+- pin 57 GPIO46_ADC6: TERMPWR ADC ADC6, 100k/100k
+- pin 58 GPIO47_ADC7: PSRAM CS1 QMI, 3.3k up
 - pin 59 ADC_AVDD: 3.3 V
 - pin 60 IOVDD: 3.3 V
 - pin 61 VREG_AVDD: core reg (33R+4u7)
@@ -165,10 +165,13 @@ DB2 gate    PIO0 out+2 -------------------------- GPIO20 20 \ / 21 GPIO21 ------
     - `IN_COUNT = 18` lets the sniffer compare the whole bus in one instruction.
     - All 18 are inverted in the pad (`INOVER`), so software reads 1 = asserted.
   - **Outputs, GPIO 18–31:** the 14 FET gates, 1 = asserted.
-    - DB0–7 and DBP (18–26) are PIO0's `out pins, 9` group.
+    - DB0–7, DBP and ATN (18–27) are PIO0's `out pins, 10` group (ATN is bit 9, 2026-09-26).
     - Then, in connector order: ATN (27), BSY (28), ACK (29), RST (30) and SEL (31).
     - ACK is PIO0 side-set, for the byte handshake.
-    - ATN, BSY and SEL are driven by the CPU; they change per phase, not per byte.
+    - ATN moved from the CPU to PIO0 (design review R010): SCSI-2 §6.2.1 wants ATN negated
+      in the ~100 ns window between REQ and ACK on the last MESSAGE OUT byte, which only PIO
+      can hit. The CPU changes ATN between phases by injecting instructions into the SM.
+    - BSY and SEL are driven by the CPU; they change per phase, not per byte.
     - RST is CPU-only: PIO0 can't drive it, so a PIO bug can't reset the bus (R4b).
     - GPIO 27 is package pin 28, two pins from XIN (pin 30), so it's the output nearest the
       crystal. Connector order puts ATN there, which rarely toggles. GPIO 28–31 (pins 36–39)
@@ -179,8 +182,13 @@ DB2 gate    PIO0 out+2 -------------------------- GPIO20 20 \ / 21 GPIO21 ------
   - I²C0 on 36/37.
   - SD CLK, CMD and D0 on 38–40 (PIO2, base 16).
   - LA markers on 44/45.
-  - Spare on 46 (ADC-capable).
-  - PSRAM CS1 on 47, next to the QSPI pins.
+  - **TERMPWR sense on 46 (ADC6)**, through 100 k / 100 k with 100 nF at the pin (design
+    review R066; it was the spare). Firmware keeps the pad's digital input off (ADC use).
+  - PSRAM CS1 on 47, next to the QSPI pins, with a **3.3 kΩ** pull-up.
+  - The 7 FT1248 nets have 33 Ω series resistors at the RP2350 end.
+- **Ground:** the QFN-80 has no GND pins. The exposed pad ("pin 81") is the only ground:
+  via array under it, and VREG_PGND and the regulator's CIN return go straight into it
+  (datasheet §6.3.8.1).
 - **FT1248 fallback (rework, not a respin).** Pins marked `0R >>` in the diagram get taken
   over; the `FT nn` in each label is the FT232H package pin its unfitted link comes from.
   Pins marked `; FIFO …` keep their wiring and only change role, through the FT232H EEPROM
@@ -190,25 +198,29 @@ DB2 gate    PIO0 out+2 -------------------------- GPIO20 20 \ / 21 GPIO21 ------
   - 42: SS_n becomes TXE#, also an FT232H output read by the GPIO.
   - 43: MISO becomes RD#, which the GPIO now drives.
   - 8-bit FT1248: GPIO 36–39 become MIOSIO4–7.
-  - 245 FIFO: WR# goes to GPIO 40 and SIWU# to GPIO 46.
+  - 245 FIFO: WR# goes to GPIO 40. SIWU# (FT232H pin 28) is tied high with a 10 kΩ pull-up to
+    the FT232H's VCCIO (no GPIO: GPIO 46 now senses TERMPWR); the host latency timer or the
+    flush command sends short packets instead. WR# (pin 27) also gets a 10 kΩ pull-up so it
+    idles during the swap.
   - How: GPIO 36–40 reach their I²C/SD nets through **fitted 0 Ω links**, and FT232H pins
-    17–20, 27 and 28 have **unfitted 0 Ω links** to GPIO 36–40 and 46. Moving resistors does
-    the swap.
+    17–20 and 27 have **unfitted 0 Ω links** to GPIO 36–40. Moving resistors does the swap.
   - The swap, pin by pin:
 
     | GPIO | Normal (fitted 0 Ω) | After the swap (bridge the unfitted 0 Ω) | Lost |
     |---|---|---|---|
-    | 36 | I²C0 SDA | FT232H pin 17: FIFO D4 / MIOSIO4 | I²C expander (LEDs, card detect, TERMPWR_OK readback) |
+    | 36 | I²C0 SDA | FT232H pin 17: FIFO D4 / MIOSIO4 | I²C expander (LEDs, card detect, fault flags, resets) |
     | 37 | I²C0 SCL | FT232H pin 18: FIFO D5 / MIOSIO5 | ″ |
     | 38 | SD CLK | FT232H pin 19: FIFO D6 / MIOSIO6 | microSD |
     | 39 | SD CMD | FT232H pin 20: FIFO D7 / MIOSIO7 | ″ |
     | 40 | SD D0 | FT232H pin 27: FIFO WR# (FIFO mode only) | ″ |
-    | 46 | spare (test pad, no series link) | FT232H pin 28: SIWU# (optional) | the spare |
 
-    8-bit FT1248 needs only the 36–39 swaps. FIFO mode needs 36–40, with 46 optional.
+    8-bit FT1248 needs only the 36–39 swaps. FIFO mode needs 36–40. (GPIO 46 used to offer an
+    optional SIWU# link; it's the TERMPWR ADC input since 2026-09-26.)
 - **Firmware rule (RP2350-E9):**
   - Never leave a gate pin as an input with its input buffer on; clear the input enable on all 14.
-  - Set the pin direction to output before handing a pin to PIO.
+  - Set the pin direction to output before handing a pin to PIO. (pico-sdk's
+    `gpio_set_function` and `pio_gpio_init` set IE = 1, so clear it afterwards.)
+  - E9 affects A2 silicon only; we plan for A4 and keep the mitigation so A2 is safe too.
   - The hardware backs this up with 4.7 kΩ gate pull-downs (E9 needs ≤ 8.2 kΩ).
 
 ## I²C expander pinout (TCA9555PWR)
@@ -219,36 +231,36 @@ package). Part decision: `../NOTES.md`, "GPIO budget" (TCA9555PWR, C465732). Sou
 
 <!-- BEGIN generated by _src/build.py from _src/expander.py: edit the source, not this block -->
 ```
-                                     TCA9555PWR
-                                 TSSOP-24, top view
+                                          TCA9555PWR
+                                      TSSOP-24, top view
 
-                                  +-------U-------+
-test point; DNP 0R to GPIO 46  -- |  1 INT VCC 24 | -- 3.3 V, 100 nF
-GND (addr 0x20)                -- |  2 A1  SDA 23 | -- GPIO 36 (I2C0), 4.7k up
-GND                            -- |  3 A2  SCL 22 | -- GPIO 37 (I2C0), 4.7k up
-in: SD_CD (socket switch)      -- |  4 P00  A0 21 | -- GND
-in: TERMPWR_EN_N (enable node) -- |  5 P01 P17 20 | -- spare in/out
-in: PWR_SRC (LM66200 ST)       -- |  6 P02 P16 19 | -- spare in/out
-in: BENCH_FLT_N (eFuse)        -- |  7 P03 P15 18 | -- out: SD_PWR_EN (optional)
-in: TERMPWR_FLT_N (eFuse)      -- |  8 P04 P14 17 | -- out: HUB_RESET_N
-in: TERMPWR_OK                 -- |  9 P05 P13 16 | -- out: FT_RESET_N
-spare in/out                   -- | 10 P06 P12 15 | -- out/in: TERM_EN (DIP 2)
-spare in/out                   -- | 11 P07 P11 14 | -- out: LED2_N (activity)
-GND                            -- | 12 GND P10 13 | -- out: LED1_N (status)
-                                  +---------------+
+                                       +-------U-------+
+test point (firmware polls)         -- |  1 INT VCC 24 | -- 3.3 V, 100 nF
+GND (addr 0x20)                     -- |  2 A1  SDA 23 | -- GPIO 36 (I2C0), 4.7k up
+GND                                 -- |  3 A2  SCL 22 | -- GPIO 37 (I2C0), 4.7k up
+in: SD_CD (socket switch)           -- |  4 P00  A0 21 | -- GND
+in: TERMPWR_EN_N (enable node)      -- |  5 P01 P17 20 | -- spare in/out
+in: PWR_SRC (TPS2116 ST, 1 = bench) -- |  6 P02 P16 19 | -- spare in/out
+in: BENCH_FLT_N (eFuse)             -- |  7 P03 P15 18 | -- out: SD_PWR_EN (optional)
+in: TERMPWR_FLT_N (eFuse)           -- |  8 P04 P14 17 | -- out: HUB_RESET_N (Schottky)
+spare in/out                        -- |  9 P05 P13 16 | -- out: FT_RESET_N
+spare in/out                        -- | 10 P06 P12 15 | -- out/in: TERM_EN (DIP 2)
+spare in/out                        -- | 11 P07 P11 14 | -- out: LED2_N (activity)
+GND                                 -- | 12 GND P10 13 | -- out: LED1_N (status)
+                                       +---------------+
 ```
 
 <details><summary>Connections (from the source, for readers who'd rather not trace lines)</summary>
 
-- pin 1 INT: test point; DNP 0R to GPIO 46
+- pin 1 INT: test point (firmware polls)
 - pin 2 A1: GND (addr 0x20)
 - pin 3 A2: GND
 - pin 4 P00: in: SD_CD (socket switch)
 - pin 5 P01: in: TERMPWR_EN_N (enable node)
-- pin 6 P02: in: PWR_SRC (LM66200 ST)
+- pin 6 P02: in: PWR_SRC (TPS2116 ST, 1 = bench)
 - pin 7 P03: in: BENCH_FLT_N (eFuse)
 - pin 8 P04: in: TERMPWR_FLT_N (eFuse)
-- pin 9 P05: in: TERMPWR_OK
+- pin 9 P05: spare in/out
 - pin 10 P06: spare in/out
 - pin 11 P07: spare in/out
 - pin 12 GND: GND
@@ -256,7 +268,7 @@ GND                            -- | 12 GND P10 13 | -- out: LED1_N (status)
 - pin 14 P11: out: LED2_N (activity)
 - pin 15 P12: out/in: TERM_EN (DIP 2)
 - pin 16 P13: out: FT_RESET_N
-- pin 17 P14: out: HUB_RESET_N
+- pin 17 P14: out: HUB_RESET_N (Schottky)
 - pin 18 P15: out: SD_PWR_EN (optional)
 - pin 19 P16: spare in/out
 - pin 20 P17: spare in/out
@@ -276,8 +288,11 @@ GND                            -- | 12 GND P10 13 | -- out: LED1_N (status)
   read 1 = fault/active.
 - **Power-up is safe without firmware.** Every P pin starts as an input with its ~100 kΩ
   internal pull-up. So:
-  - FT_RESET_N and HUB_RESET_N read high (running). Each also gets its own external pull-up,
-    so both chips run even if the expander is gone after the FT1248 rework (NOTES rule).
+  - FT_RESET_N and HUB_RESET_N read high (running), so both chips run even if the expander
+    is gone after the FT1248 rework (NOTES rule). FT232H RESET# has its own 10 kΩ pull-up (to
+    FT_3V3) + 10 nF. The CH334 RESET# has **no** external pull-up (its internal ~25 kΩ means
+    "run"; driving it high at power-up would enable CDP mode), and P14 reaches it through a
+    Schottky (cathode at P14), so P14 can only pull it low.
   - The LEDs are wired 3.3 V → resistor → LED → pin, so they're off until firmware drives
     the pin low.
   - TERM_EN leaves the DIP-switch default alone. The pin also reads the `/OE` node back when
@@ -285,20 +300,22 @@ GND                            -- | 12 GND P10 13 | -- out: LED1_N (status)
 - **Inputs:**
   - SD_CD: the socket's card-detect switch to GND, using the internal pull-up.
   - TERMPWR_EN_N: the TERMPWR enable node itself, pulled up to 3.3 V. It's low when we
-    supply TERMPWR, i.e. the USB port offers ≥ 1.5 A or the bench input is present. Read
-    with PWR_SRC and TERMPWR_OK, firmware can explain a dead bus.
-  - PWR_SRC: LM66200 U1 ST, "running on bench / USB".
+    supply TERMPWR, i.e. the USB port offers ≥ 1.5 A or the bench input is powering the board.
+    Read with PWR_SRC and the TERMPWR ADC (GPIO 46), firmware can explain a dead bus.
+  - PWR_SRC: TPS2116 U1 ST (open-drain, 10 kΩ to 3.3 V): 1 = running on the bench input, 0 = USB.
   - BENCH_FLT_N and TERMPWR_FLT_N: the two TPS259470A eFuse FLT outputs (open-drain).
-  - TERMPWR_OK: TERMPWR present on the bus.
+    TERMPWR_FLT_N also goes low when another device's TERMPWR is higher than ours (reverse
+    blocking), which isn't a fault: firmware checks the TERMPWR ADC before reporting a short.
+  - (P05 was TERMPWR_OK until 2026-09-26; TERMPWR is now read by the ADC on GPIO 46.)
 - **Outputs:**
   - LED1_N and LED2_N: status and activity.
   - TERM_EN: through DIP 2 (NOTES "Terminator enable").
-  - FT_RESET_N and HUB_RESET_N: the FT232H and CH334 resets.
+  - FT_RESET_N and HUB_RESET_N: the FT232H and CH334 resets. Keep P14 driven low only to
+    reset (≥ 4 µs pulse), otherwise high or input.
   - SD_PWR_EN: optional, only if we add an SD load switch.
-- **Spare:** P06, P07, P16 and P17, each usable as input or output.
-- **INT** goes to a test point, plus an unfitted 0 Ω link to GPIO 46; firmware polls by
-  default. GPIO 46 is also the FIFO fallback's SIWU# pin, so fit at most one of those two
-  links.
+- **Spare:** P05, P06, P07, P16 and P17, each usable as input or output.
+- **INT** goes to a test point only; firmware polls (GPIO 46, its old optional link, is now the
+  TERMPWR ADC).
 
 ## Open items on this page
 

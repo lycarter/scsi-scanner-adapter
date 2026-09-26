@@ -18,9 +18,9 @@ Source: `_src/scsi.py`.
             |                               |                              v
   +----------------------+    +--------------------------+    +--------------------------+
   | Switchable active    |    | DRIVERS: 14 x FDV301N    |    | RECEIVERS: 18 x          |
-  | terminator:          |    | N-FET, gate <- MCU pin   |    | Nexperia 74LVC1G17       |
-  | 18 x 110 ohm to      |    | open-drain, <=0.5V@48mA  |    | VT+ <= 2.0, VT- >= 0.8   |
-  | 2.80 V, fed from     |    | 14: DB0-7, DBP, ATN,     |    | 5 V-tolerant, Ioff       |
+  | terminator: 18 x     |    | N-FET, gate <- MCU pin   |    | Nexperia 74LVC1G17       |
+  | (2 x 220 ohm) to     |    | open-drain, <=0.5V@48mA  |    | VT+ <= 2.0, VT- >= 0.8   |
+  | 2.83 V, fed from     |    | 14: DB0-7, DBP, ATN,     |    | 5 V-tolerant, Ioff       |
   | TERMPWR; EN<-DIP sw  |    | ACK, SEL, BSY, RST       |    | all 18, always on        |
   +----------------------+    | 4.7k gate pull-downs:    |    | out: 3.3 V logic         |
                               | off in reset / unpowered |    +--------------------------+
@@ -94,19 +94,31 @@ Source: `_src/scsi.py`.
   pins, also through 100 Ω. The receivers are the Schmitt buffers R4a asks for, so there's
   no second buffer bank. A shorted probe draws ≤ 33 mA, and the resistor also damps ringing on
   the LA lead. Pinout matches the Digital Discovery 2×16 input connector (to do).
-- **Terminator (decided):** a TPS73701 at 2.80 V (fed from TERMPWR, page 1) → 3 × 74LVT245
-  (inputs tied high, `/OE` = enable) → 18 × 110 Ω. A DIP switch sets it on or off, so the
-  board works at the end of the chain (on) or in the middle (off).
+- **Terminator (decided; values updated 2026-09-26):** a TPS73701 at 2.83 V (fed from TERMPWR,
+  page 1, with a 270 Ω bleed) → 3 × SN74LVTH245A (A1–A8 and DIR tied straight to the 2.83 V rail,
+  `/OE` = enable; 6 lines per package) → 18 × 110 Ω, each made of **2 × 220 Ω 0402 in parallel**
+  (a single 0402 110 Ω would run at 100–110 % of its 62.5 mW rating on an asserted line). A DIP
+  switch sets it on or off, so the board works at the end of the chain (on) or in the middle (off).
+  - Disabled but powered (our TERMPWR or another device's), the '245's B-port **bus-hold**
+    keepers still load each line lightly through 110 Ω (≤ 0.75 mA transient), and it adds
+    ~9 pF per line. That only matters mid-chain; see NOTES "Termination".
 - **ESD (decided):** 18 × H5VUD5BB (0.3 pF, bidirectional, to ground, no rail pin) at the
   connector, and an SMF6.0A on TERMPWR. No rail pin means an unpowered board doesn't clamp the bus.
 - **Listen-only mode (R4)** is just this hardware with every gate held low: the receivers
   see everything and nothing is driven.
+- **Connector pins (SCSI-2 Table 2):** IDC50 pin 25 / HD50 pin 13 is **OPEN** (leave it
+  unconnected; a reversed cable puts TERMPWR there). The RESERVED lines (IDC50 24 and 28,
+  HD50 37 and 39) go to GND through a fitted 0 Ω link each, as §5.4.4 asks of end devices
+  (remove them if the board ever sits mid-chain). Several even pins are GROUND, not signals
+  (IDC50 20, 22, 30, 34). Wire both connectors from the table by signal name.
 
 ## Open items on this page
 
 - ~~Driver choice~~: decided 2026-09-25, FDV301N (fallback SN74LVTH125PWR).
-- Bench: gate kick from bus edges with the board off (fit the 22 pF caps if > ~0.4 V); tune the gate resistor for ringing.
+- Bench: gate kick from bus edges with the board off (fit the 22 pF caps only if the kick makes a visible dip or step on the bus edge; the ~0.6 V kick is self-limiting); tune the gate resistor for ringing.
 - ~~Receiver part~~: decided 2026-09-25, Nexperia 74LVC1G17GW (fallback Nexperia 74LVC14APW).
 - Bench: sweep one receiver input slowly and confirm VT+/VT− at the real 3.3 V supply.
+- Bench: measure the '245 output resistance (one line open vs. loaded ~21 mA). If R_out > 22 Ω, drop to 100 Ω per line.
+- Bench: scope REQ at the connector for ringing (the PIO programs guard against double-clocking, NOTES "PIO0 sketch").
 - ~~LA isolation~~: decided 2026-09-25, 100 Ω series resistors.
 - LA header pinout matched to the Digital Discovery.
