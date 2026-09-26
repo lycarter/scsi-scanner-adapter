@@ -28,7 +28,7 @@ chain (see `1-bus-capture/NOTES.md` for the topology).
   switchable, so it works at the chain end or mid-chain.
 - R5: **Host interface over USB-C** that needs no custom kernel drivers on macOS, Linux or
   Windows. That means vendor-class bulk with WinUSB/MS OS 2.0 descriptors, or CDC/NCM.
-- R6: Firmware updates over USB without special hardware. SWD header for debugging.
+- R6: Firmware updates over USB without special hardware. SWD for debugging (Tag-Connect TC2030 pads, decided 2026-09-25).
 - R7: Everything JLC-assemblable from LCSC stock where possible.
 - R8: **5 V power from USB-C.** Typical hosts are computers that offer 5 V at 1.5 A, maybe
   3 A, and rarely anything above 5 V. So the board runs on **5 V only** and reads the
@@ -97,7 +97,7 @@ update).
 Parts list for the schematic: `parts-list.md` (the reasoning stays here).
 
 Diagrams: `blocks/0-overview.md`, `1-power.md`, `2-scsi-frontend.md`, `3-mcu-support.md`,
-`4-usb.md`. Each is generated from a page source in `blocks/_src/` (named boxes and links)
+`4-usb.md`, `5-rp2350-pinout.md` (the pin map, drawn with `chip45()`). Each is generated from a page source in `blocks/_src/` (named boxes and links)
 by `python3 3-driver/blocks/_src/build.py`. The build checks the layout (no overlaps, wires
 touch the boxes they name) and writes a connection list under each diagram. To learn what a
 diagram says, read its source or that list rather than the art.
@@ -244,17 +244,30 @@ an expander input so firmware can explain a dead bus ("port only offers 500 mA")
 - Thresholds (TUSB321 datasheet, the Type-C sink values): **0.66 V** = Default vs. 1.5 A,
   1.23 V = 1.5 A vs. 3 A. Only 1.5 A is detected, which covers the budget. Window: Default
   reads ≤ ~0.61 V, 1.5 A reads ≥ ~0.70 V, so the threshold has about ±40 mV of room.
-- Circuit: 5.1 kΩ 1 % Rd from CC1 and CC2 to GND. Each CC goes through a series R + C filter
-  (roughly 100 kΩ / 100 nF, τ ≈ 10 ms: debounce, and the big R keeps the cap off the CC
-  line) into the inverting input of one LM393 half. A shared 0.66 V reference comes from 3.3 V
-  (e.g. 40.2 k / 10 k, 1 %) on the + inputs. The open-collector outputs are wired together
-  with a pull-up to 3.3 V, giving **CC_OK_N (active low)**. A ~1 MΩ feedback resistor from
-  the output to the reference node adds ~20 mV of hysteresis. Values get finalized at
-  schematic time.
+- Circuit (values final, 2026-09-25):
+  - 5.1 kΩ 1 % Rd from CC1 and CC2 to GND.
+  - **Each CC goes through 10 kΩ / 1 µF (τ = 10 ms)** into the inverting input of one LM393
+    half.
+  - The shared reference sits on the + inputs. A **CJ431 (C3113, basic, ±0.5 %)** shunt
+    reference, biased from 3.3 V through 510 Ω (≥ 1.16 mA even at 3.16 V), gives 2.495 V.
+    That's divided by **13.3 kΩ (10 k + 3.3 k) / 4.7 kΩ** to about 0.65 V.
+  - **1 MΩ** from the comparator output to the reference node gives ~11 mV of hysteresis.
+  - The open-collector outputs are wired together **directly onto the TERMPWR enable node**
+    (10 kΩ pull-up to 3.3 V; see "TERMPWR switch"). So the node is CC_OK_N wired-OR with the
+    bench-present FET.
+- **Worst case (1 % resistors, reference ±0.8 % incl. tempco, 3.3 V ±3 %, V_OS ±9 mV):**
+  rising threshold 0.661 V nominal / ≤ 0.685 V worst; falling 0.649 V / ≥ 0.626 V. That's
+  inside the 0.61–0.70 V window with **+15 mV margin on both sides**. LM393 bias current
+  through 10 kΩ adds ≤ 2.5 mV (≤ 4 mV hot).
+- **Why these changes (2026-09-25):**
+  - With the reference taken from the 3.3 V rail, *no* 1 % divider passed worst case. The
+    rail's ±3 % alone moves 0.655 V by ±20 mV.
+  - The classic LM393's input bias current is up to 250 nA (TI LM393 family table: 25 typ /
+    250 max). Through the planned 100 kΩ that's a 25 mV error, half the window. 10 kΩ with
+    1 µF keeps τ = 10 ms at 1/10 of the error.
 - Part: **LM393DR2G, C7955, JLC basic**, $0.07, ~240k stock. Everything else is basic
   passives.
-- Error budget: LM393 Vos 5 mV + 1 % dividers + 3.3 V LDO tolerance ≈ ±15–20 mV. That fits the
-  ±40 mV window.
+- ~~Error budget: ±15–20 mV~~: that was optimistic. See the worst case above.
 - **To check when we draw it (unverified):**
   - Supply the LM393 from the 5 V (ORed) rail, not 3.3 V. Its input common-mode range tops
     out at Vcc − 1.5 V, and a 3 A port puts up to ~2.04 V on CC. The output pull-up still
@@ -377,8 +390,11 @@ the part is chosen.
   LDO, V5 must be ≥ 4.5 V (DS §4.2), and the worst-case USB supply (≈4.4 V) misses that. WCH itself
   suggests this mode for industrial use, because it cuts the hub's dissipation from 85 mA × 5 V
   to 85 mA × 3.3 V (Chinese V2.91 §6.1). The trade-off: external mode needs 3.2–3.4 V, which is
-  tighter than the LDO's worst-case ±3 % (typical ±0.5 % is well inside). Use 0.1 % feedback
-  resistors to keep the resistor error out of it.
+  tighter than the LDO's worst-case ±3 % (typical ±0.5 % is well inside). **Decided 2026-09-25:
+  1 % feedback resistors (47 k / 27 k, no-fee), not 0.1 %.** The LDO dominates either way
+  (worst case 3.16–3.44 V with 1 %, 3.20–3.40 V with 0.1 %, legacy silicon), and JLC doesn't
+  let us pick the silicon. We assume the CH334 stays in spec, and the owner measures the rail
+  at bring-up (swap one resistor if needed).
 - The **TERMPWR polyfuse** must hold ≥ 0.9 A and trip at ≤ ~1.5 A (SCSI-2 recommends a 1.5 A limit).
   That feeds the open TERMPWR voltage-budget check (see "Ideal diodes").
 
@@ -440,7 +456,9 @@ the part is chosen.
   INT goes to a test point + an unfitted 0 Ω link to the spare GPIO; firmware polls by default.
   Tentative pins: in = card detect, TERMPWR_OK, CC detector ×2 (if used), bench present,
   USB present; out = 2 status LEDs, TERM_EN (pencilled in), SD power enable (optional),
-  FT232H reset, hub reset. The rest are spare.
+  FT232H reset, hub reset. The rest are spare. **Pin-by-pin assignment accepted 2026-09-25:
+  `blocks/5-rp2350-pinout.md`, "I²C expander pinout"** (port 0 = inputs, port 1 = outputs,
+  address 0x20; P01 = TERMPWR_EN_N instead of a CC_OK copy).
   - **Unpowered behavior (datasheet, not measured):** the TCA9535/9555/6416A and the MCP23017
     all spec an I/O clamp for VO > VCC, so an unpowered expander pin clamps toward 0 V. None of
     them fixes the TERM_EN weak spot, so the accepted "documented limitation, no extra parts"
@@ -475,6 +493,134 @@ Verified (RP2350 datasheet, PIO GPIOBASE register, 2026-09-24): each PIO block s
 32-GPIO window, and GPIOBASE selects base 0 or 16 only. It is set per block, so the SCSI can
 use PIO0 at base 0 (GPIO 0–31) while the FT232H uses PIO1 at base 16 (GPIO 16–47). The 32
 SCSI pins fill one window exactly, so pin ordering matters.
+
+### RP2350B pin map and PIO plan (accepted 2026-09-25)
+
+The diagram with every package pin is `blocks/5-rp2350-pinout.md`. The reasoning:
+
+- **SCSI on GPIO 0–31, PIO0 at base 0, both blocks in SCSI-2 connector order** (Table 2).
+  Each block then runs connector → per-line clusters → MCU without crossings.
+  - Inputs 0–17: DB0–7, DBP, ATN, BSY, ACK, RST, MSG, SEL, C/D, REQ, I/O. These are the
+    74LVC1G17 outputs, with **INOVER = invert** in the pad so software reads 1 = asserted.
+  - Outputs 18–31: DB0–7 and DBP gates (18–26, PIO0 `out pins, 9`), then ATN, BSY, ACK, RST
+    and SEL gates (27–31). The FET gates are 1 = asserted.
+  - PIO only needs *consecutive* groups; the order within a group is free. `wait pin` can
+    reach REQ at bit 16, and side-set can be any pin (ACK = 29). MSG, C/D and I/O are no
+    longer adjacent (bits 13/15/17), so firmware gathers the bus phase from three bits.
+  - Crystal: GPIO 27 is package pin 28, two pins from XIN (30). Connector order puts ATN
+    there, which rarely toggles. (My first draft wrongly said GPIO 28–31 were the ones by the
+    crystal; they're beyond SWD and RUN.)
+- **Who drives what:**
+  - PIO0: data gates and ACK (per-byte handshakes).
+  - CPU (SIO): ATN, BSY and SEL, which change per phase on µs timescales (arbitration delay
+    2.4 µs). That keeps arbitration, selection and reselection in C. During arbitration the
+    CPU puts our ID bit on a PIO-owned data pin by injecting one instruction into the idle
+    data-out SM.
+  - **RST is CPU-only:** its function select is SIO, so PIO physically can't assert it (R4b).
+  - Rejected: an all-PIO "control" SM. It's atomic, but two SMs writing overlapping pins
+    need ownership handoffs ("last writer wins"), and it costs slots we may want for sync
+    transfers.
+- **Everything else on GPIO 32–47:**
+  - FT1248 on 32–35 and 41–43 (PIO1, base 16).
+  - I²C0 on 36/37.
+  - SD CLK, CMD and D0 on 38–40 (PIO2, base 16).
+  - LA markers on 44/45.
+  - Spare on 46 (ADC-capable).
+  - PSRAM CS1 on 47.
+- **FT1248 fallback links (accepted):**
+  - Fitted 0 Ω from GPIO 36–40 to their I²C/SD nets.
+  - Unfitted 0 Ω from FT232H pins 17–20, 27 and 28 to GPIO 36–40 and 46.
+  - That's 11 × C17168. The swap table is on page 5.
+- **RP2350-E9 (datasheet erratum):** a Bank 0 pad set as an input (input buffer on, output
+  off) at a mid-level voltage sources about 120 µA and floats to about 2.2 V. Only a pull of
+  **≤ 8.2 kΩ** overcomes it. That's above the FDV301N's 0.70–1.06 V threshold, so a gate pin
+  left as an input would assert its SCSI line.
+  - Fixes: **4.7 kΩ gate pull-downs** (C25900, was 10 kΩ), and a firmware rule to **clear
+    the input enable on all 14 gate pins** and set the pin direction before handing a pin to
+    PIO.
+  - Reset is unaffected: pads come out of reset with the input buffer off.
+
+**PIO0 sketch** (4 SMs, 32 slots; about 19–21 used):
+
+```
+; data_in (DATA IN / STATUS / MSG IN). IN_BASE=0, side-set = ACK (GPIO 29), REQ = in bit 16
+.side_set 1 opt
+.wrap_target
+    wait 1 pin 16   side 0   ; REQ asserted (inputs inverted: 1 = asserted)
+    in   pins, 9    side 1   ; sample DB0-7+P, assert ACK
+    wait 0 pin 16            ; REQ released; ACK drops at the top of the loop
+.wrap                                                   ; 3 instr (+2 for a byte count)
+
+; data_out (DATA OUT / COMMAND / MSG OUT). OUT_BASE=18, 9 pins
+.side_set 1 opt
+.wrap_target
+    pull block      side 0   ; 9-bit word, parity precomputed by lookup table
+    wait 1 pin 16            ; REQ asserted
+    out  pins, 9    [8]      ; drive data; ≥ 55 ns deskew + cable skew at 150 MHz
+    wait 0 pin 16   side 1   ; assert ACK until REQ is released
+.wrap                                                   ; 4 instr
+
+; sniff (listen-only, or a trace of our own traffic). IN_COUNT=18
+top:  mov x, pins
+      jmp x!=y, emit
+      jmp top                ; ~20 ns sample loop
+emit: mov y, x
+      mov isr, x
+      push noblock
+      irq set 0              ; ask the timestamp SM for a time              ; 7 instr
+
+; stamp: counts down; pushes its count when IRQ 0 is raised (RP2350 STATUS_SEL = IRQ). ~5 instr
+```
+
+- Unverified: the timestamp scheme. The fallback is to have DMA copy a PWM counter per sample.
+- Firmware must release all 9 data gates within the 400 ns data-release delay when the phase
+  turns target-driven.
+
+### Debug: Tag-Connect TC2030-IDC + the owner's J-Link EDU (decided 2026-09-25)
+
+- **Footprint:** KiCad `Connector:Tag-Connect_TC2030-IDC-FP_2x03_P1.27mm_Vertical` (the legged
+  version, with holes for the retaining clips). There's no part on the BOM.
+- **Pads (Tag-Connect ARM20-CTX sheet, checked 2026-09-25):** 1 VCC (3.3 V, used as the probe's
+  target reference), 2 SWDIO, 3 nRESET → RP2350 RUN, 4 SWCLK, 5 GND, 6 SWO → not connected
+  (the RP2350 has no SWO pin).
+- **Probe: the owner's SEGGER J-Link EDU.** SEGGER officially supports the RP2350 (both
+  Cortex-M33 cores, flash programming; news 2024-11-11, SEGGER KB "Raspberry Pi Pico 2"). The
+  EDU licence covers non-commercial use, which this hobby project is.
+  - To buy: the **TC2030-IDC** cable plus Tag-Connect's **ARM20-CTX** adapter (J-Link 20-pin
+    → TC2030-IDC).
+- Rejected:
+  - **ST-Link V2:** ST's own protocol, not the RP2350's supported path. Raspberry Pi's
+    OpenOCD targets CMSIS-DAP probes, and the clones are unreliable.
+  - **Raspberry Pi Debug Probe** (~$12, CMSIS-DAP, the officially supported probe): a good
+    second choice, but it has a 3-pin JST-SH plug and there's no off-the-shelf TC2030
+    adapter for it.
+- Routine flashing needs no probe: BOOTSEL + USB (UF2/picotool). The probe is for
+  step-debugging.
+
+### Resistor and small-part values (decided 2026-09-25)
+
+All are 1 % 0402 JLC basic or preferred parts unless noted. Worst cases use 1 % resistors
+and the datasheet threshold spreads.
+
+| Circuit | Values | Result | Worst case / check |
+|---|---|---|---|
+| 3.3 V LDO feedback (TPS73701, Vout = 1.204 (R1+R2)/R2) | R1 47 k, R2 27 k | 3.300 V | 3.16–3.44 V on legacy silicon (±3 %), 3.21–3.39 V on new (±1.5 %). Measure at bring-up |
+| 2.80 V terminator LDO feedback | R1 20 k, R2 15 k | 2.809 V | 2.69–2.92 V, inside 2.5–2.96 V |
+| Bench eFuse EN/UVLO + OVLO string (Eq. 10/11) | R1 **510 k** (C11616), R2 56 k, R3 150 k | UV 4.17 V, OV 5.73 V | OV 5.56–5.93 V: above a 5.5 V bench setting, below U1's 6 V absolute max. R1 ≥ 350 kΩ meets the reverse-polarity rule |
+| Bench eFuse current limit (R_ILM = 3334/I) | 1.5 k + 150 Ω series | 2.02 A | 1.80–2.20 A (datasheet row for 1.65 kΩ). Board worst case 1.4 A |
+| TERMPWR eFuse EN/UVLO | 39 k / 15 k | 4.32 V | ~4.19–4.46 V |
+| TERMPWR eFuse current limit | 2.4 k + 330 Ω series | 1.22 A | ~1.06–1.39 A (≥ 0.9, ≤ 1.5) |
+| TERMPWR enable node pull-up | 10 k to 3.3 V | | OVLO off > 1.2 V |
+| CC input filter ×2 | 10 k + 1 µF (C52923) | τ 10 ms | Bias error ≤ 2.5 mV |
+| CC reference | CJ431 (C3113) + 510 Ω bias; 10 k + 3.3 k over 4.7 k; 1 M hysteresis | 0.661 / 0.649 V | +15 mV margin each side |
+| TERMPWR_OK sense → expander P05 | 22 k (top) / 33 k | 3.15 V at 5.25 V | 2.55 V at 4.25 V (VIH 2.31 V); 0.39 V when absent, against the expander's internal 100 kΩ pull-up |
+| TERMPWR "present" LED (on TERMPWR itself) | 6.8 k (C25917) + red LED | ≤ 0.5 mA | Total TERMPWR draw ≤ 0.61 mA, under SCSI-2's 1 mA |
+| Bench-present 2N7002 gate, fed from the **bench eFuse output** | 10 k series, 100 k to GND | 4.5 V at 5 V | Keeps the ±20 V gate away from a 24 V mistake on the raw terminal |
+| FDV301N gate ×14 | 100 Ω series, **4.7 k** pull-down, 22 pF DNP | | E9 |
+| LEDs on 3.3 V (TERMPWR-enable LED, expander LED1/LED2) | 1 k with red KT-0603R (C2286) or yellow KT-0805Y (C2296) | ~1–1.5 mA | JLC's only basic green (KT-0805G, Vf 2.6–3.1 V) is too close to 3.3 V |
+| I²C SDA/SCL | 4.7 k to 3.3 V | | |
+| SDIO CMD, D0–D3 pull-ups | 10 k ×5 | | SD spec 10–100 kΩ; D1–D3 aren't wired to the MCU |
+| FT232H RESET#, CH334 reset, TCA9555 INT | 10 k pull-ups to 3.3 V | | Resets run without the expander (fallback rule) |
 
 ### FT232H pins in detail (datasheet v2.0 §3.5.3, §4.5)
 
@@ -644,21 +790,30 @@ the eFuse already chosen for the bench input can.
   weak spot in the TERMPWR voltage budget (see "Ideal diodes").
 - **The eFuse instead (TPS259470ARPWR, C3662799, the same part as the bench input, so no new
   loading fee).** It replaces U2 (LM66200) and the polyfuse:
-  - Current limit set by R_ILM: the datasheet gives 1.007 A at 3.32 kΩ and 2.03 A at 1.65 kΩ, so
-    **≈ 2.74 kΩ gives ≈ 1.2 A (±10 % above 1 A: 1.08–1.32 A)**. That's ≥ 0.9 A and ≤ 1.5 A.
-    Check the curve and the transient timer (ITIMER) at schematic time.
+  - Current limit: R_ILM = 3334 / I_LIM (datasheet Eq. 7). **2.4 kΩ + 330 Ω in series
+    (2.73 kΩ, both no-fee) gives 1.22 A**. The spread, interpolated from the datasheet's
+    3.32 kΩ and 1.65 kΩ rows, is about ±13 %, so 1.06–1.39 A: ≥ 0.9 A and ≤ 1.5 A. This
+    replaces the extended 2.74 kΩ. A single 2.4 kΩ could reach 1.59 A. Check ITIMER at
+    schematic time.
   - **R_ON 28 mΩ** (≈ 25 mV at 0.9 A), against LM66200 + polyfuse ≈ 0.15–0.3 V. The TERMPWR
     voltage-budget worry mostly goes away.
   - **True reverse-current blocking, including unpowered:** OUT leakage ≤ 4.86 µA with
     OUT = 12 V and IN = 0 V (datasheet, "Reverse current blocking"). Another device's TERMPWR
     can't backfeed our board (R2).
   - **The OVLO pin doubles as an active-low enable** (pin description: "can also be used as an
-    Active Low Enable"). Our existing enable node is already active-low: pulled up to 5 V,
-    pulled low by the wired-OR of CC_OK_N and the bench-present N-FET. So it wires straight to
-    OVLO, with no inverter. Low (< 1.09 V) = on, high (> 1.2 V) = off.
-  - EN/UVLO: a divider from IN sets under-voltage lockout (≈ 4.3 V), with ≥ 350 kΩ total.
+    Active Low Enable"). Our enable node is active-low: **pulled up to 3.3 V through 10 kΩ**
+    (changed from 5 V on 2026-09-25), pulled low by the wired-OR of the LM393 outputs
+    (CC_OK_N) and the bench-present N-FET. So it wires straight to OVLO, with no inverter.
+    Low (< 1.09 V) = on, high (> 1.2 V) = off.
+    - The 5 V pull-up only existed because the old LM66200 switch had undocumented ON
+      thresholds. At 3.3 V the expander can read the node directly (P01 = TERMPWR_EN_N).
+    - Side effect: for the ~ms after 5 V is up but before 3.3 V is, the node reads low and
+      TERMPWR may switch on briefly. Harmless: with the bus idle the terminators draw almost
+      nothing.
+  - EN/UVLO: **39 kΩ / 15 kΩ** from IN (the 5 V rail) → 4.32 V rising (≈ 4.19–4.46 V worst).
   - FLT (open-drain) → a spare expander input: "TERMPWR fault" (overcurrent or short on the bus).
-  - The TERMPWR LED stays on the enable node. The disable jumper (R2a) stays in series with the
+  - The TERMPWR LED stays on the enable node: 3.3 V → 1 kΩ → LED → node, lit when the node
+    is low. The disable jumper (R2a) stays in series with the
     output.
 - The TPS2121 fallback is no longer needed. The LM66200 part type stays (U1).
 
@@ -784,7 +939,8 @@ against its datasheet:
 **Safe at power-up, and a known weak spot:**
 - RP2350 GPIOs reset with the pull-down on and the pad isolated (datasheet Table 853:
   PDE = 1, ISO = 1, IE = 0). That holds the gates low, so the lines stay released during
-  reset and boot. The 10 kΩ pull-down keeps them low when the board is off. With the LVTH
+  reset and boot. The **4.7 kΩ** pull-down keeps them low when the board is off. (It was
+  10 kΩ, changed on 2026-09-25 because of RP2350-E9; see "RP2350B pin map".) With the LVTH
   it's the other way round: the same reset pull-down pulls `/OE` low, which *enables* the
   drivers, so external pull-ups would have to overpower it.
 - Weak spot, inferred from typical curves: a rising bus edge couples through C_rss
@@ -1086,3 +1242,4 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
 - 2026-09-25: SCSI drivers: 14 × FDV301N (open-drain on every driven line), SN74LVTH125PWR as the fallback. Pin sharing and a serial input expander were considered and rejected; it stays 32 dedicated GPIO. Corrected the capacitance budget (the terminator is excluded per §5.4).
 - 2026-09-25: SCSI receivers: 18 × Nexperia 74LVC1G17GW (I_OFF specified; thresholds guaranteed at 3.0 V, interpolated at 3.3 V). Fallback 3 × Nexperia 74LVC14APW. TI's LVC14A fails VT− and Nexperia's 2G17/3G17 fail VT+, so the BOM must pin the vendor.
 - 2026-09-25: LA tap: 100 Ω series resistor per receiver output (and on the 2 markers); no second buffer bank. Closes open question 5.
+- 2026-09-25: RP2350B pin map accepted (SCSI blocks in connector order; ATN/BSY/SEL on the CPU, RST CPU-only; FT1248 0 Ω rework links; E9 → 4.7 kΩ gate pull-downs). Expander pinout accepted (P01 = TERMPWR_EN_N). Debug: TC2030-IDC pads + J-Link EDU. All resistor values set; CC reference now a CJ431 with a 10 k/1 µF filter; TERMPWR enable node pulled up to 3.3 V; 3.3 V LDO divider 1 %.

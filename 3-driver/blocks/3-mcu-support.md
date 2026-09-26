@@ -13,8 +13,8 @@ Status: draft, 2026-09-24. Source: `_src/mcu.py`.
                                 |                          |       |
                                 |                          |       |  +------------------+
   +----------------------+      |                          |       |  | PSRAM 8 MB       |
-  | SWD header           |<---->|                          |       +->| APS6404L-3SQR    |
-  | (debug probe)        |      | RP2350B                  | CS1      | shares QSPI bus  |
+  | SWD: TC2030-IDC pads |<---->|                          |       +->| APS6404L-3SQR    |
+  | (J-Link EDU)         |      | RP2350B                  | CS1      | shares QSPI bus  |
   +----------------------+      | QFN-80, 48 GPIO          |--------->|                  |
                                 | 520 KB SRAM              |          +------------------+
                                 | 3 PIO blocks             |
@@ -46,7 +46,7 @@ Status: draft, 2026-09-24. Source: `_src/mcu.py`.
 <details><summary>Connections (from the source, for readers who'd rather not trace lines)</summary>
 
 - 12 MHz ABM8-272-T3 → RP2350B
-- SWD header ↔ RP2350B
+- SWD (Tag-Connect TC2030) ↔ RP2350B
 - BOOTSEL + RUN → RP2350B
 - 1.1 V core: on-chip ↔ RP2350B
 - RP2350B → QSPI flash: QSPI
@@ -78,7 +78,8 @@ Status: draft, 2026-09-24. Source: `_src/mcu.py`.
     remove the external flash chip.
 - **microSD:** 1-bit SDIO driven by PIO2 (3 GPIO); card detect goes to the I²C expander.
   Use: spill-over when the host stalls. If pins free up, it moves to 4-bit SDIO first.
-- **Debug:** an SWD header for a debug probe. The console is USB CDC over the native USB
+- **Debug:** Tag-Connect TC2030-IDC pads (1 VCC, 2 SWDIO, 3 RUN, 4 SWCLK, 5 GND, 6 NC) for
+  the owner's J-Link EDU via an ARM20-CTX adapter; no connector part on the board. The console is USB CDC over the native USB
   (page 4), so there's no UART header. BOOTSEL and RUN buttons give manual bootloader entry
   and reset; normally the host triggers BOOTSEL in software.
 - **Native USB (full speed):** goes to port 2 of the USB hub (page 4), with 27 Ω series

@@ -4,7 +4,7 @@ D = Diagram()
 
 D.box('rp', 32, 2, 28, 22, *[""] * 7, "RP2350B", "QFN-80, 48 GPIO", "520 KB SRAM", "3 PIO blocks")
 D.box('xtal', 2, 3, 24, 3, "12 MHz ABM8-272-T3")
-D.box('swd', 2, 8, 24, 4, "SWD header", "(debug probe)")
+D.box('swd', 2, 8, 24, 4, "SWD: TC2030-IDC pads", "(J-Link EDU)", name="SWD (Tag-Connect TC2030)")
 D.box('btn', 2, 14, 24, 4, "BOOTSEL + RUN", "buttons (owner THT)")
 D.box('core', 2, 19, 24, 4, "1.1 V core: on-chip", "reg + 3.3 uH Abracon")
 D.box('flash', 70, 2, 20, 4, "QSPI flash", "W25Q128 16 MB")

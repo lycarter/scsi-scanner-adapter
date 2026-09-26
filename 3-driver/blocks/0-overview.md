@@ -34,7 +34,7 @@ choices unless `NOTES.md` says they're decided.
 |                                                                   |                                  |
 |                           +------------------------------------------------+                         |
 |                           | MCU support (p.3): QSPI flash, 8 MB PSRAM,     |                         |
-|                           | microSD (SDIO), 12 MHz crystal, SWD header,    |                         |
+|                           | microSD (SDIO), 12 MHz crystal, SWD pads,      |                         |
 |                           | buttons, TCA9555 I2C expander (LEDs, status)   |                         |
 |                           +------------------------------------------------+                         |
 +======================================================================================================+

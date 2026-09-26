@@ -12,7 +12,7 @@ D.box('scsi', 82, 5, 20, 8, "SCSI front end", "(p.2)", "drivers,", "receivers,",
 D.box('la', 82, 16, 20, 5, "LA header", "(Digital", "Discovery 2x16)")
 D.box('pwr', 3, 13, 22, 7, "POWER  (p.1)", "USB + bench 5 V", "ORing, TERMPWR,", "regulators")
 D.box('sup', 28, 27, 50, 5, "MCU support (p.3): QSPI flash, 8 MB PSRAM,",
-      "microSD (SDIO), 12 MHz crystal, SWD header,", "buttons, TCA9555 I2C expander (LEDs, status)", name="MCU support (p.3)")
+      "microSD (SDIO), 12 MHz crystal, SWD pads,", "buttons, TCA9555 I2C expander (LEDs, status)", name="MCU support (p.3)")
 
 D.link('@Host computer', 'usbc', [(6, 1), (6, 4)], "USB-C cable (HS data + 5 V)", at=(8, 1))
 D.note(8, 0, "Host computer")
