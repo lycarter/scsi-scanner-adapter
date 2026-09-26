@@ -2,3 +2,10 @@
 # Vendor reference material: large, copyrighted, and contains Mac resource forks git can't store.
 /reference/
 __pycache__/
+
+# KiCad per-user and generated files
+*.kicad_prl
+*-backups/
+fp-info-cache
+\#auto_saved_files\#
+*.lck

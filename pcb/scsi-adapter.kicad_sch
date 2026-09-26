@@ -1,0 +1,19 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5")
+	(paper "USLetter")
+	(title_block
+		(title "SCSI scanner adapter")
+		(date "2026-09-26")
+		(rev "0.1")
+	)
+	(lib_symbols)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)
