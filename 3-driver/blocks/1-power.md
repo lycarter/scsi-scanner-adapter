@@ -13,8 +13,8 @@ Source: `_src/power.py`.
       |        |        +------------------------------+                   |
       |        | CC1/2  | CC sense (sink side): 5.1k   |                   v
       |        +------->| Rd on CC1/CC2 + LM393        |      +------------------------+
-      |                 | vs 0.66 V -> CC_OK_N         |      | TPS259470A eFuse       |
-      |VBUS             | (port allows >= 1.5 A)       |      | -15..28 V, OVLO 5.7 V  |
+      |                 | vs 0.66 V (CJ431 ref)        |      | TPS259470A eFuse       |
+      |VBUS             | -> CC_OK_N (>= 1.5 A)        |      | -15..28 V, OVLO 5.7 V  |
       |                 +------------------------------+      | ILIM ~2 A              |
       |                                                       +------------------------+
       v                                                                    v
@@ -32,7 +32,7 @@ Source: `_src/power.py`.
   | ILIM ~1.2 A, rev.block |      | TPS73701 LDO         |    | TERMPWR_OK -> expander |
   | + disable jumper       |      +----------------------+    | (1 digital in)         |
   | OVLO=CC_OK_N wOR BENCH |                 |                | + LED (< 1 mA draw)    |
-  | + LED: we supply       |                 v                +------------------------+
+  | (3.3V pull-up) + LED   |                 v                +------------------------+
   +------------------------+      +3V3 -> RP2350B IOVDD (its 1.1 V core comes
               |                      from the RP2350's on-chip regulator),
               | TERMPWR:             QSPI flash, PSRAM, microSD, FT232H
@@ -74,17 +74,20 @@ Source: `_src/power.py`.
   the port allows default current (0.5/0.9 A), 1.5 A or 3 A. **This is decided in hardware,
   not by the MCU:** a CC-detector chip with digital outputs, or a pair of comparators (one
   per CC pin, because only one is active depending on cable orientation), produces `CC_OK`
-  when the port allows ≥1.5 A. No USB PD controller is used.
+  when the port allows ≥1.5 A. No USB PD controller is used. **Built (2026-09-25):** an LM393
+  against a 0.66 V reference from a CJ431 shunt reference, with 10 kΩ / 1 µF filters, ~11 mV
+  hysteresis and +15 mV worst-case margin. Values: NOTES "CC detection".
 - **TERMPWR is switched by hardware logic, not firmware.** `+5V_SYS` goes through a
   TPS259470A eFuse (current limit ≈1.2 A, within SCSI-2's ≤1.5 A recommendation; true
   reverse blocking even when unpowered), then a disable jumper, to TERMPWR on both SCSI
   connectors (IDC50 pin 26, HD50 pin 38). Its OVLO pin is used as an active-low enable.
-  **EN = CC_OK OR BENCH_PRESENT**: on when the USB port
+  **EN = CC_OK OR BENCH_PRESENT**, an active-low node pulled up to 3.3 V that the expander
+  also reads (TERMPWR_EN_N): on when the USB port
   allows ≥1.5 A or the bench supply is connected. An LED on EN shows "we are supplying
   TERMPWR". Because no firmware is involved, TERMPWR is up even while the MCU is in reset or
   the bootloader, and it drops at once if the host lowers its current advertisement.
   SCSI-2 requires 4.25–5.25 V and ≥900 mA from an initiator.
-- **TERMPWR_OK (1 GPIO, pencilled in) and a second LED** watch the TERMPWR *node* (which any
+- **TERMPWR_OK (expander P05, via a 22 k / 33 k divider) and a second LED (6.8 kΩ, ≤ 0.5 mA)** watch the TERMPWR *node* (which any
   device on the bus may be powering), not our enable. That lets firmware report "the bus
   terminators are unpowered" instead of misreading a floating bus. The LED must draw
   < 1 mA from TERMPWR, or be driven from our own rail through a buffer: SCSI-2 §5.4.3 limits

@@ -22,7 +22,7 @@ Source: `_src/scsi.py`.
   | 18 x 110 ohm to      |    | open-drain, <=0.5V@48mA  |    | VT+ <= 2.0, VT- >= 0.8   |
   | 2.80 V, fed from     |    | 14: DB0-7, DBP, ATN,     |    | 5 V-tolerant, Ioff       |
   | TERMPWR; EN<-DIP sw  |    | ACK, SEL, BSY, RST       |    | all 18, always on        |
-  +----------------------+    | 10k gate pull-downs:     |    | out: 3.3 V logic         |
+  +----------------------+    | 4.7k gate pull-downs:    |    | out: 3.3 V logic         |
                               | off in reset / unpowered |    +--------------------------+
                               +--------------------------+        |                   |
                                             ^ 14 x gate           |     isolation:    |
@@ -69,8 +69,8 @@ Source: `_src/scsi.py`.
   driver, so we can do real SCSI-2 arbitration (put only our ID bit on the bus). BlueSCSI v2
   can't do this. We drive ATN, ACK, SEL, BSY and RST. We never drive REQ, MSG, C/D or I/O,
   because those belong to the target.
-  - **A 10 kΩ pull-down on every gate** keeps the drivers off while the board is
-    unpowered. The RP2350's own reset pull-downs do the same during reset and boot, so the
+  - **A 4.7 kΩ pull-down on every gate** keeps the drivers off while the board is
+    unpowered. It must be ≤ 8.2 kΩ because of RP2350 erratum E9 (see NOTES "RP2350B pin map"). The RP2350's own reset pull-downs do the same during reset and boot, so the
     board can't disturb a live bus while starting.
   - A DNP 22 pF cap on each gate is there in case bus edges couple enough charge into an
     idle gate to matter. That's a bench check.

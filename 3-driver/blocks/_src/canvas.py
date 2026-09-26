@@ -31,6 +31,7 @@ class Diagram:
         self.names = {}          # id -> display name for the connection list
         self.links = []          # (a, b, label, arrow)
         self.notes = []
+        self.pinlines = []       # chip45 pin list, appended to the connection list
 
     # ---- low level -------------------------------------------------------
     def _set(self, x, y, ch, kind, net=None):
@@ -91,6 +92,104 @@ class Diagram:
             t = f' {title} '
             for i, ch in enumerate(t):
                 self._set(x + (w - len(t)) // 2 + i, y, ch, 'frame')
+
+    def chip45(self, id, x, y, per_side, pins, inner=(), name=None):
+        """A square package drawn rotated 45° counter-clockwise, so every pin gets its own row.
+
+        pins: {number: (pin_name, signal)} for all 4 * per_side pins, numbered the usual way
+        (counter-clockwise from pin 1 at the top of the left side). After the rotation the
+        package's top edge faces upper-left, its right edge upper-right, its bottom edge
+        lower-right and its left edge lower-left; the pin-1 corner is the left point, marked '*'.
+        Labels run straight out: signal ---- pin_name number / ... \\ number pin_name ---- signal.
+        (x, y): top-left of the whole drawing, labels included. inner: lines centred inside.
+        """
+        n = per_side
+        if sorted(pins) != list(range(1, 4 * n + 1)):
+            raise DiagramError(f"chip {id!r}: pins must be exactly 1..{4 * n}")
+        lnums = list(range(1, n + 1)) + list(range(3 * n + 1, 4 * n + 1))   # left + top edges
+        sw = max(len(pins[k][1]) for k in lnums)            # left signal column width
+        nw = max(len(p) for p, _ in pins.values()) + 5      # " NAME NN " / " NN NAME "
+        cx = x + sw + 3 + nw + n                            # column of the top/bottom points
+        sx = cx + n + nw + 3                                # right-hand signal column
+
+        def row_pins(r):   # -> (left pin, right pin) on row r = 1 .. 2n
+            if r <= n:
+                return 3 * n + r, 3 * n + 1 - r             # top edge, right edge
+            r -= n
+            return r, 2 * n + 1 - r                         # left edge, bottom edge
+
+        for r in range(1, 2 * n + 1):
+            off = r if r <= n else 2 * n + 1 - r
+            le, re_ = cx - off, cx + off
+            lch, rch = ('/', '\\') if r <= n else ('\\', '/')
+            for col, ch in ((le, lch), (re_, rch)):
+                if not self._free(col, y + r):
+                    raise DiagramError(f"chip {id!r} overlaps {self.kind[(col, y + r)]} at ({col},{y + r})")
+                self._set(col, y + r, ch, 'box')
+            lp, rp = row_pins(r)
+            (lname, lsig), (rname, rsig) = pins[lp], pins[rp]
+            ltag = f" {lname} {lp:>2} "
+            self._text(x, y + r, lsig, 'pin label')
+            self._text(x + sw + 1, y + r, '-' * (le - len(ltag) - (x + sw + 1)), 'pin leader')
+            self._text(le - len(ltag), y + r, ltag, 'pin tag')
+            rtag = f" {rp:<2} {rname} "
+            self._text(re_ + 1, y + r, rtag, 'pin tag')
+            self._text(re_ + 1 + len(rtag), y + r, '-' * (sx - 1 - (re_ + 1 + len(rtag))), 'pin leader')
+            self._text(sx, y + r, rsig, 'pin label')
+        self._set(cx, y, '.', 'box')
+        self._set(cx, y + 2 * n + 1, "'", 'box')
+        self._text(cx - n + 2, y + n + 1, '*', 'pin-1 mark')
+        top = y + n + 1 - len(inner) // 2
+        for k, line in enumerate(inner):
+            r = top + k - y
+            half = (r if r <= n else 2 * n + 1 - r) - 2
+            if len(line) > 2 * half + 1:
+                raise DiagramError(f"chip {id!r}: inner line {line!r} doesn't fit on row {r}")
+            self._text(cx - len(line) // 2, top + k, line, 'chip text')
+        self.names[id] = name or id
+        for num in sorted(pins):
+            pname, sig = pins[num]
+            self.pinlines.append(f"pin {num} {pname}: {' '.join(sig.split())}")
+
+    def chip2(self, id, x, y, pins, title=(), name=None):
+        """A two-row package (SOIC/TSSOP/DIP), top view: pins 1..n/2 down the left side,
+        n/2+1..n up the right side. pins: {number: (pin_name, signal)}.
+        Labels run straight out: signal ---- name number | ... | number name ---- signal.
+        (x, y): top-left of the whole drawing, labels included. title: lines above the body.
+        """
+        n = len(pins)
+        if n % 2 or sorted(pins) != list(range(1, n + 1)):
+            raise DiagramError(f"chip {id!r}: pins must be exactly 1..{n} (even)")
+        h = n // 2
+        sw = max(len(pins[k][1]) for k in range(1, h + 1))
+        nw = max(len(p) for p, _ in pins.values())
+        bw = 2 * (nw + 4) + 3                         # body: " NN NAME " each side + gap
+        bx = x + sw + 4                               # body left edge
+        top = y + len(title) + 1
+        for k, line in enumerate(title):
+            self._text(bx + (bw - len(line)) // 2, y + k, line, 'chip title')
+        for i in range(bx, bx + bw):
+            self._set(i, top, '-', 'box'); self._set(i, top + h + 1, '-', 'box')
+        for j in range(top, top + h + 2):
+            self._set(bx, j, '|', 'box'); self._set(bx + bw - 1, j, '|', 'box')
+        for (i, j) in [(bx, top), (bx + bw - 1, top), (bx, top + h + 1), (bx + bw - 1, top + h + 1)]:
+            self._set(i, j, '+', 'box')
+        self._set(bx + bw // 2, top, 'U', 'box')      # pin-1 end notch
+        for r in range(h):
+            lp, rp = r + 1, n - r
+            (ln, ls), (rn, rs) = pins[lp], pins[rp]
+            yy = top + 1 + r
+            self._text(x, yy, ls, 'pin label')
+            self._text(x + sw + 1, yy, '--', 'pin leader')
+            self._text(bx + 2, yy, f"{lp:>2} {ln}", 'pin tag')
+            rtag = f"{rn} {rp:>2}"
+            self._text(bx + bw - 2 - len(rtag), yy, rtag, 'pin tag')
+            self._text(bx + bw + 1, yy, '--', 'pin leader')
+            self._text(bx + bw + 4, yy, rs, 'pin label')
+        self.names[id] = name or id
+        for num in sorted(pins):
+            pname, sig = pins[num]
+            self.pinlines.append(f"pin {num} {pname}: {' '.join(sig.split())}")
 
     def note(self, x, y, *lines):
         """Free text, e.g. a label that belongs to no single link."""
@@ -234,4 +333,4 @@ class Diagram:
             if label:
                 s += ": " + ' '.join(label.split())
             out.append(s)
-        return out
+        return out + self.pinlines

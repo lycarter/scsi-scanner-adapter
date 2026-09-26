@@ -16,12 +16,14 @@ Columns:
 | Qty | Function | Part | LCSC | Tier | Fit | Notes |
 |---|---|---|---|---|---|---|
 | 1 | Bench 5 V terminal | 2-pin 5.08 mm screw terminal (Kangnex WJ500V-5.08-2P) | C8465 | E | Hand | Plus a test loop per pole (any 0.1" loop, hand-soldered) |
-| 2 | Bench-input eFuse; TERMPWR switch | TI TPS259470ARPWR | C3662799 | E | JLC | Bench: OVLO ≈ 5.7 V, ILIM ≈ 2 A, UVLO ≈ 4.3 V. TERMPWR: OVLO = active-low enable, ILIM ≈ 1.2 A (R_ILM ≈ 2.74 kΩ) |
+| 2 | Bench-input eFuse; TERMPWR switch | TI TPS259470ARPWR | C3662799 | E | JLC | Bench: OVLO 5.73 V, ILIM 2.02 A, UVLO 4.17 V. TERMPWR: OVLO = active-low enable, ILIM 1.22 A, UVLO 4.32 V. Resistors: see the table below |
 | 1 | USB/bench ORing (U1) | TI LM66200DRLR | C3235556 | E | JLC | Both channels used |
-| 2 | 3.3 V rail; terminator 2.80 V | TI TPS73701DCQR | C56848 | E | JLC | 3.3 V feedback divider in 0.1 % resistors (CH334 external mode needs 3.2–3.4 V) |
-| 1 | CC detection | onsemi LM393DR2G | C7955 | B | JLC | Supply from 5 V; threshold 0.66 V |
+| 2 | 3.3 V rail; terminator 2.80 V | TI TPS73701DCQR | C56848 | E | JLC | Dividers: 3.3 V = 47 k / 27 k, 2.80 V = 20 k / 15 k, 1 % (0.1 % dropped 2026-09-25; measure 3.3 V at bring-up) |
+| 1 | CC detection | onsemi LM393DR2G | C7955 | B | JLC | Supply from 5 V; thresholds 0.661 V rising / 0.649 V falling; outputs drive the TERMPWR enable node |
+| 1 | CC threshold reference | CJ431 (TL431-type, ±0.5 %) SOT-23 | C3113 | B | JLC | 2.495 V from 3.3 V through 510 Ω. Check its datasheet is in English |
+| 2 | CC input filter caps | 1 µF X5R 25 V 0402 | C52923 | B | JLC | With 10 kΩ, τ = 10 ms |
 | 2 | USB-C Rd | 5.1 kΩ 1 % 0402 | C25905 | B | JLC | |
-| 1 | Bench-present switch | 2N7002 SOT-23 | C8545 | B | JLC | Pulls the TERMPWR enable node low |
+| 1 | Bench-present switch | 2N7002 SOT-23 | C8545 | B | JLC | Pulls the TERMPWR enable node low. Gate fed from the bench eFuse *output* (10 k / 100 k) |
 | 1 | TERMPWR disable jumper | 1×2 2.54 mm header + shunt | — | — | Hand | |
 
 ## 2. SCSI front end (`blocks/2-scsi-frontend.md`)
@@ -37,7 +39,7 @@ Columns:
 | 1 | TERMPWR ESD | SMF6.0A SOD-123FL | C19077499 | P | JLC | |
 | 14 | SCSI drivers (open-drain) | onsemi FDV301N SOT-23 | C15310 | E | JLC | DB0–7, DBP, ATN, ACK, SEL, BSY, RST. GPIO high = asserted. Fallback: 4 × SN74LVTH125PWR (C7042), see NOTES "SCSI drivers" |
 | 14 | Driver gate series R | 100 Ω 1 % 0402 | C25076 | B | JLC | Edge-rate tuning on the bench (0 Ω or larger) |
-| 14 | Driver gate pull-down | 10 kΩ 1 % 0402 | C25744 | B | JLC | Keeps lines released with the board off or the MCU in reset |
+| 14 | Driver gate pull-down | 4.7 kΩ 1 % 0402 | C25900 | B | JLC | Keeps lines released with the board off or the MCU in reset. ≤ 8.2 kΩ required by RP2350-E9 (was 10 kΩ) |
 | 14 | Driver gate cap | 22 pF C0G 0402 | C1555 | B | DNP | Fit if the bus-edge kick on an idle gate exceeds ~0.4 V (bench check) |
 | 18 | SCSI receivers | **Nexperia** 74LVC1G17GW,125 SOT-353 | C426705 | E | JLC | Nexperia only (other vendors' limits differ). 3.3 V. Fallback: 3 × Nexperia 74LVC14APW (C6066 / -Q100 C548122) |
 | 18 | Receiver decoupling | 100 nF X7R 0402 | C307331 | B | JLC | One per 1G17 |
@@ -63,8 +65,8 @@ Columns:
 | 2 | BOOTSEL, RUN buttons | Owner's through-hole tact switches | — | — | Hand | Size to check (6 × 6 mm?) |
 | 1 | microSD socket | SHOU HAN TF PUSH | C393941 | E | JLC | Card detect → expander |
 | 1 | I²C expander | TI TCA9555PWR | C465732 | E | JLC | INT to a test point + DNP 0 Ω |
-| — | SWD header | **Open** (3-pin 2.54 mm or JST-SH to match the Pi debug probe) | — | — | Hand | |
-| — | LEDs | Basic 0603 (e.g. KT-0603R red C2286); count and colors at schematic time | — | B | JLC | |
+| — | SWD | Tag-Connect TC2030-IDC footprint (pads + clip holes, no part) | — | — | — | 1 VCC, 2 SWDIO, 3 RUN, 4 SWCLK, 5 GND, 6 NC. Owner buys a TC2030-IDC cable + ARM20-CTX adapter for the J-Link EDU |
+| 4 | LEDs | KENTO KT-0603R red (C2286), or KT-0805Y yellow (C2296) where a second color helps | C2286 | B | JLC | TERMPWR enable (3.3 V, 1 k), TERMPWR present (on TERMPWR, 6.8 k, ≤ 0.5 mA), LED1/LED2 on the expander (1 k). The basic green needs Vf up to 3.1 V: not on 3.3 V |
 
 ## 4. USB path (`blocks/4-usb.md`)
 
@@ -82,19 +84,49 @@ Columns:
 | 1 | VBUS ESD | SMF6.0A | C19077499 | P | JLC | |
 | 1 | Bench-terminal TVS | SMF15A | C19077509 | P | DNP | Footprint only |
 
+## Resistors and small passives added 2026-09-25
+
+Values and reasoning: NOTES "Resistor and small-part values". All 1 % 0402, no loading fee.
+Rows above that already cover a part (gate 100 Ω, LA 100 Ω, PSRAM 10 k, …) aren't repeated.
+
+| Qty | Value | LCSC | Tier | Where |
+|---|---|---|---|---|
+| 1 | 47 kΩ | C25792 | B | 3.3 V LDO R1 |
+| 1 | 27 kΩ | C25771 | P | 3.3 V LDO R2 |
+| 1 | 20 kΩ | C25765 | B | 2.80 V LDO R1 |
+| 2 | 15 kΩ | C25756 | P | 2.80 V LDO R2; TERMPWR eFuse UVLO bottom |
+| 1 | 39 kΩ | C25783 | P | TERMPWR eFuse UVLO top |
+| 1 | 510 kΩ | C11616 | P | Bench eFuse string R1 (only ~8.5k in stock; fine at our volume) |
+| 1 | 56 kΩ | C25796 | P | Bench eFuse string R2 |
+| 1 | 150 kΩ | C25755 | P | Bench eFuse string R3 |
+| 1 | 1.5 kΩ | C25867 | B | Bench eFuse R_ILM (with 150 Ω) |
+| 1 | 150 Ω | C25082 | P | Bench eFuse R_ILM |
+| 1 | 2.4 kΩ | C25882 | P | TERMPWR eFuse R_ILM (with 330 Ω) |
+| 1 | 330 Ω | C25104 | B | TERMPWR eFuse R_ILM |
+| 13 | 10 kΩ | C25744 | B | Enable-node pull-up; CC filters ×2; CC reference top (with 3.3 k); bench-FET gate series; SDIO pull-ups ×5; FT232H RESET#, hub reset, expander INT |
+| 1 | 3.3 kΩ | C25890 | B | CC reference top (10 k + 3.3 k = 13.3 k) |
+| 3 | 4.7 kΩ | C25900 | B | CC reference bottom; I²C SDA/SCL |
+| 1 | 1 MΩ | C26083 | B | CC hysteresis |
+| 1 | 510 Ω | C25123 | B | CJ431 bias |
+| 1 | 22 kΩ | C25768 | B | TERMPWR_OK divider top |
+| 1 | 33 kΩ | C25779 | B | TERMPWR_OK divider bottom |
+| 1 | 6.8 kΩ | C25917 | P | TERMPWR-present LED |
+| 1 | 100 kΩ | C25741 | B | Bench-FET gate pull-down |
+| 3 | 1 kΩ | C11702 | B | 3.3 V LEDs |
+| 11 | 0 Ω | C17168 | B | FT1248 rework links: 5 fitted (GPIO 36–40 → I²C/SD), 6 DNP (FT232H pins 17–20, 27, 28) |
+
 ## Loading fees (extended parts JLC assembles)
 
 About 17 unique extended parts so far: RP2350B, FT232HL, CH334P, 93LC56B, APS6404L, ABM8-272-T3,
-Abracon inductor, TPS73701, TPS259470A, LM66200, TCA9555, SN74LVTH245A, 110 Ω, 2.74 kΩ
-(R_ILM, if no basic combination works), microSD socket, DIP switch, FDV301N, 74LVC1G17. JLC's fee is a few dollars per unique extended part per order
+Abracon inductor, TPS73701, TPS259470A, LM66200, TCA9555, SN74LVTH245A, 110 Ω (the 2.74 kΩ is
+gone: R_ILM is now 2.4 k + 330 Ω), microSD socket, DIP switch, FDV301N, 74LVC1G17. JLC's fee is a few dollars per unique extended part per order
 (from memory: check the current rate). Parts that appear several times on the board cost one fee.
 
 ## Still open before the schematic is complete
 
 1. ~~SCSI drivers and receivers~~: decided 2026-09-25 (FDV301N, Nexperia 74LVC1G17GW).
 2. LA header pinout matched to the Digital Discovery (buffers settled: 100 Ω series R).
-3. SWD connector style.
-4. Resistor values set at schematic time: UVLO/OVLO dividers, R_ILM (prefer a basic series
-   combination over the extended 2.74 kΩ, C33360), LDO feedback dividers, LM393 reference and
-   hysteresis, LED resistors, I²C pull-ups (4.7 kΩ), SDIO pull-ups.
+3. ~~SWD connector style~~: decided 2026-09-25, Tag-Connect TC2030-IDC footprint.
+4. ~~Resistor values~~: decided 2026-09-25 (table above). Still to set in the schematic:
+   eFuse dVdt/ITIMER caps.
 5. The owner's button size and USB-C part, to confirm the footprints.
