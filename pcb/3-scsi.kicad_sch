@@ -325,6 +325,6 @@
 	(label "IO_LA" (at 317.5 246.38 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "404ccdd9-e9df-4208-a890-83b596cb8b4f"))
 	(hierarchical_label "LA_MARK0" (shape input) (at 50.8 243.84 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "6db48404-1018-467e-9830-9ddfdec7d013"))
 	(hierarchical_label "LA_MARK1" (shape input) (at 50.8 246.38 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "41fc476e-680a-428c-9e20-656f64824bd2"))
-	(hierarchical_label "TERM_EN" (shape bidirectional) (at 50.8 248.92 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "866e7027-c996-4234-b9a6-ed4b67ffbc11"))
+	(hierarchical_label "TERMINATOR_EN" (shape bidirectional) (at 50.8 248.92 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "866e7027-c996-4234-b9a6-ed4b67ffbc11"))
 	(embedded_fonts no)
 )

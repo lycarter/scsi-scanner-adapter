@@ -169,4 +169,4 @@ rate). Parts that appear several times on the board cost one fee.
 4. ~~Resistor values~~: decided 2026-09-25, revised 2026-09-26 after the design review.
 5. The owner's button size and USB-C part, to confirm the footprints.
 6. ~~TPS2116 datasheet~~: in `reference/datasheets/tps2116.pdf` (2026-09-26).
-7. Test points: +5V_SYS, 3.3 V, 2.83 V, TERMPWR, FT_3V3, GND, TCA9555 INT, TERMPWR_EN_N.
+7. Test points: +5V_SYS, 3.3 V, 2.83 V, TERMPWR, FT_3V3, GND, TCA9555 INT, TERMPWR_EN_INVERTED.

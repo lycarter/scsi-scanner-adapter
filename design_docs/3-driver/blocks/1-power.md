@@ -87,7 +87,7 @@ Source: `_src/power.py`.
   TPS259470A eFuse (current limit ≈1.2 A, within SCSI-2's ≤1.5 A recommendation; true
   reverse blocking even when unpowered), then a disable jumper, to TERMPWR on both SCSI
   connectors (IDC50 pin 26, HD50 pin 38).
-  - The enable is an active-low node, **TERMPWR_EN_N = CC_OK_N wired-OR BENCH_PRESENT**,
+  - The enable is an active-low node, **TERMPWR_EN_INVERTED = CC_OK_N wired-OR BENCH_PRESENT**,
     pulled up to 3.3 V. It's on when the USB port allows ≥1.5 A or the bench supply is
     connected; with the TPS2116's priority mode, "bench connected" means the bench really is
     powering the board.

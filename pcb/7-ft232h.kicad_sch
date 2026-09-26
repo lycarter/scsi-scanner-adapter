@@ -23,7 +23,7 @@
 	(hierarchical_label "FT_D6" (shape bidirectional) (at 50.8 73.66 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "07a3406b-674b-46f4-bce6-e80b6dd03e19"))
 	(hierarchical_label "FT_D7" (shape bidirectional) (at 50.8 76.2 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "cceea3f0-22a6-4795-9b1e-fd53b40989df"))
 	(hierarchical_label "FT_WR_N" (shape bidirectional) (at 50.8 78.74 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "b893e60a-5b58-4798-a5d5-32bde79dc2ed"))
-	(hierarchical_label "FT_RESET_N" (shape input) (at 50.8 83.82 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "c1dc71e4-8500-40af-a055-da5604319a5f"))
+	(hierarchical_label "FT232H_RESET_INVERTED" (shape input) (at 50.8 83.82 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "c1dc71e4-8500-40af-a055-da5604319a5f"))
 	(hierarchical_label "USB_FT_D+" (shape bidirectional) (at 343.8 50.8 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "33d4319b-d081-4078-9ced-58dfea4fc39a"))
 	(hierarchical_label "USB_FT_D-" (shape bidirectional) (at 343.8 53.34 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "2aa5f3d6-f56f-49fc-a554-c5614d16db22"))
 	(embedded_fonts no)
