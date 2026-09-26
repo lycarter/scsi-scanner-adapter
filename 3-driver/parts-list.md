@@ -113,6 +113,8 @@ Rows above that already cover a part (gate 100 Ω, LA 100 Ω, PSRAM 10 k, …) a
 | 1 | 6.8 kΩ | C25917 | P | TERMPWR-present LED |
 | 1 | 100 kΩ | C25741 | B | Bench-FET gate pull-down |
 | 3 | 1 kΩ | C11702 | B | 3.3 V LEDs |
+| 2 | 2.2 nF X7R 50 V 0402 (capacitor) | C1531 | P | eFuse dVdt, bench and TERMPWR (~5.5 ms ramp) |
+| 0 (2 DNP) | 0402 pad, ~1 nF if fitted | — | — | eFuse ITIMER, open by default |
 | 11 | 0 Ω | C17168 | B | FT1248 rework links: 5 fitted (GPIO 36–40 → I²C/SD), 6 DNP (FT232H pins 17–20, 27, 28) |
 
 ## Loading fees (extended parts JLC assembles)
@@ -128,5 +130,5 @@ gone: R_ILM is now 2.4 k + 330 Ω), microSD socket, DIP switch, FDV301N, 74LVC1G
 2. LA header pinout matched to the Digital Discovery (buffers settled: 100 Ω series R).
 3. ~~SWD connector style~~: decided 2026-09-25, Tag-Connect TC2030-IDC footprint.
 4. ~~Resistor values~~: decided 2026-09-25 (table above). Still to set in the schematic:
-   eFuse dVdt/ITIMER caps.
+   ~~eFuse dVdt/ITIMER caps~~ (decided 2026-09-26: 2.2 nF / open).
 5. The owner's button size and USB-C part, to confirm the footprints.

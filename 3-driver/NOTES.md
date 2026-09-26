@@ -622,6 +622,44 @@ and the datasheet threshold spreads.
 | SDIO CMD, D0–D3 pull-ups | 10 k ×5 | | SD spec 10–100 kΩ; D1–D3 aren't wired to the MCU |
 | FT232H RESET#, CH334 reset, TCA9555 INT | 10 k pull-ups to 3.3 V | | Resets run without the expander (fallback rule) |
 
+### eFuse startup (dVdt) and fault-timer (ITIMER) capacitors (decided 2026-09-26)
+
+From TI TPS25947 datasheet SLVSFC9C:
+- dVdt pin: SR [V/ms] = 2000 / C_dVdt [pF] (Eq. 4), with inrush I = SR × C_OUT (Eq. 3).
+  Open = fastest ramp (t_ON ≈ 0.3 ms at 2.7 V, RL = 100 Ω, 1 µF). The charging current is
+  0.81 / 2.21 / 3.82 µA (min / typ / max), so the real slope spans about ×0.37 to ×1.73 of
+  nominal.
+- ITIMER: blanking t = ΔV_ITIMER × C / I_ITIMER (Eq. 8). ΔV is 1.29 / 1.51 / 1.74 V and I is
+  1.2 / 1.8 / 2.5 µA, so about 0.84 ms per nF (0.51–1.45 ms). Open = minimum delay, which
+  TI allows ("Leave the ITIMER pin open … minimum possible delay"). During start-up the current
+  limit acts without waiting for ITIMER.
+- 470 variants (ours): after a fault, active current limiting at I_LIM until thermal shutdown
+  (154 °C). The "A" suffix means auto-retry after t_RST = 110 ms.
+
+| | Bench eFuse | TERMPWR eFuse |
+|---|---|---|
+| **C_dVdt** | **2.2 nF** (C1531, preferred): 0.91 V/ms nominal, so a 5 V ramp takes ~5.5 ms (3–15 ms over the spread) | **2.2 nF**, the same part |
+| Load it charges | The 5 V rail through U1. Assumed ≤ 47 µF; confirm when the schematic totals the caps | TERMPWR: our TVS and 2.80 V LDO input, plus other devices' terminator caps. Assumed ≤ 50 µF |
+| Inrush | ≤ ~75 mA even at the fast end. That's gentle on a bench supply set to a low current limit | Only applies at power-up; see the OVLO note below |
+| **C_ITIMER** | **Open**, plus an unfitted 0402 pad (1 nF ≈ 0.84 ms blanking if a load step ever trips it) | **Open**, plus an unfitted pad. It limits strictly at 1.22 A, which matches SCSI-2's ≤ 1.5 A recommendation |
+
+- **Important: our TERMPWR enable bypasses dVdt.** The datasheet says the 470x "bypass the
+  inrush control (dVdt) and start up in a current limited manner" when recovering from an OVLO
+  event. We use OVLO as the TERMPWR enable, so every enable ramps TERMPWR at the 1.22 A limit,
+  not the dVdt slope.
+  - Into 50 µF that's 5 V × 50 µF / 1.22 A ≈ 0.2 ms, about 0.6 mJ in the FET. Harmless.
+  - The USB port sees a ~0.2 ms step of up to 1.22 A on top of the board's ~0.5 A.
+  - The dVdt cap still matters for power-up with the enable already low.
+  - Accepted. The alternative, enabling through EN/UVLO (active-high), would need an inverter.
+- **Shorts:** a TERMPWR short sits at 1.22 A with ~5 V across the FET (~6 W), hits thermal
+  shutdown, and retries every 110 ms. The average power stays low, and TERMPWR_FLT_N reports it.
+  The bench path behaves the same at 2 A.
+- **Firmware (unverified):** FLT may pulse while the eFuse current-limits during the
+  enable ramp. Ignore TERMPWR_FLT_N for a few ms after TERMPWR_EN_N changes.
+- **Schematic check (not from this analysis):** USB limits a device to 10 µF of VBUS
+  capacitance at attach. VBUS goes straight into U1 (LM66200), not through an eFuse, so
+  count the caps on that side, or check whether the LM66200 has its own soft-start.
+
 ### FT232H pins in detail (datasheet v2.0 §3.5.3, §4.5)
 
 Why FIFO rather than the FT232H's UART mode: UART mode tops out at 12 Mbaud (datasheet
@@ -1243,3 +1281,4 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
 - 2026-09-25: SCSI receivers: 18 × Nexperia 74LVC1G17GW (I_OFF specified; thresholds guaranteed at 3.0 V, interpolated at 3.3 V). Fallback 3 × Nexperia 74LVC14APW. TI's LVC14A fails VT− and Nexperia's 2G17/3G17 fail VT+, so the BOM must pin the vendor.
 - 2026-09-25: LA tap: 100 Ω series resistor per receiver output (and on the 2 markers); no second buffer bank. Closes open question 5.
 - 2026-09-25: RP2350B pin map accepted (SCSI blocks in connector order; ATN/BSY/SEL on the CPU, RST CPU-only; FT1248 0 Ω rework links; E9 → 4.7 kΩ gate pull-downs). Expander pinout accepted (P01 = TERMPWR_EN_N). Debug: TC2030-IDC pads + J-Link EDU. All resistor values set; CC reference now a CJ431 with a 10 k/1 µF filter; TERMPWR enable node pulled up to 3.3 V; 3.3 V LDO divider 1 %.
+- 2026-09-26: eFuse caps: C_dVdt 2.2 nF on both (~5.5 ms ramp), ITIMER open with unfitted pads. The TERMPWR enable (via OVLO) bypasses dVdt and ramps at the 1.22 A limit (~0.2 ms): accepted.
