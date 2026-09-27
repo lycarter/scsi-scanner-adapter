@@ -5,7 +5,7 @@ D = Diagram()
 
 # Port 0 = inputs (status), port 1 = outputs, so each port has one direction.
 # All P pins power up as inputs with ~100 k pull-ups: resets read high (run), LEDs are off
-# (they sink into the pin), and TERMINATOR_EN leaves the DIP default alone.
+# (they sink into the pin), and TERMINATOR_EN_INVERTED_FIRMWARE leaves the DIP default alone.
 pins = {
     1: ('INT', 'test point (firmware polls)'),
     2: ('A1', 'GND (addr 0x20)'),
@@ -21,7 +21,7 @@ pins = {
     12: ('GND', 'GND'),
     13: ('P10', 'out: LED1_N (status)'),
     14: ('P11', 'out: LED2_N (activity)'),
-    15: ('P12', 'out/in: TERMINATOR_EN (DIP 2)'),
+    15: ('P12', 'out/in: TERMINATOR_EN_INVERTED_FIRMWARE (DIP 2)'),
     16: ('P13', 'out: FT232H_RESET_INVERTED'),
     17: ('P14', 'out: HUB_RESET_INVERTED (Schottky)'),
     18: ('P15', 'out: SD_PWR_EN (optional)'),

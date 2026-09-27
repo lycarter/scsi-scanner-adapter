@@ -244,7 +244,7 @@ in: IS_BENCH_POWERED (TPS2116 ST, 1 = bench) -- |  6 P02 P16 19 | -- spare in/ou
 in: BENCH_EFUSE_FAULT_INVERTED (eFuse)       -- |  7 P03 P15 18 | -- out: SD_PWR_EN (optional)
 in: TERMPWR_EFUSE_FAULT_INVERTED (eFuse)     -- |  8 P04 P14 17 | -- out: HUB_RESET_INVERTED (Schottky)
 spare in/out                                 -- |  9 P05 P13 16 | -- out: FT232H_RESET_INVERTED
-spare in/out                                 -- | 10 P06 P12 15 | -- out/in: TERMINATOR_EN (DIP 2)
+spare in/out                                 -- | 10 P06 P12 15 | -- out/in: TERMINATOR_EN_INVERTED_FIRMWARE (DIP 2)
 spare in/out                                 -- | 11 P07 P11 14 | -- out: LED2_N (activity)
 GND                                          -- | 12 GND P10 13 | -- out: LED1_N (status)
                                                 +---------------+
@@ -266,7 +266,7 @@ GND                                          -- | 12 GND P10 13 | -- out: LED1_N
 - pin 12 GND: GND
 - pin 13 P10: out: LED1_N (status)
 - pin 14 P11: out: LED2_N (activity)
-- pin 15 P12: out/in: TERMINATOR_EN (DIP 2)
+- pin 15 P12: out/in: TERMINATOR_EN_INVERTED_FIRMWARE (DIP 2)
 - pin 16 P13: out: FT232H_RESET_INVERTED
 - pin 17 P14: out: HUB_RESET_INVERTED (Schottky)
 - pin 18 P15: out: SD_PWR_EN (optional)
@@ -295,7 +295,7 @@ GND                                          -- | 12 GND P10 13 | -- out: LED1_N
     Schottky (cathode at P14), so P14 can only pull it low.
   - The LEDs are wired 3.3 V → resistor → LED → pin, so they're off until firmware drives
     the pin low.
-  - TERMINATOR_EN leaves the DIP-switch default alone. The pin also reads the `/OE` node back when
+  - TERMINATOR_EN_INVERTED_FIRMWARE leaves the DIP-switch default alone. The pin also reads the `/OE` node back when
     it isn't driving, so the host can report the termination state.
 - **Inputs:**
   - SD_CD: the socket's card-detect switch to GND, using the internal pull-up.
@@ -309,7 +309,7 @@ GND                                          -- | 12 GND P10 13 | -- out: LED1_N
   - (P05 was TERMPWR_OK until 2026-09-26; TERMPWR is now read by the ADC on GPIO 46.)
 - **Outputs:**
   - LED1_N and LED2_N: status and activity.
-  - TERMINATOR_EN: through DIP 2 (NOTES "Terminator enable").
+  - TERMINATOR_EN_INVERTED_FIRMWARE: through DIP 2 (NOTES "Terminator enable").
   - FT232H_RESET_INVERTED and HUB_RESET_INVERTED: the FT232H and CH334 resets. Keep P14 driven low only to
     reset (≥ 4 µs pulse), otherwise high or input.
   - SD_PWR_EN: optional, only if we add an SD load switch.
