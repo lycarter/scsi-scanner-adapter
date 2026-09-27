@@ -1661,7 +1661,7 @@
 		)
 		(uuid "391f6f3c-8a02-46c9-a545-c2b674f51880")
 	)
-	(label "LA_MARK0"
+	(label "LOGIC_ANALYZER_MARKER0"
 		(at 144.78 114.3 180)
 		(effects
 			(font
@@ -1771,7 +1771,7 @@
 		)
 		(uuid "4749100b-d7a1-4ccb-be05-f03e12ab0eb0")
 	)
-	(label "LA_MARK1"
+	(label "LOGIC_ANALYZER_MARKER1"
 		(at 144.78 116.84 180)
 		(effects
 			(font
@@ -2031,7 +2031,7 @@
 		)
 		(uuid "8292800c-dc99-4b72-82c3-caf8bc5c1753")
 	)
-	(label "TERMINATOR_EN"
+	(label "TERMINATOR_EN_INVERTED_FIRMWARE"
 		(at 88.9 121.92 0)
 		(effects
 			(font
@@ -2341,7 +2341,7 @@
 		)
 		(uuid "c04e7aef-aa65-418b-a07a-c07e78796347")
 	)
-	(label "LA_MARK0"
+	(label "LOGIC_ANALYZER_MARKER0"
 		(at 88.9 114.3 0)
 		(effects
 			(font
@@ -2371,7 +2371,7 @@
 		)
 		(uuid "c10f19d5-49fb-4419-9d44-68ace4310692")
 	)
-	(label "LA_MARK1"
+	(label "LOGIC_ANALYZER_MARKER1"
 		(at 88.9 116.84 0)
 		(effects
 			(font
@@ -2581,7 +2581,7 @@
 		)
 		(uuid "eb2f740f-7098-491b-a359-296f94d2b393")
 	)
-	(label "TERMINATOR_EN"
+	(label "TERMINATOR_EN_INVERTED_FIRMWARE"
 		(at 320.04 160.02 0)
 		(effects
 			(font
@@ -3015,7 +3015,7 @@
 				(justify left)
 			)
 		)
-		(pin "LA_MARK0" output
+		(pin "LOGIC_ANALYZER_MARKER0" output
 			(at 152.4 114.3 180)
 			(uuid "ea845280-8347-4c47-96bc-09cfe4a3e90f")
 			(effects
@@ -3025,7 +3025,7 @@
 				(justify left)
 			)
 		)
-		(pin "LA_MARK1" output
+		(pin "LOGIC_ANALYZER_MARKER1" output
 			(at 152.4 116.84 180)
 			(uuid "9c2cca20-14b2-4426-858b-3af6b96711b7")
 			(effects
@@ -3587,7 +3587,7 @@
 				(justify right)
 			)
 		)
-		(pin "LA_MARK0" input
+		(pin "LOGIC_ANALYZER_MARKER0" input
 			(at 81.28 114.3 0)
 			(uuid "0a45440f-26c7-4231-bc14-31406ce8b3b0")
 			(effects
@@ -3597,7 +3597,7 @@
 				(justify right)
 			)
 		)
-		(pin "LA_MARK1" input
+		(pin "LOGIC_ANALYZER_MARKER1" input
 			(at 81.28 116.84 0)
 			(uuid "645f9d17-f754-48e4-892d-a656d7beac14")
 			(effects
@@ -3607,7 +3607,7 @@
 				(justify right)
 			)
 		)
-		(pin "TERMINATOR_EN" bidirectional
+		(pin "TERMINATOR_EN_INVERTED_FIRMWARE" bidirectional
 			(at 81.28 121.92 0)
 			(uuid "58b7d97d-9d9d-4061-a38b-002693046123")
 			(effects
@@ -3923,7 +3923,7 @@
 				(justify right)
 			)
 		)
-		(pin "TERMINATOR_EN" bidirectional
+		(pin "TERMINATOR_EN_INVERTED_FIRMWARE" bidirectional
 			(at 312.42 160.02 0)
 			(uuid "e0c5aa34-9b3e-424b-a346-a32565dedd67")
 			(effects

@@ -52,7 +52,7 @@ Columns:
 |---|---|---|---|---|---|---|
 | 1 | SCSI connector | 2×25 keyed box header, 2.54 mm (BOOMELE) | C30006 | E | Hand | LCSC MOQ 5. Footprint `IDC-Header_2x25_P2.54mm_Vertical`. Pin 25 unconnected |
 | 1 | Alt SCSI connector | Half-pitch 50-pin female, right angle | — | — | DNP | Not stocked anywhere; owner sources later. TERMPWR = pin 38; pin 13 unconnected |
-| 2 | RESERVED lines to GND | 0 Ω 0402 | C17168 | B | JLC | IDC50 24/28 = HD50 37/39 (R002). Remove if mid-chain |
+| 4 | RESERVED lines to GND | 0 Ω 0402 | C17168 | B | JLC | All four RESERVED lines (SCSI-2 §5.4.4): IDC50 23/24/27/28 = HD50 12/37/14/39. Remove if mid-chain. Was 2 (24/28 only) until 2026-09-26 |
 | 3 | Terminator switches | TI SN74LVTH245APWR | C2652121 | E | JLC | **Only 939 at JLC.** A1–A8 and DIR tied to the 2.83 V rail, `/OE` = enable. 100 nF each |
 | 36 | Terminator resistors | 220 Ω 1 % 0402 (UNI-ROYAL) | C25091 | B | JLC | **Two in parallel per line = 110 Ω** (R006), ≤ 35 mW each. Replaces 18 × 110 Ω C2909312 (extended, would run at 100–110 % of rating) |
 | 1 | Terminator on/off | 2-position DIP switch, SMD (SHOU HAN) | C6331180 | E | JLC | DIP 1 = default, DIP 2 = firmware may override (see `USAGE.md`) |
@@ -64,7 +64,7 @@ Columns:
 | 18 | SCSI receivers | **Nexperia** 74LVC1G17GW,125 SOT-353 | C426705 | E | JLC | Nexperia only (other vendors' limits differ). 3.3 V. Fallback: 3 × Nexperia 74LVC14APW (C6066 / -Q100 C548122) |
 | 18 | Receiver decoupling | 100 nF X7R 0402 | C307331 | B | JLC | One per 1G17 |
 | 20 | LA tap series R | 100 Ω 1 % 0402 | C25076 | B | JLC | At each 1G17 output (18) and marker GPIO (2); the receivers are the Schmitt buffers, so no second bank |
-| 1 | LA header | 2×16 2.54 mm pin header | C124382 | E | Hand | Pinout matches Digital Discovery (to do) |
+| 1 | LA header | Liansheng BH-00169, 2×16 2.54 mm keyed box header | C2685073 | E | Hand | Pin-for-pin copy of the Digital Discovery DIN connector (ref. manual Fig. 8), so a straight 32-way IDC ribbon connects it. Replaces the bare header C124382 |
 
 ## 3. RP2350B and support (`blocks/3-mcu-support.md`)
 
@@ -140,13 +140,13 @@ LA 100 Ω, 220 Ω terminators, 33 Ω, 12 k, 2.2 k, 3.3 k CS1, …) aren't repeat
 | 1 | 56 kΩ | C25796 | P | TERMPWR OVLO divider top (node → OVLO) |
 | 1 | 47 kΩ | C25792 | B | TERMPWR OVLO divider bottom |
 | 1 | 39 kΩ | C25783 | P | TPS2116 PR1 bottom |
-| 17 | 10 kΩ | C25744 | B | Enable-node pull-up; CC filters ×2; CC ref top (with 3.3 k); bench-FET gate series; SDIO pull-ups ×5; FT232H RESET#; FT232H EEPROM DO; FT232H WR#, SIWU# ×2; expander INT; TPS2116 ST; TERMPWR-present LED |
+| 18 | 10 kΩ | C25744 | B | Terminator /OE pull-up (to 2.83 V); enable-node pull-up; CC filters ×2; CC ref top (with 3.3 k); bench-FET gate series; SDIO pull-ups ×5; FT232H RESET#; FT232H EEPROM DO; FT232H WR#, SIWU# ×2; expander INT; TPS2116 ST; TERMPWR-present LED |
 | 1 | 3.3 kΩ | C25890 | B | CC reference top (10 k + 3.3 k = 13.3 k) |
 | 3 | 4.7 kΩ | C25900 | B | CC reference bottom; I²C SDA/SCL |
 | 1 | 1 MΩ | C26083 | B | CC hysteresis |
 | 1 | 470 Ω | C25117 | B | CJ431 bias (was 510 Ω, R087) |
-| 3 | 1 kΩ | C11702 | B | 3.3 V LEDs |
-| 13 | 0 Ω | C17168 | B | FT1248 rework links: 5 fitted (GPIO 36–40 → I²C/SD), 5 DNP (FT232H pins 17–20, 27); RESERVED ×2 (§2); USB-C shell ×1 |
+| 4 | 1 kΩ | C11702 | B | 3.3 V LEDs ×3; terminator DIP 1 pull-down |
+| 15 | 0 Ω | C17168 | B | FT1248 rework links: 5 fitted (GPIO 36–40 → I²C/SD), 5 DNP (FT232H pins 17–20, 27); RESERVED ×4 (§2); USB-C shell ×1 |
 
 Dropped on 2026-09-26: 110 Ω C2909312 (→ 2 × 220 Ω), 20 kΩ and 15 kΩ of the old 2.80 V divider,
 56 k/150 k/150 Ω of the old bench string (56 k now used for the OVLO divider, 150 k kept),
@@ -164,7 +164,7 @@ rate). Parts that appear several times on the board cost one fee.
 ## Still open before the schematic is complete
 
 1. ~~SCSI drivers and receivers~~: decided 2026-09-25 (FDV301N, Nexperia 74LVC1G17GW).
-2. LA header pinout matched to the Digital Discovery (buffers settled: 100 Ω series R).
+2. ~~LA header pinout~~: decided 2026-09-26, a copy of the Digital Discovery DIN connector (NOTES log).
 3. ~~SWD connector style~~: decided 2026-09-25, Tag-Connect TC2030-IDC footprint.
 4. ~~Resistor values~~: decided 2026-09-25, revised 2026-09-26 after the design review.
 5. The owner's button size and USB-C part, to confirm the footprints.

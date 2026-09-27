@@ -1574,3 +1574,23 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
   - **Footprint to do:** U201, the same RPW QFN-10 as U101.
   - Owner review: U203 is now wired directly onto the R203/R204 joint as a shunt (cathode and REF to the node, anode to GND), with a note giving the current split (1.70 mA through R203, 0.14 mA into the divider, 1.56 mA sunk by the CJ431). Drawn with labels only, the reference had looked like a plain 470 Ω / 18k divider. Both eFuse legends now expand DVDT (dV/dt slew), ILM (I-limit, also a current monitor) and ITIMER (overcurrent blanking timer). Notes explain PWR_FLAG and the J201 TERMPWR jumper (R2a).
 - 2026-09-26: Schematic generators moved into the repo as `pcb/_gen/` (see its README). `build.py` regenerates the generated sheets and runs ERC plus the netlist check. If a sheet on disk differs from its script (hand edits in KiCad), it writes nothing and lists the differences. Why: a KiCad save from a stale view overwrote a round of generated changes, and a blind regenerate would have wiped the owner's notes. Owner's notes are now in `sheet_2_termpwr.py`: the CJ431 explanation and the reworded PWR_FLAG note.
+- 2026-09-26: SCSI sheet (`pcb/3-scsi.kicad_sch`, **A2**: too much for A3) and the two channel sheets populated: 180 parts. KiCad's netlist was checked pin by pin across the hierarchy (all 18 channel instances), and ERC is clean.
+  - **Connectors from SCSI-2 Table 2.** The IDC50 uses contact set 1 and the HD50 (DNP; part and footprint to do) uses set 2. Both are wired by signal name.
+  - **All four RESERVED lines** (IDC50 23/24/27/28 = HD50 12/37/14/39) go to GND through R337–R340, 0 Ω links. SCSI-2 §5.4.4 says end devices "shall" ground them; NOTES had only 24/28. Owner approved.
+  - **Terminator:** U301–U303 SN74LVTH245A (6 lines each, in connector order), R301–R336 (2 × 220 Ω per line), C301–C303.
+    - The /OE control is R341 10k from VTERMINATOR, SW301 DIP 1 → R342 1k → GND (default on), and DIP 2 → expander (firmware may change it).
+    - The 10k and 1k were in NOTES but missing from the parts list; now added.
+    - New project symbol SN74LVTH245A: pinout checked against TI SCBS703I, with A pins typed input and B pins tri-state, as used here.
+  - **Net rename (owner):** the /OE node is **TERMINATOR_EN_INVERTED**. The expander side of DIP 2 (sheet pin to io) is **TERMINATOR_EN_INVERTED_FIRMWARE**; it was TERMINATOR_EN, but high = off, so the name had the wrong polarity. The terminator outputs before the 110 Ω pairs are labelled TERMINATOR_OUT_<line>.
+  - **ESD:** D301–D318 H5VUD5BB, one per line, drawn apart from the channels so they can sit at the connector.
+  - **Channel references (owner):** page × 100 + n. DB0 (page 9) is Q901/R901–R903/C901–C902/U901, and I/O (page 26) is U2601…
+  - **LA header, decided (owner):** J303 copies the Digital Discovery's 2×16 DIN connector pin for pin (Digilent reference manual Fig. 8, in `reference/datasheets/`).
+    - GND on 1, 2, 11, 12, 21, 22, 31, 32. Odd 3–9 = DIN19–16, 13–19 = DIN11–8, 23–29 = DIN3–0. Even 4–10 = DIN23–20, 14–20 = DIN15–12, 24–30 = DIN7–4.
+    - We map DIN0–17 = the 18 lines in GPIO order (DB0…IO), DIN18/19 = LA_MARK0/1, DIN20–23 unused (no-connect).
+    - **Cable:** a straight 32-way 0.1" IDC ribbon, female both ends, links pin n to pin n (one cable instead of 20+ flying leads). If the Digital Discovery's case won't take an IDC socket, a 2×16 Dupont-to-Dupont lead does the same. Unverified: whether an IDC socket physically fits the Digital Discovery's connector opening.
+    - Digilent's flying-lead drawing (250-096) confirms 2.54 mm Dupont housings with a keying bump. The header is the keyed box header C2685073.
+- 2026-09-26: SCSI sheet relaid out at the owner's request.
+  - **Left column:** Connectors (IDC50, HD50, RESERVED links, logic-analyzer header), Active terminator (three '245s side by side) and Terminator enable (DIP circuit and truth table), each in its own box.
+  - **Per-line box:** one cluster per line, with the terminator pair R301–R336, ESD D301–D318 and the channel sheet. The four receive-only lines sit in a nested "Receive-only lines" box.
+  - **"LA" spelled out as LOGIC_ANALYZER:** channel pin LOGIC_ANALYZER, nets `<line>_LOGIC_ANALYZER`, markers LOGIC_ANALYZER_MARKER0/1 (root and rp2350 sheets too).
+  - Still 180 parts; netlist check and ERC clean.

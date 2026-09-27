@@ -87,7 +87,7 @@
 		)
 		(uuid "a406a308-8c91-4808-bbeb-698cd8426834")
 	)
-	(hierarchical_label "TERMINATOR_EN"
+	(hierarchical_label "TERMINATOR_EN_INVERTED_FIRMWARE"
 		(shape bidirectional)
 		(at 343.8 63.5 0)
 		(effects

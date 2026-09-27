@@ -16,7 +16,7 @@ sys.path.insert(0, HERE)
 from netcheck import netcheck
 from semdiff import semdiff, fingerprint
 
-SHEETS = ["sheet_1_power", "sheet_2_termpwr"]
+SHEETS = ["sheet_1_power", "sheet_2_termpwr", "sheet_3_scsi"]
 CLI = os.environ.get("KICAD_CLI", "/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli")
 ROOT_SCH = os.path.join(PCB, "scsi-adapter.kicad_sch")
 FINGERPRINTS = os.path.join(HERE, "fingerprints.json")   # content hash of each sheet as last written
@@ -35,23 +35,30 @@ def main():
     intended, pending, edited = {}, [], False
     for name in SHEETS:                       # generate and compare everything before writing anything
         mod = importlib.import_module(name)
-        fresh = os.path.join(tmp, mod.FILE)
-        intended[mod.FILE] = mod.build(fresh)
-        on_disk = os.path.join(PCB, mod.FILE)
-        exists = os.path.exists(on_disk)
-        # hand-edited = the file on disk no longer matches what build.py last wrote
-        hand_edited = exists and mod.FILE in last and fingerprint(on_disk) != last[mod.FILE]
-        changed = exists and fingerprint(on_disk) != fingerprint(fresh)
-        if check_only:
-            state = "hand-edited since last build" if hand_edited else "matches last build"
-            print(f"{mod.FILE}: {state}; {'script output differs' if changed else 'script output identical'}")
-        elif hand_edited and not force:
-            print(f"{mod.FILE} was edited in KiCad since the last build. Differences from the new script output")
-            print("(your edits, plus any script changes). Fold the edits into " + name + ".py, or use --force:")
-            for d in semdiff(on_disk, fresh):
-                print("   ", *d)
-            edited = True
-        pending.append((fresh, on_disk, mod.FILE))
+        files = getattr(mod, "FILES", None)
+        if files:                               # a module that writes several sheet files
+            fresh = {f: os.path.join(tmp, f) for f in files}
+            intended[name] = mod.build(fresh)
+        else:
+            files = [mod.FILE]
+            fresh = {mod.FILE: os.path.join(tmp, mod.FILE)}
+            intended[name] = mod.build(fresh[mod.FILE])
+        for file in files:
+            on_disk = os.path.join(PCB, file)
+            exists = os.path.exists(on_disk)
+            # hand-edited = the file on disk no longer matches what build.py last wrote
+            hand_edited = exists and file in last and fingerprint(on_disk) != last[file]
+            changed = exists and fingerprint(on_disk) != fingerprint(fresh[file])
+            if check_only:
+                state = "hand-edited since last build" if hand_edited else "matches last build"
+                print(f"{file}: {state}; {'script output differs' if changed else 'script output identical'}")
+            elif hand_edited and not force:
+                print(f"{file} was edited in KiCad since the last build. Differences from the new script output")
+                print("(your edits, plus any script changes). Fold the edits into " + name + ".py, or use --force:")
+                for d in semdiff(on_disk, fresh[file]):
+                    print("   ", *d)
+                edited = True
+            pending.append((fresh[file], on_disk, file))
     if edited:
         sys.exit("Nothing written.")
     if not check_only:
@@ -63,21 +70,23 @@ def main():
     erc = os.path.join(tmp, "erc.rpt")
     kicad("sch", "erc", "--severity-all", "-o", erc, ROOT_SCH)
     rpt = open(erc).read()
+    sheet_names = {"sheet_1_power": ["power"], "sheet_2_termpwr": ["termpwr"],
+                   "sheet_3_scsi": ["scsi"] + [f"scsi/{n}" for n in importlib.import_module("sheet_3_scsi").PAGE]}
     for name in SHEETS:
-        mod = importlib.import_module(name)
-        sheet = mod.FILE.split("-", 1)[1].rsplit(".", 1)[0]
-        sect = rpt.split(f"***** Sheet /{sheet}/")[1].split("***** Sheet")[0] if f"/{sheet}/" in rpt else ""
-        items = [l for l in sect.splitlines() if l.startswith("[")]
-        print(f"ERC {mod.FILE}: {len(items)} item(s)")
-        for l in items:
+        items = []
+        for sheet in sheet_names[name]:
+            sect = rpt.split(f"***** Sheet /{sheet}/")[1].split("***** Sheet")[0] if f"/{sheet}/" in rpt else ""
+            items += [f"/{sheet}/: " + l for l in sect.splitlines() if l.startswith("[")]
+        print(f"ERC {name}: {len(items)} item(s)")
+        for l in items[:40]:
             print("   ", l)
     net = os.path.join(tmp, "net.net")
     kicad("sch", "export", "netlist", "--format", "kicadsexpr", "-o", net, ROOT_SCH)
     bad = 0
-    for file, want in intended.items():
+    for name, want in intended.items():
         problems = netcheck(net, want)
         bad += len(problems)
-        print(f"netlist {file}: {len({r for r, _ in want})} parts, {len(problems)} problem(s)")
+        print(f"netlist {name}: {len({r for r, _ in want})} parts, {len(problems)} problem(s)")
         for p in problems:
             print("   ", p)
     sys.exit(1 if bad else 0)

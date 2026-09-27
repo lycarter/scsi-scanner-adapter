@@ -142,7 +142,7 @@
 		)
 		(uuid "3ae0041a-9be3-4936-91de-7871f354cfb8")
 	)
-	(hierarchical_label "LA_MARK0"
+	(hierarchical_label "LOGIC_ANALYZER_MARKER0"
 		(shape output)
 		(at 50.8 137.16 180)
 		(effects
@@ -395,7 +395,7 @@
 		)
 		(uuid "9aa433a0-a72f-458f-9b97-892c0392a256")
 	)
-	(hierarchical_label "LA_MARK1"
+	(hierarchical_label "LOGIC_ANALYZER_MARKER1"
 		(shape output)
 		(at 50.8 139.7 180)
 		(effects
