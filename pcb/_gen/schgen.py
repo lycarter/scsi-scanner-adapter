@@ -141,6 +141,7 @@ class Sheet:
         self.pwr_n = 0
         self.rails = set()
         self.hier = {}              # name -> shape
+        self.globals = set()        # nets drawn with global labels
 
     # ---------- primitives ----------
     def text(self, s, x, y, size=1.27, bold=False):
@@ -183,6 +184,14 @@ class Sheet:
         """Monospace text (for ASCII tables)."""
         self.items.append(f'\t(text {q(s)} (exclude_from_sim no) (at {f(x)} {f(y)} 0) '
                           f'(effects (font (face {q(face)}) (size {size} {size})) (justify left top)) (uuid {q(U())}))\n')
+
+    def global_label(self, net, x, y, d=0, shape="bidirectional"):
+        """Global label (net name without a sheet path)."""
+        ang, j = (180, "right") if d == 180 else (0, "left")
+        self.items.append(f'\t(global_label {q(net)} (shape {shape}) (at {f(x)} {f(y)} {ang}) (fields_autoplaced yes) '
+                          f'{FONT.format(extra=f" (justify {j})")} (uuid {q(U())})\n'
+                          f'\t\t(property "Intersheetrefs" "${{INTERSHEET_REFS}}" (at {f(x)} {f(y)} 0) '
+                          f'{FONT.format(extra=" (hide yes)")})\n\t)\n')
 
     def junction(self, x, y):
         self.items.append(f'\t(junction (at {f(x)} {f(y)}) (diameter 0) (color 0 0 0 0) (uuid {q(U())}))\n')
@@ -247,6 +256,8 @@ class Sheet:
     def net_at(self, net, x, y, d):
         if net == "GND" or net in self.rails:
             self.power(net, x, y, d)
+        elif net in self.globals:
+            self.global_label(net, x, y, 180 if d == 180 else 0)
         elif net in self.hier:
             ang, j = {0: (0, "left"), 180: (180, "right"), 90: (0, "left"), 270: (0, "left")}[d]
             self.items.append(f'\t(hierarchical_label {q(net)} (shape {self.hier[net]}) (at {f(x)} {f(y)} {ang}) '

@@ -1616,3 +1616,16 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
     - **Three spare LEDs on P05–P07:** D503 red, D504 yellow, D505 green (KT-0805G, C2297, basic), through R511–R513. Their use is to be decided in firmware.
     - **Green is fine on 3.3 V after all:** the owner's datasheet curve shows ~2.4 V at 1 mA; the 2.6–3.1 V spec is at 5 mA. It gets 470 Ω instead of 1k: ~1.8 mA typical, ~0.7 mA worst case (estimate).
     - **P15–P17 go to test pads** TP508–TP510; nothing is left unconnected on the expander.
+- 2026-09-26: usb-hub sheet (`pcb/6-usb-hub.kicad_sch`, A3) populated: 17 parts, 6xx references. Netlist check and ERC clean.
+  - **USB-C J601:** both D+ pins and both D− pins tied, 5.1k Rd on CC1/CC2, shell to GND through a 0 Ω (R603), SBU no-connect.
+  - **ESD D601–D605:** H5VUD5BB on D±, H7VL10B on CC (DFN1006; the 0402 footprint is a stand-in to check), SMF6.0A on VBUS.
+  - **CH334P U601:** new project symbol, pinout from datasheet V2.5 Fig. 1-1 (1 XO, 2 XI, 3–10 DM4/DP4…DM1/DP1, 11 DMU, 12 DPU, 13 RESET#/CDP, 14 PGANG, 15 V5, 16 VDD33, EP GND). Footprint QFN-16-1EP_3x3mm_P0.5mm_EP1.75x1.75mm (EP 1.75 mm per the package drawing).
+    - V5 and VDD33 both on +3V3, with 10 µF + 2 × 100 nF.
+    - Port 1 → USB_FT_D±, port 2 → USB_RP_D±, ports 3/4 open.
+    - RESET# through the 1N5819WS (D606) from HUB_RESET_INVERTED.
+    - PGANG unused (it could drive a "hub active" LED: VDD33 → 470 Ω → LED → PGANG, datasheet 3.3.5).
+    - Crystal Y601 ABM8-272-T3 with DNP load-cap pads C604/C605.
+  - **Net-class finding:** `kicad-cli`'s netlist export applies net-class patterns only to hierarchical root-level nets (tested: sheet-local and global nets never match, whatever the pattern). pcbnew's own matcher, which assigns classes on "Update PCB from Schematic", resolves them correctly. Checked with pcbnew's Python API: `/usb-hub/USB_D+` and `/USB_FT_D+` → USB_HS, `/USB_RP_D+` → Default.
+    - Patterns are now `*USB_D±` and `*USB_FT_D±`. The old `*/USB_D±` form was dropped.
+    - After the first PCB update, confirm the classes in Board Setup → Net Classes.
+  - Owner: add the PGANG LED. D607 (KT-0805G green) + R604 470 Ω from +3V3 to PGANG (net HUB_ACTIVE_INVERTED): lit while the hub is active, off in suspend. It doesn't disturb the reset-time mode strap: the internal pull-up keeps the pin high, so there's no voltage across the LED. We read PGANG as "power gang" (ganged port power / overcurrent mode on the bigger packages); WCH doesn't spell it out.

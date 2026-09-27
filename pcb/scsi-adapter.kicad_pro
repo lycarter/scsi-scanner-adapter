@@ -535,11 +535,11 @@
     "netclass_patterns": [
       {
         "netclass": "USB_HS",
-        "pattern": "*/USB_D+"
+        "pattern": "*USB_D+"
       },
       {
         "netclass": "USB_HS",
-        "pattern": "*/USB_D-"
+        "pattern": "*USB_D-"
       },
       {
         "netclass": "USB_HS",
