@@ -88,9 +88,16 @@ def libsym(lib_id):
     body = _extract(_libcache[path], name)
     ext = re.search(r'\(extends "([^"]+)"\)', body)
     if ext:
-        base = ext.group(1)
         derived = body
-        body = _extract(_libcache[path], base).replace(f'"{base}_', f'"{name}_')
+        base = ext.group(1)
+        body = _extract(_libcache[path], base)
+        while True:                                   # follow chains of derived symbols to the root
+            e2 = re.search(r'\(extends "([^"]+)"\)', body)
+            if not e2:
+                break
+            base = e2.group(1)
+            body = _extract(_libcache[path], base)
+        body = body.replace(f'"{base}_', f'"{name}_')
         body = body.replace(f'(symbol "{base}"', f'(symbol "{name}"', 1)
         # the derived symbol's fields override the base's (what KiCad does when it flattens)
         for m in re.finditer(r'\n\t\t\(property "([^"]+)"', derived):
@@ -190,18 +197,19 @@ class Sheet:
         return self.libs[lib_id]
 
     def _symbol(self, lib_id, ref, value, x, y, a, props, fields_at, dnp=False, hide_ref=False,
-                in_bom=True, on_board=True, unit=1, hide_value=False):
+                in_bom=True, on_board=True, unit=1, hide_value=False, fsize=1.27):
         emb, pins = self._lib(lib_id)
         (rx, ry, rj), (vx, vy, vj) = fields_at
         hr = " (hide yes)" if hide_ref else ""
+        FF = FONT.replace("1.27 1.27", f"{fsize} {fsize}")
         fa = a if a in (90, 270) else 0
         s = [f'\t(symbol (lib_id {q(lib_id)}) (at {f(x)} {f(y)} {a}) (unit {unit}) (exclude_from_sim no) '
              f'(in_bom {"yes" if in_bom else "no"}) (on_board {"yes" if on_board else "no"}) '
              f'(dnp {"yes" if dnp else "no"}) (uuid {q(U())})\n',
              f'\t\t(property "Reference" {q(ref)} (at {f(rx)} {f(ry)} {fa}) '
-             f'{FONT.format(extra=(f" (justify {rj})" if rj else "") + hr)})\n',
+             f'{FF.format(extra=(f" (justify {rj})" if rj else "") + hr)})\n',
              f'\t\t(property "Value" {q(value)} (at {f(vx)} {f(vy)} {fa}) '
-             f'{FONT.format(extra=(f" (justify {vj})" if vj else "") + (" (hide yes)" if hide_value else ""))})\n']
+             f'{FF.format(extra=(f" (justify {vj})" if vj else "") + (" (hide yes)" if hide_value else ""))})\n']
         for k, v in props.items():
             s.append(f'\t\t(property {q(k)} {q(v)} (at {f(x)} {f(y)} 0) {FONT.format(extra=" (hide yes)")})\n')
         for num, pv in pins.items():
@@ -263,14 +271,15 @@ class Sheet:
 
     # ---------- parts ----------
     def part(self, lib_id, ref, value, x, y, nets, a=0, props=None, dnp=False, fields=None, stub=G, unit=1,
-             hide_value=False):
+             hide_value=False, fsize=1.27):
         props = dict(props or {})
         emb, pins = self._lib(lib_id)
         if fields is None:            # default: to the right of the body
             fields = ((x + 2.54, y - 1.27, "left"), (x + 2.54, y + 1.27, "left"))
         elif fields == "left":
             fields = ((x - 2.54, y - 1.27, "right"), (x - 2.54, y + 1.27, "right"))
-        self._symbol(lib_id, ref, value, x, y, a, props, fields, dnp=dnp, unit=unit, hide_value=hide_value)
+        self._symbol(lib_id, ref, value, x, y, a, props, fields, dnp=dnp, unit=unit, hide_value=hide_value,
+                     fsize=fsize)
         pins = {k: v for k, v in pins.items() if v[4] in (0, unit)}
         for num, net in nets.items():
             assert num in pins, (ref, num)

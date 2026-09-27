@@ -97,14 +97,14 @@ Columns:
 | 1 | USB hub | WCH CH334P | C5373042 | E | JLC | External 3.3 V mode. 10 µF (C15850) + 2 × 100 nF on V5/VDD33. RESET#: **no pull-up**; expander P14 via the Schottky below |
 | 1 | Hub reset diode | 1N5819WS Schottky, SOD-323 | C191023 | B | JLC | Anode at CH334 RESET#, cathode at expander P14 (R031) |
 | 1 | Hub crystal | ABM8-272-T3 | C20625731 | E | JLC | Load caps DNP (internal ~16 pF) |
-| 1 | HS USB bridge | **FTDI FT232HL-REEL (LQFP-48)** | C51997 | E | JLC | $9.36. Same pinout as the QFN; the QFN (C82158) is out of stock. Powered per DS Fig. 6.2: VCCD makes its own 3.3 V (`FT_3V3`) |
-| 1 | FT232H config EEPROM | Microchip 93LC56BT-I/OT, SOT-23-6 | C190271 | E | JLC | Required. VCC from FT_3V3. Program over USB after assembly (`USAGE.md`) |
+| 1 | HS USB bridge | **FTDI FT232HL-REEL (LQFP-48)** | C51997 | E | JLC | $9.36. Same pinout as the QFN; the QFN (C82158) is out of stock. Powered per DS Fig. 6.2: VCCD makes its own 3.3 V (`FT232H_3V3`) |
+| 1 | FT232H config EEPROM | Microchip 93LC56BT-I/OT, SOT-23-6 | C190271 | E | JLC | Required. VCC from FT232H_3V3. Program over USB after assembly (`USAGE.md`) |
 | 1 | FT232H crystal | ABM8-272-T3 + 2 × 15 pF | C20625731, C1548 | E, B | JLC | |
 | 1 | FT232H REF | 12 kΩ 1 % 0402 | C25752 | B | JLC | REF to GND (R017) |
-| 2 | FT232H VPHY/VPLL ferrites | Sunlord GZ1608D601TF, 600 Ω @ 100 MHz, 0603 | C1002 | B | JLC | From FT_3V3 |
+| 2 | FT232H VPHY/VPLL ferrites | Sunlord GZ1608D601TF, 600 Ω @ 100 MHz, 0603 | C1002 | B | JLC | From FT232H_3V3 |
 | 2 | FT232H VREGIN, VCCD bulk | 4.7 µF X5R 10 V 0402 | C23733 | B | JLC | + 2 DNP 4.7 µF pads on VPHY/VPLL |
 | 10 | FT232H decoupling | 100 nF X7R 0402 | C307331 | B | JLC | VREGIN, VCCD, VCCIO ×3, VPHY, VPLL, VCCA, VCORE, EEPROM |
-| 1 | FT232H RESET# cap | 10 nF X7R 50 V 0402 | C15195 | B | JLC | With the 10 kΩ pull-up to FT_3V3 |
+| 1 | FT232H RESET# cap | 10 nF X7R 50 V 0402 | C15195 | B | JLC | With the 10 kΩ pull-up to FT232H_3V3 |
 | 1 | FT232H EEPROM DO → DI | 2.2 kΩ 1 % 0402 | C25879 | B | JLC | Plus a 10 kΩ DO pull-up (§6) |
 | 7 | FT1248 series R | 33 Ω 1 % 0402 | C25105 | B | JLC | At the RP2350 end (R021) |
 | 2 | RP2350 USB series R | 27 Ω 1 % 0603 | C25190 | P | JLC | Close to the RP2350 |
@@ -113,9 +113,9 @@ Columns:
 
 ## 5. Decoupling totals (100 nF X7R 50 V 0402, C307331)
 
-13 (RP2350B + flash, NOTES "MCU support parts") + 18 (1G17) + 10 (FT232H) + 3 ('245) + 2 (CH334)
+14 (RP2350B ×13: IOVDD ×8, DVDD ×3, ADC_AVDD, USB_OTP+QSPI_IOVDD shared; + flash ×1; was miscounted as 13 until 2026-09-26) + 18 (1G17) + 10 (FT232H) + 3 ('245) + 2 (CH334)
 + 1 (TCA9555) + 1 (PSRAM) + 1 (microSD) + 1 (LM393) + 3 (bench IN, TERMPWR IN, TPS2116 VOUT)
-+ 1 (TERMPWR ADC pin) = **54**.
++ 1 (TERMPWR ADC pin) = **55**.
 
 ## 6. Resistors and small parts (values and reasoning: NOTES "Resistor and small-part values")
 
@@ -169,4 +169,4 @@ rate). Parts that appear several times on the board cost one fee.
 4. ~~Resistor values~~: decided 2026-09-25, revised 2026-09-26 after the design review.
 5. The owner's button size and USB-C part, to confirm the footprints.
 6. ~~TPS2116 datasheet~~: in `reference/datasheets/tps2116.pdf` (2026-09-26).
-7. Test points: +5V_SYS, 3.3 V, 2.83 V, TERMPWR, FT_3V3, GND, TCA9555 INT, TERMPWR_EN_INVERTED.
+7. Test points: +5V_SYS, 3.3 V, 2.83 V, TERMPWR, FT232H_3V3, GND, TCA9555 INT, TERMPWR_EN_INVERTED.

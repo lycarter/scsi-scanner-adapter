@@ -10,7 +10,7 @@
 		(rev "0.1")
 	)
 	(lib_symbols)
-	(text "FT232HL (blocks/4-usb.md), powered per DS Fig. 6.2 (VCCD makes FT_3V3)\n93LC56B EEPROM (2.2 k DO-DI, 10 k DO up), 12 MHz crystal + 15 pF, REF 12 k, VPHY/VPLL ferrites,\nRESET# 10 k/10 nF, WR#/SIWU# 10 k pull-ups, decoupling. FT_D4-7/FT_WR_N reach the RP2350 only\nthrough unfitted 0 Ω links (FIFO rework)."
+	(text "FT232HL (blocks/4-usb.md), powered per DS Fig. 6.2 (VCCD makes FT232H_3V3)\n93LC56B EEPROM (2.2 k DO-DI, 10 k DO up), 12 MHz crystal + 15 pF, REF 12 k, VPHY/VPLL ferrites,\nRESET# 10 k/10 nF, WR#/SIWU# 10 k pull-ups, decoupling. FT232H_D4-7/FT232H_WR_N reach the RP2350 only\nthrough unfitted 0 Ω links (FIFO rework)."
 		(exclude_from_sim no)
 		(at 25.4 20.32 0)
 		(effects
@@ -21,7 +21,7 @@
 		)
 		(uuid "e8413425-df59-4d2e-b7ee-aceb6aee2fc6")
 	)
-	(hierarchical_label "FT_D6"
+	(hierarchical_label "FT232H_D6"
 		(shape bidirectional)
 		(at 50.8 73.66 180)
 		(effects
@@ -54,7 +54,7 @@
 		)
 		(uuid "33d4319b-d081-4078-9ced-58dfea4fc39a")
 	)
-	(hierarchical_label "FT_SCLK"
+	(hierarchical_label "FT232H_SCLK"
 		(shape input)
 		(at 50.8 60.96 180)
 		(effects
@@ -65,7 +65,7 @@
 		)
 		(uuid "46b90804-a76b-4760-bb87-0747b6f3b9e0")
 	)
-	(hierarchical_label "FT_MIOSIO3"
+	(hierarchical_label "FT232H_MIOSIO3"
 		(shape bidirectional)
 		(at 50.8 58.42 180)
 		(effects
@@ -76,7 +76,7 @@
 		)
 		(uuid "72aae943-0e8f-4e77-92a8-e0bf1365ca81")
 	)
-	(hierarchical_label "FT_MISO"
+	(hierarchical_label "FT232H_MISO"
 		(shape output)
 		(at 50.8 66.04 180)
 		(effects
@@ -87,7 +87,7 @@
 		)
 		(uuid "8c1591c4-2c99-4461-abd0-9ff58bd01291")
 	)
-	(hierarchical_label "FT_MIOSIO1"
+	(hierarchical_label "FT232H_MIOSIO1"
 		(shape bidirectional)
 		(at 50.8 53.34 180)
 		(effects
@@ -98,7 +98,7 @@
 		)
 		(uuid "99c26f7a-5598-4d55-9e5e-fd64126d48dc")
 	)
-	(hierarchical_label "FT_SS_N"
+	(hierarchical_label "FT232H_SS_N"
 		(shape input)
 		(at 50.8 63.5 180)
 		(effects
@@ -109,7 +109,7 @@
 		)
 		(uuid "9a0ecd74-ae25-4322-8870-d2d371e2f82e")
 	)
-	(hierarchical_label "FT_WR_N"
+	(hierarchical_label "FT232H_WR_N"
 		(shape bidirectional)
 		(at 50.8 78.74 180)
 		(effects
@@ -131,7 +131,7 @@
 		)
 		(uuid "c1dc71e4-8500-40af-a055-da5604319a5f")
 	)
-	(hierarchical_label "FT_D7"
+	(hierarchical_label "FT232H_D7"
 		(shape bidirectional)
 		(at 50.8 76.2 180)
 		(effects
@@ -142,7 +142,7 @@
 		)
 		(uuid "cceea3f0-22a6-4795-9b1e-fd53b40989df")
 	)
-	(hierarchical_label "FT_MIOSIO2"
+	(hierarchical_label "FT232H_MIOSIO2"
 		(shape bidirectional)
 		(at 50.8 55.88 180)
 		(effects
@@ -153,7 +153,7 @@
 		)
 		(uuid "d5ba90d1-c607-47f8-abd7-8582abd5ad49")
 	)
-	(hierarchical_label "FT_MIOSIO0"
+	(hierarchical_label "FT232H_MIOSIO0"
 		(shape bidirectional)
 		(at 50.8 50.8 180)
 		(effects
@@ -164,7 +164,7 @@
 		)
 		(uuid "e6944f14-9ebc-4cd7-a0a6-5993e1735050")
 	)
-	(hierarchical_label "FT_D4"
+	(hierarchical_label "FT232H_D4"
 		(shape bidirectional)
 		(at 50.8 68.58 180)
 		(effects
@@ -175,7 +175,7 @@
 		)
 		(uuid "e99f9332-f7e4-4063-885c-5abfb8312785")
 	)
-	(hierarchical_label "FT_D5"
+	(hierarchical_label "FT232H_D5"
 		(shape bidirectional)
 		(at 50.8 71.12 180)
 		(effects

@@ -469,7 +469,7 @@ and vent the printed case.
   and a 3.3 V LDO running slightly low would violate that. The 5 V mode accepts 3.6–5.5 V.
   **With VREGIN at 5 V, VCCD is an output** (the FT232H's internal 3.3 V), and FTDI's examples
   (DS Fig. 6.1/6.2) feed VCCIO, VPHY, VPLL and the EEPROM from it. **Updated 2026-09-26 (R016):
-  copy Fig. 6.2 exactly** (net `FT_3V3`; VPHY and VPLL through 600 Ω ferrites). VCCIO is *not* on
+  copy Fig. 6.2 exactly** (net `FT232H_3V3`; VPHY and VPLL through 600 Ω ferrites). VCCIO is *not* on
   the board 3.3 V rail, and **VCCD must never connect to the board 3.3 V** (two regulators would
   fight). The FT232H's 3.3 V I/O talks to the RP2350's 3.3 V directly; both come from the same
   5 V, so there's no sequencing problem. See "FT232H pins in detail".
@@ -796,9 +796,9 @@ and the datasheet threshold spreads. Rows marked **(R0xx)** changed in the desig
 | PSRAM CS1 pull-up **(R079)** | **3.3 k** (C25890) | | 3.02 V against the RP2350's 36 kΩ minimum reset pull-down (APS6404L VIH = VDD − 0.4 V) |
 | FT1248 series ×7 **(R021)** | **33 Ω** (C25105) at the RP2350 end | | Damps ringing at 25 MHz; limits contention |
 | FT232H REF **(R017)** | **12 k 1 %** (C25752) to GND | | DS Table 3.2 |
-| FT232H RESET# | 10 k to FT_3V3 + **10 nF** (C15195) | | DS Fig. 6.2; expander P13 can also pull it low |
-| FT232H EEPROM **(R017)** | DO **10 k** pull-up to FT_3V3; DO → DI **2.2 k** (C25879) | | DS Table 3.3 / Fig. 6.2 |
-| FT232H WR#, SIWU# (pins 27/28) **(R022)** | **10 k** pull-ups to FT_3V3 | | Never floating in FIFO mode; harmless in FT1248 mode |
+| FT232H RESET# | 10 k to FT232H_3V3 + **10 nF** (C15195) | | DS Fig. 6.2; expander P13 can also pull it low |
+| FT232H EEPROM **(R017)** | DO **10 k** pull-up to FT232H_3V3; DO → DI **2.2 k** (C25879) | | DS Table 3.3 / Fig. 6.2 |
+| FT232H WR#, SIWU# (pins 27/28) **(R022)** | **10 k** pull-ups to FT232H_3V3 | | Never floating in FIFO mode; harmless in FT1248 mode |
 | CH334 RESET# **(R031)** | **No pull-up** (internal ~25 k); expander P14 → Schottky **1N5819WS** (C191023, cathode at P14) | | WCH: a pin driven high at power-up enables CDP and turns off hub sleep |
 | LEDs on 3.3 V (TERMPWR-enable LED, expander LED1/LED2) | 1 k with red KT-0603R (C2286) or yellow KT-0805Y (C2296) | ~1–1.5 mA | JLC's only basic green (KT-0805G, Vf 2.6–3.1 V) is too close to 3.3 V |
 | I²C SDA/SCL | 4.7 k to 3.3 V | | |
@@ -881,17 +881,17 @@ meets this easily.
 
 **Support circuit (design review R016/R017, per DS v2.0 Fig. 6.2; applies to every mode):**
 - VREGIN (5 V mode) from +5V_SYS, with 4.7 µF + 100 nF. **VCCD is an output** here: it's the
-  local `FT_3V3` net (4.7 µF + 100 nF) and feeds VCCIO ×3 (100 nF each), VPHY and VPLL (each
+  local `FT232H_3V3` net (4.7 µF + 100 nF) and feeds VCCIO ×3 (100 nF each), VPHY and VPLL (each
   through a 600 Ω ferrite, GZ1608D601TF C1002, + 100 nF, 4.7 µF pads DNP) and the EEPROM VCC.
   **Never connect VCCD to the board 3.3 V.**
 - VCCA and VCORE: 100 nF each (outputs; don't load them).
 - REF: 12 kΩ 1 % to GND. TEST (pin 42): GND.
-- RESET#: 10 kΩ to FT_3V3 + 10 nF; expander P13 can also pull it low.
+- RESET#: 10 kΩ to FT232H_3V3 + 10 nF; expander P13 can also pull it low.
 - EEPROM 93LC56B: DO pulled up with 10 kΩ, DO → DI through 2.2 kΩ (DS Table 3.3; the figure
   shows 2 kΩ). CS/CLK pull-ups aren't fitted in FTDI's figure.
 - ACBUS7/PWRSAV# (pin 31): open, with "Suspend on ACBus7 Low" **off** in the EEPROM (enabled
   with the pin open, it would hold the chip in suspend).
-- WR# (27) and SIWU# (28): 10 kΩ pull-ups to FT_3V3, so the FIFO fallback never floats them.
+- WR# (27) and SIWU# (28): 10 kΩ pull-ups to FT232H_3V3, so the FIFO fallback never floats them.
 - Crystal: ABM8-272-T3 + 2 × 15 pF (see "FT232H package and crystal"). Drive level checked:
   ≈ 65 µW against the crystal's 200 µW maximum (review R019).
 
@@ -1594,3 +1594,12 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
   - **Per-line box:** one cluster per line, with the terminator pair R301–R336, ESD D301–D318 and the channel sheet. The four receive-only lines sit in a nested "Receive-only lines" box.
   - **"LA" spelled out as LOGIC_ANALYZER:** channel pin LOGIC_ANALYZER, nets `<line>_LOGIC_ANALYZER`, markers LOGIC_ANALYZER_MARKER0/1 (root and rp2350 sheets too).
   - Still 180 parts; netlist check and ERC clean.
+- 2026-09-26: SCSI sheet: the terminator truth table is a native KiCad table (owner picked the grey-header style), the DIP box is renamed "Terminator enable DIP switch", and a note explains what D301–D318 do.
+- 2026-09-26: RP2350 sheet (`pcb/4-rp2350.kicad_sch`, A2) populated: 61 parts, 4xx references. Netlist check and ERC clean.
+  - **Boxes:** the RP2350B (every pin labelled by function), core regulator, decoupling (one 100 nF per supply pin, each labelled with its pin), crystal, QSPI flash + PSRAM, debug + buttons, series resistors (7 × 33 Ω FT1248, 2 × 100 Ω markers, 2 × 27 Ω USB), FT1248 rework links (fitted + DNP 0 Ω per GPIO 36–40), and the TERMPWR sense divider on ADC6.
+  - **Net names:** RP2350_USB_D± (the chip side of the 27 Ω), QSPI_SS_INVERTED, PSRAM_CE_INVERTED, TERMPWR_SENSE, DVDD_1V1 (the 1.1 V core rail, local), VREG_AVDD, VREG_LX, and GPIOnn where a series part sits between the pin and its function.
+  - **ERC:** PWR_FLAGs on DVDD_1V1 (fed through L401) and VREG_AVDD (through R401).
+  - **Decoupling count corrected to 14** (13 + flash; the old "×13" contradicted its own list).
+  - **Footprints to do:** L401 (Abracon AOTA-B201610, 2016, with a polarity mark: KiCad has none), and the BOOTSEL/RUN buttons (owner's switch). TC2030 uses the legged FP footprint (`Fit` = None, not on the BOM).
+  - Owner review: the series resistors (R407–R417: 33 Ω FT1248, 100 Ω markers, 27 Ω USB) now sit inline on the RP2350B's pins, staggered in two columns. Their values and reasons are in the RP2350B box description, and the separate series-resistor box is gone. The rework-link GPIOs (36–40) carry a note on what each does. QSPI flash and PSRAM have separate boxes.
+- 2026-09-26: FT1248/FIFO nets renamed FT_* → FT232H_* (owner): FT232H_MIOSIO0–3, FT232H_SCLK, FT232H_SS_N, FT232H_MISO, FT232H_D4–D7, FT232H_WR_N, and the FT232H's own rail FT232H_3V3. _N kept where it mirrors the datasheet pin name.
