@@ -17,7 +17,7 @@ GATES = ["DB0", "DB1", "DB2", "DB3", "DB4", "DB5", "DB6", "DB7", "DBP", "ATN", "
 FT1248 = {32: "FT232H_MIOSIO0", 33: "FT232H_MIOSIO1", 34: "FT232H_MIOSIO2", 35: "FT232H_MIOSIO3", 41: "FT232H_SCLK",
           42: "FT232H_SS_N", 43: "FT232H_MISO"}
 REWORK = {36: ("I2C_SDA", "FT232H_D4", 17), 37: ("I2C_SCL", "FT232H_D5", 18), 38: ("SD_CLK", "FT232H_D6", 19),
-          39: ("SD_CMD", "FT232H_D7", 20), 40: ("SD_D0", "FT232H_WR_N", 27)}   # GPIO: (fitted, DNP, FT232H pin)
+          39: ("SD_CMD", "FT232H_D7", 20), 40: ("SD_D0", "FT232H_WRITE_INVERTED", 27)}   # GPIO: (fitted, DNP, FT232H pin)
 MARKERS = {44: "LOGIC_ANALYZER_MARKER0", 45: "LOGIC_ANALYZER_MARKER1"}
 
 R0402, R0603, C0402, C0805 = ("Resistor_SMD:R_0402_1005Metric", "Resistor_SMD:R_0603_1608Metric",
@@ -55,7 +55,7 @@ def build(path):
     s.hier.update({v: ("bidirectional" if "MIOSIO" in v else ("input" if v == "FT232H_MISO" else "output"))
                    for v in FT1248.values()})
     s.hier.update({"FT232H_D4": "bidirectional", "FT232H_D5": "bidirectional", "FT232H_D6": "bidirectional",
-                   "FT232H_D7": "bidirectional", "FT232H_WR_N": "bidirectional", "I2C_SDA": "bidirectional",
+                   "FT232H_D7": "bidirectional", "FT232H_WRITE_INVERTED": "bidirectional", "I2C_SDA": "bidirectional",
                    "I2C_SCL": "output", "SD_CLK": "output", "SD_CMD": "bidirectional", "SD_D0": "bidirectional",
                    "USB_RP_D+": "bidirectional", "USB_RP_D-": "bidirectional"})
     s.hier.update({v: "output" for v in MARKERS.values()})
@@ -155,7 +155,7 @@ def build(path):
         px, py, d = s.pin_pos(upins, n, MX, MY, 0)
         s.note(txt, px + 12.7, py - 0.635)
     px, py, d = s.pin_pos(upins, "49", MX, MY, 0)
-    s.note("microSD D0 (rework: FT232H_WR_N)", px - 58.42, py - 0.635)
+    s.note("microSD D0 (rework: FT232H_WRITE_INVERTED)", px - 58.42, py - 0.635)
 
     top = MY - 55.88                                          # top pin ends
     Y1 = top - 5.08

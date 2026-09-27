@@ -1601,7 +1601,7 @@
 		)
 		(uuid "2e914723-c979-43d8-8ab9-d540a1a77c61")
 	)
-	(label "FT232H_WR_N"
+	(label "FT232H_WRITE_INVERTED"
 		(at 205.74 55.88 0)
 		(effects
 			(font
@@ -2251,7 +2251,7 @@
 		)
 		(uuid "a5d566a0-e1d5-4cbc-bddb-fa0fe5c617bd")
 	)
-	(label "FT232H_WR_N"
+	(label "FT232H_WRITE_INVERTED"
 		(at 264.16 55.88 180)
 		(effects
 			(font
@@ -3145,7 +3145,7 @@
 				(justify right)
 			)
 		)
-		(pin "FT232H_WR_N" bidirectional
+		(pin "FT232H_WRITE_INVERTED" bidirectional
 			(at 198.12 55.88 0)
 			(uuid "c7637dd8-481d-461b-b398-f863b8b347fc")
 			(effects
@@ -4105,7 +4105,7 @@
 				(justify left)
 			)
 		)
-		(pin "FT232H_WR_N" bidirectional
+		(pin "FT232H_WRITE_INVERTED" bidirectional
 			(at 271.78 55.88 180)
 			(uuid "1409c002-4ddb-4055-b0e2-f2fce39f83a0")
 			(effects
