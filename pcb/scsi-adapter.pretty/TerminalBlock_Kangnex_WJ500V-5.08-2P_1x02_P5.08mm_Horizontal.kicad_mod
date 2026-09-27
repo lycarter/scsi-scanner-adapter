@@ -1,0 +1,192 @@
+(footprint "TerminalBlock_Kangnex_WJ500V-5.08-2P_1x02_P5.08mm_Horizontal"
+	(version 20241229)
+	(generator "scsi_adapter_gen")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(descr "Kangnex WJ500V-5.08-2P screw terminal, 2 pins, pitch 5.08mm, drill 1.5mm (Kangnex drawing WJ500V-5.08-XXP-1Y-00A rev A)")
+	(tags "screw terminal block Kangnex WJ500V 5.08mm")
+	(property "Reference" "REF**"
+		(at 2.54 -6.1 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "d3d106f5-20ab-5279-aeaa-5ae7e2acab32")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "TerminalBlock_Kangnex_WJ500V-5.08-2P_1x02_P5.08mm_Horizontal"
+		(at 2.54 7.3 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "b2a32c36-b865-546d-b409-98948dc081e8")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" "https://www.lcsc.com/datasheet/C8465.pdf"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "ec6a1fac-69ce-50b1-8468-4afc902bf438")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "23094eeb-4ef1-5c97-bdc6-ebb6681f0e18")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" thru_hole roundrect
+		(at 0 0)
+		(size 3 3)
+		(drill 1.5)
+		(layers "*.Cu" "*.Mask")
+		(roundrect_rratio 0.25)
+		(uuid "9f5ee9e1-7bc9-5be0-9769-2caab73c891c")
+	)
+	(pad "2" thru_hole circle
+		(at 5.08 0)
+		(size 3 3)
+		(drill 1.5)
+		(layers "*.Cu" "*.Mask")
+		(uuid "ba462888-63d0-5a30-887b-cf945eab7255")
+	)
+	(fp_poly
+		(pts (xy -2.54 -4.5) (xy 7.62 -4.5) (xy 7.62 5.5) (xy -2.04 5.5) (xy -2.54 5))
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "40f0f177-a9ba-5ca0-8fe7-0386d4358b92")
+	)
+	(fp_rect
+		(start 7.62 -3.5)
+		(end 8.22 -1.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "f1197506-0ea6-55f7-9fcf-31e4303e50df")
+	)
+	(fp_circle
+		(center 0 0)
+		(end 1.5 0)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "2ccabc9e-5236-513d-bd90-2aa443d8ad31")
+	)
+	(fp_circle
+		(center 5.08 0)
+		(end 6.58 0)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "f20d76bd-4916-547a-bbe1-0ee1e179fbf0")
+	)
+	(fp_line
+		(start -2.54 4)
+		(end 7.62 4)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "c13c0ab2-b1b1-5fbc-8555-ae15d59e0b4f")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 2.54 -2.8 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "e943ce21-4b2b-514e-8211-2066f8c6cf7d")
+		(effects
+			(font
+				(size 1.0 1.0)
+				(thickness 0.150)
+			)
+		)
+	)
+	(fp_poly
+		(pts (xy -2.65 -4.61) (xy 8.33 -4.61) (xy 8.33 5.61) (xy -2.65 5.61))
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.SilkS")
+		(uuid "055a7033-dfea-56fe-92e8-60284ae274e3")
+	)
+	(fp_line
+		(start -2.65 4)
+		(end 7.73 4)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "8f305c9e-f27e-5070-bab9-ed249e9707dc")
+	)
+	(fp_poly
+		(pts (xy 0 5.66) (xy 0.45 6.26) (xy -0.45 6.26))
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(fill yes)
+		(layer "F.SilkS")
+		(uuid "eb8757bd-0bf6-581b-8b52-dda3be638341")
+	)
+	(fp_rect
+		(start -3.04 -5)
+		(end 8.72 6.5)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "3f3b4a4e-be62-5b7d-9622-5351d60f6899")
+	)
+	(model "${KICAD9_3DMODEL_DIR}/TerminalBlock_Phoenix.3dshapes/TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+	(attr through_hole)
+	(embedded_fonts no)
+)

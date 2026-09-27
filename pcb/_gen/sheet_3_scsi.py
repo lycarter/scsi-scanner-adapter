@@ -50,6 +50,8 @@ DIN_NET[18], DIN_NET[19] = "LOGIC_ANALYZER_MARKER0", "LOGIC_ANALYZER_MARKER1"   
 
 
 def la_net(pin):
+    if pin > 32:            # 2x17 header, DD's 2x16 layout on pins 1-32; the far pair is spare
+        return "NC"
     if pin in (1, 2, 11, 12, 21, 22, 31, 32):
         return "GND"
     return DIN_NET.get(DD_PIN_TO_DIN[pin], "NC")
@@ -75,6 +77,8 @@ def connector(s, lib, ref, value, x, y, netfn, prps, dnp=False, fields=None):
     s._symbol(lib, ref, value, x, y, 0, prps, fields or ((x, y - 35.56, "left"), (x, y - 33.02, "left")), dnp=dnp)
     sides = {}
     for num in pins:
+        if not num.isdigit():                              # shield pins: the caller wires them
+            continue
         px, py, d = s.pin_pos(pins, num, x, y, 0)
         sides.setdefault(d, []).append((py, px, num, netfn(int(num))))
     for d, rows in sides.items():
@@ -223,9 +227,18 @@ def build(paths):
                     note="BOOMELE 2x25 keyed box header"),
               fields=((40.64, 43.18, "left"), (40.64, 110.49, "left")))
     s.text("J302 SCSI HD50 (DNP)", 104.14, 36.83, 1.27)
-    connector(s, "Connector_Generic:Conn_02x25_Top_Bottom", "J302", "HD50 female R/A", 116.84, 76.2, hd_net,
-              props("", "", True, fit="DNP", note="Half-pitch 50-pin female, right angle. Part and footprint to do."),
-              dnp=True, fields=((111.76, 43.18, "left"), (111.76, 110.49, "left")))
+    connector(s, "Connector_Generic_Shielded:Conn_02x25_Top_Bottom_Shielded", "J302", "HD50 female R/A", 116.84, 76.2, hd_net,
+              props("scsi-adapter:TE_AMPLIMITE-050_5787082-5_50pos_P1.27mm_Horizontal", "", True, fit="DNP",
+                    note="TE 5787082-5 (alt 5787394-5, 1761028-3): AMPLIMITE .050 HD50 R/A receptacle, latch blocks. DigiKey/Mouser",
+                    ds="https://www.te.com/usa-en/product-5787082-5.html"),
+              dnp=True, fields=((111.76, 43.18, "left"), (119.38, 110.49, "left")))
+    # HD50 shell (board locks, pad SH) to GND through a 0R, as the USB-C shell (R603); can become an RC.
+    _, pins = s._lib("Connector_Generic_Shielded:Conn_02x25_Top_Bottom_Shielded")
+    shx, shy, _ = s.pin_pos(pins, "SH", 116.84, 76.2, 0)
+    s.wire(shx, shy, shx, shy + 2.54)
+    s.part("Device:R", "R343", "0R", shx, shy + 6.35, {"1": None, "2": "GND"},
+           props=props(R0402, "C17168", note="HD50 shell to GND (replace with 1M || 4.7nF if EMC asks)"))
+    s.intended[("J302", "SH")] = s.intended[("R343", "1")] = "~hd50_shell"
     s.note("Pin 25 (HD50 13) is OPEN: a reversed ribbon puts TERMPWR on a\ndead pin, not on ground. "
            "IDC50 even pins 20, 22, 30, 34 are GROUND.", 20.32, 114.3)
     for i, (pin, net) in enumerate(sorted(RES.items())):
@@ -237,14 +250,14 @@ def build(paths):
            "otherwise. We are an end device: all four fitted. Remove R337-R340 if the board ever sits mid-chain.",
            20.32, 151.13)
     s.text("J303 logic-analyzer header (Digital Discovery DIN)", 177.8, 36.83, 1.27)
-    connector(s, "Connector_Generic:Conn_02x16_Odd_Even", "J303", "2x16 box header", 200.66, 66.04, la_net,
-              props("Connector_IDC:IDC-Header_2x16_P2.54mm_Vertical", "C2685073", fit="Hand",
-                    note="Liansheng BH-00169 2x16 keyed box header"),
-              fields=((195.58, 43.18, "left"), (195.58, 89.66, "left")))
-    s.note("Pin-for-pin copy of the Digital Discovery's 2x16 DIN\nconnector (reference manual Fig. 8): a straight\n"
-           "32-way 0.1\" IDC ribbon links pin n to pin n.\nDIN0-17 = the 18 bus lines in GPIO order (DB0..IO),\n"
+    connector(s, "Connector_Generic:Conn_02x17_Odd_Even", "J303", "2x17 box header", 200.66, 66.04, la_net,
+              props("Connector_IDC:IDC-Header_2x17_P2.54mm_Vertical", "C20920", fit="Hand",
+                    note="BOOMELE 2x17 keyed box header (same family as J301)"),
+              fields=((195.58, 43.18, "left"), (195.58, 92.2, "left")))
+    s.note("Pins 1-32 copy the Digital Discovery's 2x16 DIN\nconnector (reference manual Fig. 8); 33/34 spare.\n"
+           "A standard 34-way ribbon runs to a 2x16-to-34 adapter\nboard (pin n to pin n).\nDIN0-17 = the 18 bus lines in GPIO order (DB0..IO),\n"
            "DIN18/19 = the two markers, DIN20-23 unused.\nGND on 1, 2, 11, 12, 21, 22, 31, 32.\n"
-           "Each tap has 100R at its receiver (channel sheets).", 177.8, 97.79)
+           "Each tap has 100R at its receiver (channel sheets).", 177.8, 100.33)
 
     # ================= Active terminator =================
     s.rect(12.7, 172.72, 254.0, 292.1)
@@ -290,7 +303,8 @@ def build(paths):
     s.part("Device:R", "R341", "10k", NX, SY - 12.7, {"1": "VTERMINATOR", "2": None},
            props=props(R0402, "C25744", note="/OE pull-up: off by default"), fields="left")
     s.part("Switch:SW_DIP_x02", "SW301", "DIP 2-pos", SX, SY, {"1": None, "2": None, "4": None, "3": None},
-           props=props("", "C6331180", note="SHOU HAN 2-position SMD DIP. Footprint to do."),
+           props=props("scsi-adapter:SW_DIP_SPSTx02_Slide_SHOUHAN_2.54-2P-TPGT_W8.8mm_P2.54mm", "C6331180",
+                       note="SHOU HAN 2.54-2P TPGT 2-position SMD slide DIP"),
            fields=((SX - 5.08, SY - 6.35, "left"), (SX - 5.08, SY + 5.08, "left")))
     s.wire(NX, SY - 8.89, NX, SY - 2.54)
     s.wire(NX, SY - 2.54, SX - 7.62, SY - 2.54)

@@ -1,0 +1,281 @@
+(footprint "microSD_SHOUHAN_TF-PUSH_PushPush_CardDetect"
+	(version 20241229)
+	(generator "scsi_adapter_gen")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(descr "SHOU HAN TF PUSH push-push microSD socket with card detect (LCSC C393941); SHOU HAN drawing TF PUSH rev A recommended PCB layout")
+	(tags "micro SD TF card socket push-push card detect SHOUHAN C393941")
+	(pad "9" smd rect
+		(at -6.55 -11)
+		(size 0.7 1.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "8858786c-07d3-5d94-be93-fa4d07b0cdec")
+	)
+	(pad "8" smd rect
+		(at -5.45 -11)
+		(size 0.7 1.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "21104968-35b4-5ba5-be05-e1cf96e08f58")
+	)
+	(pad "7" smd rect
+		(at -4.35 -11)
+		(size 0.7 1.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "107ae107-3250-5c40-84aa-1d89a94b33df")
+	)
+	(pad "6" smd rect
+		(at -3.25 -11)
+		(size 0.7 1.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "dc432f77-a526-5500-a3d7-83cbcf421d53")
+	)
+	(pad "5" smd rect
+		(at -2.15 -11)
+		(size 0.7 1.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "e2b00a8f-d686-5bbd-b3f5-24087928a31f")
+	)
+	(pad "4" smd rect
+		(at -1.05 -11)
+		(size 0.7 1.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "f541d8d3-e9f6-58ad-8fff-0b75b00fbaa6")
+	)
+	(pad "3" smd rect
+		(at 0.05 -11)
+		(size 0.7 1.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "1f4eea5a-ec58-5edf-ad0b-6621ead7135f")
+	)
+	(pad "2" smd rect
+		(at 1.15 -11)
+		(size 0.7 1.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "f0bd6fac-4c79-5a33-90c2-7475db2780af")
+	)
+	(pad "1" smd rect
+		(at 2.25 -11)
+		(size 0.7 1.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "6fcc22be-7345-5808-99dc-11785725a107")
+	)
+	(pad "10" smd rect
+		(at -7.75 -10)
+		(size 1.2 1.5)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "b73f6670-17f0-537e-b241-748906c05782")
+	)
+	(pad "10" smd rect
+		(at 6.85 -10)
+		(size 1.6 1.5)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "7331f744-bd17-5068-b7f3-302827265507")
+	)
+	(pad "10" smd rect
+		(at -7.75 -0.4)
+		(size 1.2 2.2)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "757424d8-e61c-5f42-8739-56ffa60e3b71")
+	)
+	(pad "10" smd rect
+		(at 7.75 -0.4)
+		(size 1.2 2.2)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "42873344-bc25-552e-8755-1407912b61d8")
+	)
+	(pad "" np_thru_hole circle
+		(at -4.95 0)
+		(size 1 1)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(uuid "aa3c8000-5819-50c3-b81d-cd5c5177ebce")
+	)
+	(pad "" np_thru_hole circle
+		(at 3.05 0)
+		(size 1 1)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(uuid "7679ad3b-1f43-51df-98d2-e95b698e77b4")
+	)
+	(property "Reference" "REF**"
+		(at 0 -13.2 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "13c37a8d-140b-5262-9bc2-3da9fe55be24")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "microSD_SHOUHAN_TF-PUSH_PushPush_CardDetect"
+		(at 0 7.4 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "1cbe8a71-8ea7-51c1-8261-afe4a9048b29")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" "https://www.lcsc.com/datasheet/C393941.pdf"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "5d74c909-321f-5b58-957b-afb9d955e82f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "4a8da6cc-edc3-568d-8d74-ef561d32e9d1")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(fp_rect
+		(start -7.375 -10.5)
+		(end 7.375 4)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "93ee8bf2-bf1a-544a-a431-fccc6aaaa12b")
+	)
+	(fp_text user "card slot"
+		(at 0 3.2 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "95859d71-e617-5738-97c6-413319d65cce")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.120)
+			)
+		)
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 -5 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "a116ec65-0468-50f8-8dd8-e2805ac06249")
+		(effects
+			(font
+				(size 1.0 1.0)
+				(thickness 0.150)
+			)
+		)
+	)
+	(fp_line
+		(start -7.485 -8.95)
+		(end -7.485 -1.8)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "00daccaa-90e4-5ad5-868f-0598e09bd2d3")
+	)
+	(fp_line
+		(start 7.485 -8.95)
+		(end 7.485 -1.8)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "b99635c7-ca9c-5cf8-950b-76c8b035ba9c")
+	)
+	(fp_line
+		(start -7.485 1)
+		(end -7.485 4.11)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "a2922a11-c232-51b1-bfc0-142001c9dbad")
+	)
+	(fp_line
+		(start 7.485 1)
+		(end 7.485 4.11)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "fb9635c0-e2a0-5f71-8a1c-ce760a09bad9")
+	)
+	(fp_line
+		(start -7.485 4.11)
+		(end 7.485 4.11)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "331a1347-575d-54dd-8e19-c97522607ce8")
+	)
+	(fp_circle
+		(center 3.15 -12.3)
+		(end 3.3 -12.3)
+		(stroke
+			(width 0.3)
+			(type default)
+		)
+		(fill no)
+		(layer "F.SilkS")
+		(uuid "755695bf-001e-5ca9-b546-751735af281b")
+	)
+	(fp_rect
+		(start -8.6 -12.05)
+		(end 8.6 4.5)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "409ef593-36cb-5f6a-af33-916059666c31")
+	)
+	(fp_line
+		(start -7.375 4)
+		(end 7.375 4)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "Dwgs.User")
+		(uuid "838ede18-aeb8-5e2c-af13-bc7b3522051a")
+	)
+	(fp_text user "Slot: put at the board edge; the card sticks out past it"
+		(at 0 5.2 0)
+		(unlocked yes)
+		(layer "Dwgs.User")
+		(uuid "8bd0b367-892d-54df-9716-b45fc5c2addc")
+		(effects
+			(font
+				(size 0.6 0.6)
+				(thickness 0.090)
+			)
+		)
+	)
+	(attr smd)
+	(embedded_fonts no)
+)

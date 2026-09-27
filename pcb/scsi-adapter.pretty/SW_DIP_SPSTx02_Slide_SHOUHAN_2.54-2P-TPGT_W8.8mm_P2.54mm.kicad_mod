@@ -1,0 +1,196 @@
+(footprint "SW_DIP_SPSTx02_Slide_SHOUHAN_2.54-2P-TPGT_W8.8mm_P2.54mm"
+	(version 20241229)
+	(generator "scsi_adapter_gen")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(descr "SHOU HAN 2.54-2P TPGT 2-position SMD slide DIP switch (LCSC C6331180), drawing DSP-DSICXXLS-AP PCB layout")
+	(tags "DIP switch SPST slide SMD 2 position SHOUHAN C6331180")
+	(pad "1" smd rect
+		(at -1.27 4.4)
+		(size 1.1 2.2)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "2dd974ea-a230-5002-8319-1373b7cc36f0")
+	)
+	(pad "2" smd rect
+		(at 1.27 4.4)
+		(size 1.1 2.2)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "ea33cd72-b556-5e58-9838-fba8794d30c8")
+	)
+	(pad "3" smd rect
+		(at 1.27 -4.4)
+		(size 1.1 2.2)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "269b93ef-cc27-5160-becd-535c5845ffc6")
+	)
+	(pad "4" smd rect
+		(at -1.27 -4.4)
+		(size 1.1 2.2)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "d7bf05c3-c71a-5467-8c8f-114b92eb4287")
+	)
+	(property "Reference" "REF**"
+		(at 0 -6.6 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "78fa1566-e862-573b-87c6-f96bf13113f6")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "SW_DIP_SPSTx02_Slide_SHOUHAN_2.54-2P-TPGT_W8.8mm_P2.54mm"
+		(at 0 6.8 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "418b44b0-139a-5237-a117-eb7c4be472fc")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" "https://www.lcsc.com/datasheet/C6331180.pdf"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "e658cb2b-f9de-5f83-8c53-853f75075a64")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "6587952b-07df-5db1-97fa-b97c8bec639a")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(fp_rect
+		(start -2.54 -3.075)
+		(end 2.54 3.075)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "e4c15f55-bcf1-59b9-96ac-13e6c1449cf8")
+	)
+	(fp_rect
+		(start -1.67 -1.5)
+		(end -0.87 1.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "cffaf3ac-cf46-5fd8-915f-6ce82c79182f")
+	)
+	(fp_rect
+		(start 0.87 -1.5)
+		(end 1.67 1.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "22856fe4-53f6-52fe-849e-adbf6f036d6e")
+	)
+	(fp_text user "ON"
+		(at 0 -2.3 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "58f3ce95-81d6-5dd1-977c-9d8381547d15")
+		(effects
+			(font
+				(size 0.6 0.6)
+				(thickness 0.090)
+			)
+		)
+	)
+	(fp_line
+		(start -2.65 -3.185)
+		(end -2.65 3.185)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "828407e2-92ef-5d6b-8d1d-2529656f4925")
+	)
+	(fp_line
+		(start 2.65 -3.185)
+		(end 2.65 3.185)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "c34eb621-30fb-51e8-8a2f-d92edc64bd7d")
+	)
+	(fp_text user "ON"
+		(at -3.9 -4.4 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "b0067f8d-93db-572a-b4d1-3f957e701814")
+		(effects
+			(font
+				(size 1.0 1.0)
+				(thickness 0.150)
+			)
+		)
+	)
+	(fp_text user "1"
+		(at -1.27 1.9 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "7b7b9508-b356-5458-a6f6-c490d7cca7fa")
+		(effects
+			(font
+				(size 1.0 1.0)
+				(thickness 0.150)
+			)
+		)
+	)
+	(fp_text user "2"
+		(at 1.27 1.9 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "419c2a7b-a1b7-506d-9047-0b49a29b3cfe")
+		(effects
+			(font
+				(size 1.0 1.0)
+				(thickness 0.150)
+			)
+		)
+	)
+	(fp_rect
+		(start -4.9 -5.75)
+		(end 3.05 5.75)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "48f0aa59-4c69-54c5-a799-ac2ae0a0d50c")
+	)
+	(attr smd)
+	(embedded_fonts no)
+)

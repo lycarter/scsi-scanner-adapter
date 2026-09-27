@@ -1,6 +1,8 @@
 .DS_Store
 # Vendor reference material: large, copyrighted, and contains Mac resource forks git can't store.
 /reference/
+# Vendor 3D models (copyrighted, not ours to redistribute). Rebuild from reference/: see docs/sources.md.
+/pcb/scsi-adapter.3dshapes/
 __pycache__/
 
 # KiCad per-user and generated files

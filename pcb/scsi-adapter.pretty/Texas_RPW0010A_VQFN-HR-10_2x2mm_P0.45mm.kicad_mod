@@ -1,0 +1,320 @@
+(footprint "Texas_RPW0010A_VQFN-HR-10_2x2mm_P0.45mm"
+	(version 20241229)
+	(generator "scsi_adapter_gen")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(descr "TI RPW0010A VQFN-HR (HotRod) 10 pin, 2x2 mm, land pattern and stencil per TI 4225183/A (TPS25947 datasheet SLVSFC9C p.72-74)")
+	(tags "VQFN-HR HotRod RPW0010A TPS25947")
+	(property "Reference" "REF**"
+		(at 0 -2.3 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "cde40c91-2a91-5b12-b518-2a77043df9ed")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "Texas_RPW0010A_VQFN-HR-10_2x2mm_P0.45mm"
+		(at 0 2.3 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "ac6dcc81-58d4-5d8a-8703-a87abfdf2fc1")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" "https://www.ti.com/lit/ds/symlink/tps25947.pdf"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "13e1130d-a16b-5c1d-a934-8a481a1acecf")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "cf63ebf2-6952-51c1-9902-81ffa0f04b10")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "2" smd roundrect
+		(at -0.9 -0.225)
+		(size 0.6 0.25)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.2000)
+		(uuid "efc54ef4-8579-5631-a8ca-4a663b8d544d")
+	)
+	(pad "3" smd roundrect
+		(at -0.9 0.225)
+		(size 0.6 0.25)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.2000)
+		(uuid "ee1b1c22-d545-5d20-8c11-f913334a3d9a")
+	)
+	(pad "8" smd roundrect
+		(at 0.9 0.225)
+		(size 0.6 0.25)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.2000)
+		(uuid "6b7b27fb-29aa-508a-8210-a7f02eff3a05")
+	)
+	(pad "9" smd roundrect
+		(at 0.9 -0.225)
+		(size 0.6 0.25)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.2000)
+		(uuid "5e4ec517-c296-57e5-8517-650ecb39db83")
+	)
+	(pad "1" smd custom
+		(at -0.9 -0.7)
+		(size 0.2 0.2)
+		(layers "F.Cu" "F.Mask")
+		(options
+			(clearance outline)
+			(anchor rect)
+		)
+		(primitives
+			(gr_poly
+				(pts (xy 0.3 0.15) (xy -0.3 0.15) (xy -0.3 -0.15) (xy 0.05 -0.15) (xy 0.05 -0.5) (xy 0.3 -0.5))
+				(width 0)
+				(fill yes)
+			)
+		)
+		(uuid "b38ea62d-1fb8-5ed2-a348-526b9747bb32")
+	)
+	(pad "4" smd custom
+		(at -0.9 0.7)
+		(size 0.2 0.2)
+		(layers "F.Cu" "F.Mask")
+		(options
+			(clearance outline)
+			(anchor rect)
+		)
+		(primitives
+			(gr_poly
+				(pts (xy 0.3 -0.15) (xy -0.3 -0.15) (xy -0.3 0.15) (xy 0.05 0.15) (xy 0.05 0.5) (xy 0.3 0.5))
+				(width 0)
+				(fill yes)
+			)
+		)
+		(uuid "e2ca948c-c802-5d49-8372-1f03e6581787")
+	)
+	(pad "7" smd custom
+		(at 0.9 0.7)
+		(size 0.2 0.2)
+		(layers "F.Cu" "F.Mask")
+		(options
+			(clearance outline)
+			(anchor rect)
+		)
+		(primitives
+			(gr_poly
+				(pts (xy -0.3 -0.15) (xy 0.3 -0.15) (xy 0.3 0.15) (xy -0.05 0.15) (xy -0.05 0.5) (xy -0.3 0.5))
+				(width 0)
+				(fill yes)
+			)
+		)
+		(uuid "3a7fab53-d3f1-5c38-8d92-c063485d5cb5")
+	)
+	(pad "10" smd custom
+		(at 0.9 -0.7)
+		(size 0.2 0.2)
+		(layers "F.Cu" "F.Mask")
+		(options
+			(clearance outline)
+			(anchor rect)
+		)
+		(primitives
+			(gr_poly
+				(pts (xy -0.3 0.15) (xy 0.3 0.15) (xy 0.3 -0.15) (xy -0.05 -0.15) (xy -0.05 -0.5) (xy -0.3 -0.5))
+				(width 0)
+				(fill yes)
+			)
+		)
+		(uuid "d800d453-040a-5409-9ba1-de820733d4b7")
+	)
+	(pad "5" smd roundrect
+		(at -0.25 0)
+		(size 0.3 2.4)
+		(layers "F.Cu" "F.Mask")
+		(roundrect_rratio 0.1667)
+		(uuid "655bb5f2-4c58-5eaa-a7f0-a24ca84c80a1")
+	)
+	(pad "6" smd roundrect
+		(at 0.25 0)
+		(size 0.3 2.4)
+		(layers "F.Cu" "F.Mask")
+		(roundrect_rratio 0.1667)
+		(uuid "775e9b46-19d0-5f0f-bb97-16789769ade5")
+	)
+	(pad "" smd custom
+		(at -0.9 -0.7)
+		(size 0.2 0.2)
+		(layers "F.Paste")
+		(options
+			(clearance outline)
+			(anchor rect)
+		)
+		(primitives
+			(gr_poly
+				(pts (xy 0.3 0.15) (xy -0.3 0.15) (xy -0.3 -0.15) (xy 0.075 -0.15) (xy 0.075 -0.5) (xy 0.3 -0.5))
+				(width 0)
+				(fill yes)
+			)
+		)
+		(uuid "dd96ec2d-3c49-5472-b2a1-e9b4d5b56e9e")
+	)
+	(pad "" smd custom
+		(at -0.9 0.7)
+		(size 0.2 0.2)
+		(layers "F.Paste")
+		(options
+			(clearance outline)
+			(anchor rect)
+		)
+		(primitives
+			(gr_poly
+				(pts (xy 0.3 -0.15) (xy -0.3 -0.15) (xy -0.3 0.15) (xy 0.075 0.15) (xy 0.075 0.5) (xy 0.3 0.5))
+				(width 0)
+				(fill yes)
+			)
+		)
+		(uuid "05725d6a-c24f-5a25-bf88-5ac6ee01d8d7")
+	)
+	(pad "" smd custom
+		(at 0.9 0.7)
+		(size 0.2 0.2)
+		(layers "F.Paste")
+		(options
+			(clearance outline)
+			(anchor rect)
+		)
+		(primitives
+			(gr_poly
+				(pts (xy -0.3 -0.15) (xy 0.3 -0.15) (xy 0.3 0.15) (xy -0.075 0.15) (xy -0.075 0.5) (xy -0.3 0.5))
+				(width 0)
+				(fill yes)
+			)
+		)
+		(uuid "0a931c41-7077-5aca-a062-978978f11593")
+	)
+	(pad "" smd custom
+		(at 0.9 -0.7)
+		(size 0.2 0.2)
+		(layers "F.Paste")
+		(options
+			(clearance outline)
+			(anchor rect)
+		)
+		(primitives
+			(gr_poly
+				(pts (xy -0.3 0.15) (xy 0.3 0.15) (xy 0.3 -0.15) (xy -0.075 -0.15) (xy -0.075 -0.5) (xy -0.3 -0.5))
+				(width 0)
+				(fill yes)
+			)
+		)
+		(uuid "9ee1e994-00b5-58de-817a-83bce793bc02")
+	)
+	(pad "" smd roundrect
+		(at -0.25 -0.63)
+		(size 0.28 1.06)
+		(layers "F.Paste")
+		(roundrect_rratio 0.1786)
+		(uuid "046f1440-c050-50b9-92cc-ebedd1029899")
+	)
+	(pad "" smd roundrect
+		(at -0.25 0.63)
+		(size 0.28 1.06)
+		(layers "F.Paste")
+		(roundrect_rratio 0.1786)
+		(uuid "f4cd74e7-a9f1-5fb8-b108-86db9e86e880")
+	)
+	(pad "" smd roundrect
+		(at 0.25 -0.63)
+		(size 0.28 1.06)
+		(layers "F.Paste")
+		(roundrect_rratio 0.1786)
+		(uuid "3de39384-7da3-5107-a0f5-98b72c768d31")
+	)
+	(pad "" smd roundrect
+		(at 0.25 0.63)
+		(size 0.28 1.06)
+		(layers "F.Paste")
+		(roundrect_rratio 0.1786)
+		(uuid "17a147d7-8116-5b09-86b4-729376e828eb")
+	)
+	(fp_poly
+		(pts (xy -0.5 -1) (xy 1 -1) (xy 1 1) (xy -1 1) (xy -1 -0.5))
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "58e40b44-4f00-5cfa-80b1-9a8bced70932")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "efa0a3cf-bc55-5209-9af9-1926aabd9096")
+		(effects
+			(font
+				(size 0.5 0.5)
+				(thickness 0.075)
+			)
+		)
+	)
+	(fp_poly
+		(pts (xy -1.42 -0.7) (xy -1.72 -0.52) (xy -1.72 -0.88))
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(fill yes)
+		(layer "F.SilkS")
+		(uuid "2cd00657-e306-5cad-a595-7a0f4ee78e96")
+	)
+	(fp_rect
+		(start -1.45 -1.45)
+		(end 1.45 1.45)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "52c388b7-9e21-5a34-943b-d9a7056b9bb2")
+	)
+	(model "${KICAD9_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/Texas_RPU0010A_VQFN-HR-10_2x2mm_P0.5mm.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+	(attr smd)
+	(embedded_fonts no)
+)

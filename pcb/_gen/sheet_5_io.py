@@ -82,7 +82,7 @@ def build(path):
                                                        "INT pull-up (open drain)"))):
         vpart("Device:R", ref, val, 38.1 + i * 20.32, 63.5, "+3V3", net, props(R0402, lcsc, note=note))
     s.table(20.32, 148.59, [["Pin", "Net", "Meaning"],
-                            ["P00 in", "SD_CARD_DETECT", "microSD card present (switch polarity: check the socket datasheet)"],
+                            ["P00 in", "SD_CARD_DETECT", "microSD card switch (Cd to shell/GND; polarity: check at bring-up)"],
                             ["P01 in", "TERMPWR_EN_INVERTED", "low = we supply TERMPWR (CC >= 1.5 A or bench)"],
                             ["P02 in", "IS_BENCH_POWERED", "high = running on the bench input (TPS2116 ST)"],
                             ["P03/P04 in", "*_EFUSE_FAULT_INVERTED", "low = bench / TERMPWR eFuse fault (or reverse block)"],
@@ -123,8 +123,8 @@ def build(path):
     s.part("Connector:Micro_SD_Card_Det1", "J501", "TF PUSH", SX, SY,
            {"1": "SD_D2", "2": "SD_D3", "3": "SD_CMD", "4": "+3V3", "5": "SD_CLK", "6": "GND", "7": "SD_D0",
             "8": "SD_D1", "9": "SD_CARD_DETECT", "10": "GND"},
-           props=props("", "C393941", note="SHOU HAN TF PUSH, push-push with card detect. Footprint to do "
-                                           "(EasyEDA/LCSC, checked against the drawing)."),
+           props=props("scsi-adapter:microSD_SHOUHAN_TF-PUSH_PushPush_CardDetect", "C393941",
+                       note="SHOU HAN TF PUSH, push-push with card detect (Cd switches to the shell)"),
            fields=((SX - 20.32, SY - 15.24, "left"), (SX - 20.32, SY + 17.78, "left")), stub=2 * G,
            inline=True)                                   # rails inline: the pins are only 2.54 apart
     for i, net in enumerate(("SD_CMD", "SD_D0", "SD_D1", "SD_D2", "SD_D3")):
@@ -135,8 +135,9 @@ def build(path):
     s.part("Device:C", "C503", "100nF", 386.08, 139.7, {"1": "+3V3", "2": "GND"},
            props=props(C0402, "C307331", note="microSD decoupling"), fields="left")
     s.note("Pull-ups 10k (SD spec: 10-100k) on CMD and D0-D3. D3 doubles as\ncard detect in SPI mode; "
-           "we use the socket's switch instead (DET -> P00).\nUnverified: DET pin number and switch polarity "
-           "(LCSC datasheet\nwasn't downloadable by script). Check before drawing the footprint.", 266.7, 160.02)
+           "we use the socket's switch instead (DET -> P00).\nDET = the drawing's 'Cd' pad; it switches against the "
+           "shell (GND).\nP00's internal pull-up (TCA9555) is the only pull-up. Polarity\n"
+           "(closed with or without a card) isn't on the drawing: check at bring-up.", 266.7, 160.02)
 
     # ================= Test points =================
     s.rect(200.66, 203.2, 406.4, 284.48)

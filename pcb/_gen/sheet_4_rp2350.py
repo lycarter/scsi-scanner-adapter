@@ -200,11 +200,11 @@ def build(path):
     heading(s, "Core regulator (on-chip, 1.1 V)", 20.32, 20.32,
             "Guide 2.1 / datasheet 6.3.8. Layout: inductor orientation per Fig. 23, VREG_PGND and CIN\n"
             "straight to the exposed pad, and a ground cut-out under VREG_LX on layer 2 (Fig. 24).")
-    s.part("Device:L", "L401", "3.3uH", 60.96, 50.8, {"1": "VREG_LX", "2": "DVDD_1V1"}, a=90,
-           props=props("", "C42411119",
-                       note="Abracon AOTA-B201610S3R3-101-T, polarity-marked (datasheet requires it). 2016 footprint with polarity mark to do."),
+    s.part("Device:L", "L401", "3.3uH", 60.96, 50.8, {"1": "DVDD_1V1", "2": "VREG_LX"}, a=90,
+           props=props("scsi-adapter:L_Abracon_AOTA-B201610_2.0x1.6mm_Polarized", "C42411119",
+                       note="Abracon AOTA-B201610S3R3-101-T, polarity-marked: pad 1 = dot = DVDD (RP2350 Fig. 23)"),
            fields=((60.96, 46.99, ""), (60.96, 54.61, "")))
-    s.note("Polarity dot per datasheet Fig. 23;\ncheck JLC's placement preview.", 43.18, 58.42)
+    s.note("Pin 1 = the part's dot = DVDD_1V1 (datasheet Fig. 23,\nPico 2 layout). Check JLC's placement preview.", 43.18, 58.42)
     s.pwr_flag("#FLG401", "DVDD_1V1", 81.28, 38.1)
     s.pwr_flag("#FLG402", "VREG_AVDD", 124.46, 38.1)
     s.note("PWR_FLAGs: DVDD_1V1 is fed through L401 and VREG_AVDD\nthrough R401, which ERC sees as passive parts.",
@@ -315,7 +315,8 @@ def build(path):
            props=props("Connector:Tag-Connect_TC2030-IDC-FP_2x03_P1.27mm_Vertical", "", fit="None",
                        note="Footprint only (legged, clip holes). 1 VCC, 2 SWDIO, 3 nRESET, 4 SWCLK, 5 GND, 6 SWO (NC)"),
            fields=((JX - 5.08, JY - 6.35, "left"), (JX - 5.08, JY + 6.35, "left")))
-    SWP = props("", "", fit="Hand", note="Owner's through-hole tact switch; footprint to do once the part is checked")
+    SWP = props("Button_Switch_THT:SW_PUSH_6mm", "C110153", fit="Hand",
+                note="Hroparts K2-1102DP-C4SW-04 6x6x5 THT tact (LCSC, hand-fit); alt TE 1825910-6. Route to diagonal legs")
     for k, (lbl, rref, sref, val) in enumerate((("QSPI_SS_INVERTED", "R405", "SW401", "BOOTSEL"),
                                                  ("RUN", "R406", "SW402", "RUN"))):
         x = 459.74 + k * 45.72

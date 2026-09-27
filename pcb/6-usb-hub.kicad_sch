@@ -2449,7 +2449,7 @@
 	(symbol (lib_id "Device:D_Zener") (at 144.78 238.76 270) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "3578eb23-1dd7-5b26-bb93-1dc2c5c5ba4a")
 		(property "Reference" "D605" (at 147.32 237.49 270) (effects (font (size 1.27 1.27)) (justify right)))
 		(property "Value" "SMF6.0A" (at 147.32 240.03 270) (effects (font (size 1.27 1.27)) (justify right)))
-		(property "Footprint" "Diode_SMD:D_SMF" (at 144.78 238.76 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Footprint" "Diode_SMD:D_SOD-123F" (at 144.78 238.76 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(property "Datasheet" "" (at 144.78 238.76 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(property "Description" "ESD on VBUS" (at 144.78 238.76 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(property "LCSC" "C19077499" (at 144.78 238.76 0) (effects (font (size 1.27 1.27)) (hide yes)))

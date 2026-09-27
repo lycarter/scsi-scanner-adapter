@@ -1,10 +1,10 @@
 {
- "1-power.kicad_sch": "19ad6d547b12de72",
- "2-termpwr.kicad_sch": "64c7013a7089d040",
- "3-scsi.kicad_sch": "eef10dd583c944ad",
- "4-rp2350.kicad_sch": "d468268591b82456",
- "5-io.kicad_sch": "17d5c6277733179c",
- "6-usb-hub.kicad_sch": "82c9e33867d2d879",
+ "1-power.kicad_sch": "ed661e66e67aa5c3",
+ "2-termpwr.kicad_sch": "0ab58a3bb00269fc",
+ "3-scsi.kicad_sch": "bc49d4417a6335b6",
+ "4-rp2350.kicad_sch": "8bfed2dbed1e0794",
+ "5-io.kicad_sch": "f84b431c904c03fc",
+ "6-usb-hub.kicad_sch": "7f58f220a5eded1d",
  "7-ft232h.kicad_sch": "589cbb679726067c",
  "scsi_line_bidir.kicad_sch": "a8ba43c0890433fc",
  "scsi_line_in.kicad_sch": "9ff3c7402292c36d"
