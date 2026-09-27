@@ -87,7 +87,7 @@ Columns:
 | 1 | I²C expander | TI TCA9555PWR | C465732 | E | JLC | INT to a test point only (firmware polls) |
 | 1 | TERMPWR sense divider | 100 kΩ + 100 kΩ 0402 + 100 nF | C25741 | B | JLC | TERMPWR → GPIO 46 (ADC6), R066. (Resistors counted in §6) |
 | — | SWD | Tag-Connect TC2030-IDC footprint (pads + clip holes, no part) | — | — | — | 1 VCC, 2 SWDIO, 3 RUN, 4 SWCLK, 5 GND, 6 NC. Owner buys a TC2030-IDC cable + ARM20-CTX adapter for the J-Link EDU |
-| 4 | LEDs | KENTO KT-0603R red (C2286), or KT-0805Y yellow (C2296) where a second color helps | C2286 | B | JLC | TERMPWR enable (3.3 V, 1 k), TERMPWR present (on TERMPWR, **10 k**, ≈ 0.35 mA), LED1/LED2 on the expander (1 k). The basic green needs Vf up to 3.1 V: not on 3.3 V |
+| 7 | LEDs | KENTO KT-0603R red (C2286) ×3, KT-0805Y yellow (C2296) ×3, KT-0805G green (C2297) ×1 | — | B | JLC | Red: TERMPWR enable (D201), activity (D502), spare (D503). Yellow: TERMPWR present (D202, 10 k on TERMPWR), status (D501), spare (D504). Green: spare (D505) through **470 Ω**: at 1–2 mA it needs only ~2.4 V (owner's curve; the 2.6–3.1 V spec is at 5 mA). Expander LEDs on P05–P07, P10, P11 |
 
 ## 4. USB path (`blocks/4-usb.md`)
 
@@ -144,8 +144,8 @@ LA 100 Ω, 220 Ω terminators, 33 Ω, 12 k, 2.2 k, 3.3 k CS1, …) aren't repeat
 | 1 | 3.3 kΩ | C25890 | B | CC reference top (10 k + 3.3 k = 13.3 k) |
 | 3 | 4.7 kΩ | C25900 | B | CC reference bottom; I²C SDA/SCL |
 | 1 | 1 MΩ | C26083 | B | CC hysteresis |
-| 1 | 470 Ω | C25117 | B | CJ431 bias (was 510 Ω, R087) |
-| 4 | 1 kΩ | C11702 | B | 3.3 V LEDs ×3; terminator DIP 1 pull-down |
+| 2 | 470 Ω | C25117 | B | CJ431 bias (was 510 Ω, R087); green LED |
+| 6 | 1 kΩ | C11702 | B | 3.3 V LEDs ×5 (TERMPWR enable, status, activity, spare red, spare yellow); terminator DIP 1 pull-down |
 | 15 | 0 Ω | C17168 | B | FT1248 rework links: 5 fitted (GPIO 36–40 → I²C/SD), 5 DNP (FT232H pins 17–20, 27); RESERVED ×4 (§2); USB-C shell ×1 |
 
 Dropped on 2026-09-26: 110 Ω C2909312 (→ 2 × 220 Ω), 20 kΩ and 15 kΩ of the old 2.80 V divider,

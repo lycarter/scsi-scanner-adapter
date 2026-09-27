@@ -238,15 +238,15 @@ package). Part decision: `../NOTES.md`, "GPIO budget" (TCA9555PWR, C465732). Sou
 test point (firmware polls)                  -- |  1 INT VCC 24 | -- 3.3 V, 100 nF
 GND (addr 0x20)                              -- |  2 A1  SDA 23 | -- GPIO 36 (I2C0), 4.7k up
 GND                                          -- |  3 A2  SCL 22 | -- GPIO 37 (I2C0), 4.7k up
-in: SD_CD (socket switch)                    -- |  4 P00  A0 21 | -- GND
-in: TERMPWR_EN_INVERTED (enable node)        -- |  5 P01 P17 20 | -- spare in/out
-in: IS_BENCH_POWERED (TPS2116 ST, 1 = bench) -- |  6 P02 P16 19 | -- spare in/out
-in: BENCH_EFUSE_FAULT_INVERTED (eFuse)       -- |  7 P03 P15 18 | -- out: SD_PWR_EN (optional)
+in: SD_CARD_DETECT (socket switch)           -- |  4 P00  A0 21 | -- GND
+in: TERMPWR_EN_INVERTED (enable node)        -- |  5 P01 P17 20 | -- spare, test pad
+in: IS_BENCH_POWERED (TPS2116 ST, 1 = bench) -- |  6 P02 P16 19 | -- spare, test pad
+in: BENCH_EFUSE_FAULT_INVERTED (eFuse)       -- |  7 P03 P15 18 | -- spare, test pad
 in: TERMPWR_EFUSE_FAULT_INVERTED (eFuse)     -- |  8 P04 P14 17 | -- out: HUB_RESET_INVERTED (Schottky)
-spare in/out                                 -- |  9 P05 P13 16 | -- out: FT232H_RESET_INVERTED
-spare in/out                                 -- | 10 P06 P12 15 | -- out/in: TERMINATOR_EN_INVERTED_FIRMWARE (DIP 2)
-spare in/out                                 -- | 11 P07 P11 14 | -- out: LED2_N (activity)
-GND                                          -- | 12 GND P10 13 | -- out: LED1_N (status)
+out: LED_RED_INVERTED (spare LED)            -- |  9 P05 P13 16 | -- out: FT232H_RESET_INVERTED
+out: LED_YELLOW_INVERTED (spare LED)         -- | 10 P06 P12 15 | -- out/in: TERMINATOR_EN_INVERTED_FIRMWARE (DIP 2)
+out: LED_GREEN_INVERTED (spare LED)          -- | 11 P07 P11 14 | -- out: LED_ACTIVITY_INVERTED (red)
+GND                                          -- | 12 GND P10 13 | -- out: LED_STATUS_INVERTED (yellow)
                                                 +---------------+
 ```
 
@@ -255,23 +255,23 @@ GND                                          -- | 12 GND P10 13 | -- out: LED1_N
 - pin 1 INT: test point (firmware polls)
 - pin 2 A1: GND (addr 0x20)
 - pin 3 A2: GND
-- pin 4 P00: in: SD_CD (socket switch)
+- pin 4 P00: in: SD_CARD_DETECT (socket switch)
 - pin 5 P01: in: TERMPWR_EN_INVERTED (enable node)
 - pin 6 P02: in: IS_BENCH_POWERED (TPS2116 ST, 1 = bench)
 - pin 7 P03: in: BENCH_EFUSE_FAULT_INVERTED (eFuse)
 - pin 8 P04: in: TERMPWR_EFUSE_FAULT_INVERTED (eFuse)
-- pin 9 P05: spare in/out
-- pin 10 P06: spare in/out
-- pin 11 P07: spare in/out
+- pin 9 P05: out: LED_RED_INVERTED (spare LED)
+- pin 10 P06: out: LED_YELLOW_INVERTED (spare LED)
+- pin 11 P07: out: LED_GREEN_INVERTED (spare LED)
 - pin 12 GND: GND
-- pin 13 P10: out: LED1_N (status)
-- pin 14 P11: out: LED2_N (activity)
+- pin 13 P10: out: LED_STATUS_INVERTED (yellow)
+- pin 14 P11: out: LED_ACTIVITY_INVERTED (red)
 - pin 15 P12: out/in: TERMINATOR_EN_INVERTED_FIRMWARE (DIP 2)
 - pin 16 P13: out: FT232H_RESET_INVERTED
 - pin 17 P14: out: HUB_RESET_INVERTED (Schottky)
-- pin 18 P15: out: SD_PWR_EN (optional)
-- pin 19 P16: spare in/out
-- pin 20 P17: spare in/out
+- pin 18 P15: spare, test pad
+- pin 19 P16: spare, test pad
+- pin 20 P17: spare, test pad
 - pin 21 A0: GND
 - pin 22 SCL: GPIO 37 (I2C0), 4.7k up
 - pin 23 SDA: GPIO 36 (I2C0), 4.7k up
