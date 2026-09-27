@@ -87,7 +87,7 @@ def build(path):
            ("D602", "USB_D-", "H5VUD5BB", "C20615820", "Diode_SMD:D_SOD-523", "D_TVS"),
            ("D603", "CC1", "H7VL10B", "C20615787", "Diode_SMD:D_0402_1005Metric", "D_TVS"),
            ("D604", "CC2", "H7VL10B", "C20615787", "Diode_SMD:D_0402_1005Metric", "D_TVS"),
-           ("D605", "VBUS", "SMF6.0A", "C19077499", "Diode_SMD:D_SMF", "D_Zener")]
+           ("D605", "VBUS", "SMF6.0A", "C19077499", "Diode_SMD:D_SOD-123F", "D_Zener")]
     for i, (ref, net, val, lcsc, fp, sym) in enumerate(ESD):
         x = 33.02 + i * 27.94
         vpart(f"Device:{sym}", ref, val, x, 238.76, net, "GND",

@@ -195,7 +195,7 @@ def build(out_path):
     s.part("scsi-adapter:TPS259470A", "U201", "TPS259470ARPWR", UX, UY,
            {"5": "+5V_SYS", "1": "TERMPWR_EFUSE_EN", "2": "TERMPWR_EFUSE_OV", "6": "TERMPWR_EFUSE_OUT",
             "4": "TERMPWR_EFUSE_FAULT_INVERTED", "3": "NC", "7": None, "9": None, "10": None, "8": "GND"},
-           props=props("", "C3662799", note="TERMPWR eFuse. RPW QFN-10 footprint to do.",
+           props=props("scsi-adapter:Texas_RPW0010A_VQFN-HR-10_2x2mm_P0.45mm", "C3662799", note="TERMPWR eFuse",
                        ds="https://www.ti.com/lit/ds/symlink/tps25947.pdf"),
            fields=((UX - 15.24, UY - 8.89, "left"), (UX + 15.24, UY - 8.89, "right")))
     BY = UY + 10.16 + 2.54 + 3.81
@@ -240,7 +240,7 @@ def build(out_path):
            "CC or the bench say: e.g. another device already\nsupplies it, or to isolate a TERMPWR fault (R2a).",
            297.18, 165.1)
     s.part("Device:D_Zener", "D204", "SMF6.0A", 345.44, 196.85, {"1": "TERMPWR", "2": "GND"}, a=270,
-           props=props("Diode_SMD:D_SMF", "C19077499", note="TERMPWR ESD / TVS"),
+           props=props("Diode_SMD:D_SOD-123F", "C19077499", note="TERMPWR ESD / TVS"),
            fields=((347.98, 195.58, "right"), (347.98, 198.12, "right")))
     chain(370.84, 190.5, [("R212", Rp("10k", "C25744", "TERMPWR present LED")),
                           ("D202", LEDp("KT-0805Y yellow", "C2296", "LED_SMD:LED_0805_2012Metric",

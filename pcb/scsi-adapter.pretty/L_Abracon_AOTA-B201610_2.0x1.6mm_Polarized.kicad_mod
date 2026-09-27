@@ -1,0 +1,159 @@
+(footprint "L_Abracon_AOTA-B201610_2.0x1.6mm_Polarized"
+	(version 20241229)
+	(generator "scsi_adapter_gen")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(descr "Abracon AOTA-B201610S3R3-101-T polarity-marked 2016 power inductor; pad 1 = dot end (RP2350: pad 1 to DVDD, pad 2 to VREG_LX, datasheet Fig. 23); Abracon land pattern")
+	(tags "inductor 2016 0806 Abracon AOTA polarity RP2350")
+	(pad "1" smd rect
+		(at -1 0)
+		(size 1 1.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "2458a8b0-cd94-5659-9d30-8f4fec24cd99")
+	)
+	(pad "2" smd rect
+		(at 1 0)
+		(size 1 1.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "a4fbeb1c-3883-55ad-84a0-a2a361d271ab")
+	)
+	(property "Reference" "REF**"
+		(at 0.6 -2.3 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "6c1951f9-b79f-5743-be1a-57679244070d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "L_Abracon_AOTA-B201610_2.0x1.6mm_Polarized"
+		(at 0 1.9 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "408bba0f-523a-565b-870a-398918aebb8d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" "https://abracon.com/Magnetics/power/AOTA-B201610S3R3-101-T.pdf"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "f13953c3-be3a-579d-85eb-4ab15776cffe")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "0853416d-5d4b-546a-a8a7-509a2d86c517")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(fp_rect
+		(start -1 -0.8)
+		(end 1 0.8)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "33c585ba-842b-57ec-8cbd-f58f5af583ee")
+	)
+	(fp_circle
+		(center -0.55 -0.35)
+		(end -0.35 -0.35)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "d9dcc3e3-5f95-523e-9194-ade51bec3db3")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0.3 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "569fbdf1-ff94-5612-a642-8eec10e3d2d5")
+		(effects
+			(font
+				(size 0.4 0.4)
+				(thickness 0.060)
+			)
+		)
+	)
+	(fp_line
+		(start -0.35 -0.91)
+		(end 0.35 -0.91)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "ac57880d-22cb-5b35-811c-8e942f623479")
+	)
+	(fp_line
+		(start -0.35 0.91)
+		(end 0.35 0.91)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "d6af8f63-cf0d-5bcd-be87-e99b567a0901")
+	)
+	(fp_circle
+		(center -1 -1.25)
+		(end -0.9 -1.25)
+		(stroke
+			(width 0.2)
+			(type default)
+		)
+		(fill no)
+		(layer "F.SilkS")
+		(uuid "a8904a7b-0937-542d-9beb-5193aaf5a8f0")
+	)
+	(fp_rect
+		(start -1.75 -1.55)
+		(end 1.75 1.05)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "accc4b4f-d076-57e9-a356-45ff8e841253")
+	)
+	(model "${KICAD9_3DMODEL_DIR}/Inductor_SMD.3dshapes/L_Murata_DFE201610P.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+	(attr smd)
+	(embedded_fonts no)
+)

@@ -80,7 +80,7 @@ def build(out_path):
 
     s.part("Connector:Screw_Terminal_01x02", "J101", "Bench 5V", 55.88, 45.72,
            {"1": "BENCH_RAW", "2": "GND"},
-           props=props("", "C8465", note="Kangnex WJ500V-5.08-2P, 5.08 mm. Footprint to do.", fit="Hand"),
+           props=props("scsi-adapter:TerminalBlock_Kangnex_WJ500V-5.08-2P_1x02_P5.08mm_Horizontal", "C8465", note="Kangnex WJ500V-5.08-2P, 5.08 mm", fit="Hand"),
            fields=((55.88, 40.64, "left"), (55.88, 52.07, "left")))
     s.pwr_flag("#FLG101", "BENCH_RAW", 71.12, 38.1)
     s.note("PWR_FLAG is not a part. It tells KiCad's ERC that a net\nis powered from outside the drawn symbols (the terminal,\n"
@@ -93,7 +93,7 @@ def build(out_path):
                fields=((x + 1.27, 33.02, "left"), (x + 1.27, 35.56, "left")))
 
     s.part("Device:D_TVS", "D101", "SMF15CA", 50.8, 71.12, {"1": "BENCH_RAW", "2": "GND"}, a=270,
-           props=props("Diode_SMD:D_SMF", "C19077510", True, "Bidirectional TVS, footprint only"), dnp=True,
+           props=props("Diode_SMD:D_SOD-123F", "C19077510", True, "Bidirectional TVS, footprint only"), dnp=True,
            fields=((53.34, 69.85, "right"), (53.34, 72.39, "right")))
     s.note("DNP. Fit if the terminal sees hot-plug\nspikes above the eFuse's 28 V abs max\n"
            "(long leads, inductive supply).", 38.1, 88.9)
@@ -105,7 +105,7 @@ def build(out_path):
     s.part("scsi-adapter:TPS259470A", "U101", "TPS259470ARPWR", UX, UY,
            {"5": "BENCH_RAW", "1": "BENCH_EFUSE_EN", "2": "BENCH_EFUSE_OV", "6": "BENCH_5V", "4": "BENCH_EFUSE_FAULT_INVERTED", "3": "NC",
             "7": None, "9": None, "10": None, "8": "GND"},
-           props=dict(props("", "C3662799", note="Bench eFuse. RPW QFN-10 footprint to do."),
+           props=dict(props("scsi-adapter:Texas_RPW0010A_VQFN-HR-10_2x2mm_P0.45mm", "C3662799", note="Bench eFuse"),
                       Datasheet="https://www.ti.com/lit/ds/symlink/tps25947.pdf"),
            fields=((UX - 15.24, UY - 8.89, "left"), (UX + 15.24, UY - 8.89, "right")))
     BY = UY + 10.16 + 2.54 + 3.81     # bottom-pin parts hang straight below the IC pins
