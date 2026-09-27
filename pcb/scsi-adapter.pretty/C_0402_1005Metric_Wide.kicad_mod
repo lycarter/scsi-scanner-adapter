@@ -1,0 +1,117 @@
+(footprint "C_0402_1005Metric_Wide"
+	(version 20241229)
+	(generator "scsi_adapter_gen")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(descr "0402 capacitor, pads 0.56 apart so a trace can pass between them; Raspberry Pi RP2350B Minimal footprint generic_capc1005x50_wide (MIT)")
+	(tags "capacitor 0402 1005 wide RP2350")
+	(pad "1" smd rect
+		(at -0.515 0)
+		(size 0.47 0.55)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "86164bb0-47e3-5dc4-b07a-da8af5621644")
+	)
+	(pad "2" smd rect
+		(at 0.515 0)
+		(size 0.47 0.55)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "b163c6f8-9a1f-5d5c-a112-9323fb6e6380")
+	)
+	(property "Reference" "REF**"
+		(at 0 -0.9 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "9a0de25b-c62b-5251-a7aa-5bdec2c5d283")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "C_0402_1005Metric_Wide"
+		(at 0 0.9 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "cce91e33-a373-5b39-b589-5a3d68066cb0")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "eaebe632-86d9-53c5-a88e-feaf2fb72a01")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "da4aa3a2-cde8-50af-b71e-77d322f26741")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(fp_rect
+		(start -0.5 -0.25)
+		(end 0.5 0.25)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "d5ddb033-7d37-59cc-be15-28ca73d0802c")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "82ce1c40-6454-5696-b849-18f1971dbc70")
+		(effects
+			(font
+				(size 0.25 0.25)
+				(thickness 0.037)
+			)
+		)
+	)
+	(fp_rect
+		(start -0.8 -0.325)
+		(end 0.8 0.325)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "02911e71-5f96-5479-b80c-d09738b14dd5")
+	)
+	(model "${KICAD9_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+	(attr smd)
+	(embedded_fonts no)
+)

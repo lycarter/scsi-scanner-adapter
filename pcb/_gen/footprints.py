@@ -324,31 +324,56 @@ def tf_push_shouhan():
 
 def aota_b201610():
     """Abracon AOTA-B201610S3R3-101-T, 3.3 uH 2016 molded power inductor with a polarity dot (L401).
-    Source: Abracon datasheet rev A (2024-09-13) p.4: body 2.00 x 1.60 x 1.00, recommended land pattern
-    2 x 1.00 x 1.60 pads with a 1.00 gap (centres +-1.00).
+    Body 2.00 x 1.60 x 1.00 (Abracon datasheet rev A, 2024-09-13, p.4).
+    Land pattern: **Raspberry Pi's**, from the RP2350B Minimal design R4-S1 (footprint
+    abracon_aota-b201610s3r3-101-t, MIT, (c) 2026 Raspberry Pi Ltd): 2 x 0.70 x 1.70 rect pads at +-0.70
+    (0.70 gap). Adopted 2026-09-27 so the copied regulator layout (zones, CIN/COUT, VREG_LX) fits as drawn.
+    Abracon's own recommended land (1.00 x 1.60 at +-1.00) was used before; both cover the terminals.
     Orientation: RP2350 datasheet 6.3.8.2 says to mark polarity and place it as in Figure 23; there the
     dot is on the pad that goes to COUT/VOUT, and the other pad goes to VREG_LX. The Hardware design
     guide's KiCad layout (Fig. 4) has pad 1 = +1V1 with the dot, pad 2 = VREG_LX. We follow that:
-    **pad 1 = the dot end = DVDD_1V1**. The silk dot marks pad 1 so JLC's placement check can match it
-    to the part's white dot."""
+    **pad 1 = the dot end = DVDD_1V1**. The silk dot marks pad 1 (where Raspberry Pi puts theirs) so
+    JLC's placement check can match it to the part's white dot."""
     fp = Footprint("L_Abracon_AOTA-B201610_2.0x1.6mm_Polarized",
                    "Abracon AOTA-B201610S3R3-101-T polarity-marked 2016 power inductor; pad 1 = dot end "
-                   "(RP2350: pad 1 to DVDD, pad 2 to VREG_LX, datasheet Fig. 23); Abracon land pattern",
+                   "(RP2350: pad 1 to DVDD, pad 2 to VREG_LX, datasheet Fig. 23); land pattern from "
+                   "Raspberry Pi's RP2350B Minimal design (MIT)",
                    "inductor 2016 0806 Abracon AOTA polarity RP2350")
-    fp.smd("1", -1.0, 0, 1.0, 1.6)
-    fp.smd("2", 1.0, 0, 1.0, 1.6)
-    fp.prop("Reference", "REF**", 0.6, -2.3, "F.SilkS")
+    fp.smd("1", -0.7, 0, 0.7, 1.7)
+    fp.smd("2", 0.7, 0, 0.7, 1.7)
+    fp.prop("Reference", "REF**", 0, -1.55, "F.SilkS")
     fp.prop("Value", fp.name, 0, 1.9, "F.Fab")
     fp.prop("Datasheet", "https://abracon.com/Magnetics/power/AOTA-B201610S3R3-101-T.pdf", 0, 0, "F.Fab", hide=True)
     fp.prop("Description", "", 0, 0, "F.Fab", hide=True)
     fp.rect("F.Fab", -1.0, -0.8, 1.0, 0.8, 0.1)
-    fp.circle("F.Fab", -0.55, -0.35, 0.2, 0.1)                 # the part's white dot, at the pad-1 end
-    fp.text("F.Fab", "${REFERENCE}", 0.3, 0, 0.4)
-    fp.line("F.SilkS", -0.35, -0.91, 0.35, -0.91, 0.12)
-    fp.line("F.SilkS", -0.35, 0.91, 0.35, 0.91, 0.12)
-    fp.circle("F.SilkS", -1.0, -1.25, 0.1, 0.2)                # polarity dot beside pad 1
-    fp.rect("F.CrtYd", -1.75, -1.55, 1.75, 1.05, 0.05)
+    fp.circle("F.Fab", -0.7, 0.55, 0.1, 0.1)                   # the part's white dot, at the pad-1 end
+    fp.text("F.Fab", "${REFERENCE}", 0, 0, 0.4)
+    fp.circle("F.SilkS", -1.4, 0.7, 0.1, 0.1)                  # polarity dot beside pad 1 (RP's spot)
+    fp.rect("F.CrtYd", -1.1, -0.9, 1.1, 0.9, 0.05)             # RP's courtyard: the regulator cluster is packed
     fp.model("${KICAD9_3DMODEL_DIR}/Inductor_SMD.3dshapes/L_Murata_DFE201610P.step")
+    return fp.write()
+
+
+def c0402_wide():
+    """0402 (1005 metric) capacitor with the pads pushed apart: Raspberry Pi's generic_capc1005x50_wide
+    from the RP2350B Minimal design R4-S1 (MIT, (c) 2026 Raspberry Pi Ltd). 2 x 0.47 x 0.55 rect pads at
+    +-0.515, so the gap between them is 0.56 (KiCad's C_0402: 0.42). Used for the RP2350 core regulator's
+    CIN and COUT (C402, C403): in Raspberry Pi's layout the VREG_LX pour runs a 0.3 leg under both caps,
+    between their pads, to pin 63. Courtyard: pads + 0.05, as tight as RP's placement needs."""
+    fp = Footprint("C_0402_1005Metric_Wide",
+                   "0402 capacitor, pads 0.56 apart so a trace can pass between them; Raspberry Pi RP2350B "
+                   "Minimal footprint generic_capc1005x50_wide (MIT)",
+                   "capacitor 0402 1005 wide RP2350")
+    fp.smd("1", -0.515, 0, 0.47, 0.55)
+    fp.smd("2", 0.515, 0, 0.47, 0.55)
+    fp.prop("Reference", "REF**", 0, -0.9, "F.SilkS")
+    fp.prop("Value", fp.name, 0, 0.9, "F.Fab")
+    fp.prop("Datasheet", "", 0, 0, "F.Fab", hide=True)
+    fp.prop("Description", "", 0, 0, "F.Fab", hide=True)
+    fp.rect("F.Fab", -0.5, -0.25, 0.5, 0.25, 0.1)
+    fp.text("F.Fab", "${REFERENCE}", 0, 0, 0.25)
+    fp.rect("F.CrtYd", -0.8, -0.325, 0.8, 0.325, 0.05)
+    fp.model("${KICAD9_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.step")
     return fp.write()
 
 
@@ -386,5 +411,6 @@ def dip_shouhan_2p():
 
 
 if __name__ == "__main__":
-    for build in (rpw0010a, wj500v_2p, te_amplimite_050_50pos_ra, tf_push_shouhan, aota_b201610, dip_shouhan_2p):
+    for build in (rpw0010a, wj500v_2p, te_amplimite_050_50pos_ra, tf_push_shouhan, aota_b201610, c0402_wide,
+                  dip_shouhan_2p):
         print("wrote", os.path.relpath(build(), os.getcwd()))

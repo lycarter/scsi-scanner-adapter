@@ -218,8 +218,10 @@ def build(path):
                                           ("C403", "DVDD_1V1", "COUT at VREG_FB/DVDD"),
                                           ("C404", "DVDD_1V1", "Second DVDD cap at pin 32 (bottom edge, away from LX)"))):
         x = 25.4 + i * 20.32
+        # CIN/COUT use Raspberry Pi's wide 0402: their layout runs the VREG_LX pour between the pads
+        fpn = "scsi-adapter:C_0402_1005Metric_Wide" if ref in ("C402", "C403") else C0402
         s.part("Device:C", ref, "4.7uF 10V", x, 88.9, {"1": net, "2": "GND"},
-               props=props(C0402, "C23733", note=note), fields="left")
+               props=props(fpn, "C23733", note=note), fields="left")
     s.part("Device:C", "C405", "10uF 25V", 124.46, 88.9, {"1": "+3V3", "2": "GND"},
            props=props(C0805, "C15850", note="3.3 V bulk near the MCU"), fields="left")
     s.note("C402 CIN, C403 COUT, C404 2nd DVDD (all 4.7 uF 0402;\nfallback 0603 C19666 for CIN if DC bias bites).",
