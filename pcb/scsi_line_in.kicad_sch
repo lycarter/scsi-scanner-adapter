@@ -10,9 +10,48 @@
 		(rev "0.1")
 	)
 	(lib_symbols)
-	(text "SCSI line, receive only (×4: MSG, C/D, REQ, I/O)\nReceiver: Nexperia 74LVC1G17GW + 100 nF, 100 Ω LA series R on the output.\nRX low = line asserted (inverted in the RP2350 pad)." (exclude_from_sim no) (at 25.4 20.32 0) (effects (font (size 1.5 1.5)) (justify left top)) (uuid "b44338a6-672c-4d61-b8bc-3592fe48665b"))
-	(hierarchical_label "LINE" (shape bidirectional) (at 50.8 50.8 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "4ff3325d-38bc-4a5f-84c5-c63a5172a81e"))
-	(hierarchical_label "RX" (shape output) (at 220.8 50.8 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "b33d0bd7-b2f3-4237-94dc-3539309e4dfe"))
-	(hierarchical_label "LA" (shape output) (at 220.8 53.34 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "fa904f95-cb27-4017-ba2d-577275bf50cb"))
-	(embedded_fonts no)
+	(text "SCSI line, receive only (×4: MSG, C/D, REQ, I/O)\nReceiver: Nexperia 74LVC1G17GW + 100 nF, 100 Ω LA series R on the output.\nRX low = line asserted (inverted in the RP2350 pad)."
+		(exclude_from_sim no)
+		(at 25.4 20.32 0)
+		(effects
+			(font
+				(size 1.5 1.5)
+			)
+			(justify left top)
+		)
+		(uuid "b44338a6-672c-4d61-b8bc-3592fe48665b")
+	)
+	(hierarchical_label "LINE"
+		(shape bidirectional)
+		(at 50.8 50.8 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "4ff3325d-38bc-4a5f-84c5-c63a5172a81e")
+	)
+	(hierarchical_label "RX"
+		(shape output)
+		(at 220.8 50.8 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "b33d0bd7-b2f3-4237-94dc-3539309e4dfe")
+	)
+	(hierarchical_label "LA"
+		(shape output)
+		(at 220.8 53.34 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "fa904f95-cb27-4017-ba2d-577275bf50cb")
+	)
 )
