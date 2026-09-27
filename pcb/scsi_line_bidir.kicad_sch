@@ -10,10 +10,59 @@
 		(rev "0.1")
 	)
 	(lib_symbols)
-	(text "SCSI line with driver (×14: DB0-7, DBP, ATN, BSY, ACK, RST, SEL)\nDriver: FDV301N, gate 100 Ω series, 4.7 k pull-down, 22 pF (DNP).\nReceiver: Nexperia 74LVC1G17GW + 100 nF, 100 Ω LA series R on the output.\nGATE high = line asserted. RX low = line asserted (inverted in the RP2350 pad)." (exclude_from_sim no) (at 25.4 20.32 0) (effects (font (size 1.5 1.5)) (justify left top)) (uuid "eb8ad8d8-9682-4a82-b6fa-d7fc4e46521e"))
-	(hierarchical_label "LINE" (shape bidirectional) (at 50.8 50.8 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "06c47531-da9d-4513-8348-f8b36c7b7275"))
-	(hierarchical_label "GATE" (shape input) (at 220.8 50.8 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "85930285-c9fd-451b-ab10-55ac45d196d4"))
-	(hierarchical_label "RX" (shape output) (at 220.8 53.34 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "9dd08ec0-d47d-484a-806c-f5ffd93d1531"))
-	(hierarchical_label "LA" (shape output) (at 220.8 55.88 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "85e17f25-42dc-410c-add0-9bf995d39299"))
-	(embedded_fonts no)
+	(text "SCSI line with driver (×14: DB0-7, DBP, ATN, BSY, ACK, RST, SEL)\nDriver: FDV301N, gate 100 Ω series, 4.7 k pull-down, 22 pF (DNP).\nReceiver: Nexperia 74LVC1G17GW + 100 nF, 100 Ω LA series R on the output.\nGATE high = line asserted. RX low = line asserted (inverted in the RP2350 pad)."
+		(exclude_from_sim no)
+		(at 25.4 20.32 0)
+		(effects
+			(font
+				(size 1.5 1.5)
+			)
+			(justify left top)
+		)
+		(uuid "eb8ad8d8-9682-4a82-b6fa-d7fc4e46521e")
+	)
+	(hierarchical_label "LINE"
+		(shape bidirectional)
+		(at 50.8 50.8 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "06c47531-da9d-4513-8348-f8b36c7b7275")
+	)
+	(hierarchical_label "GATE"
+		(shape input)
+		(at 220.8 50.8 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "85930285-c9fd-451b-ab10-55ac45d196d4")
+	)
+	(hierarchical_label "LA"
+		(shape output)
+		(at 220.8 55.88 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "85e17f25-42dc-410c-add0-9bf995d39299")
+	)
+	(hierarchical_label "RX"
+		(shape output)
+		(at 220.8 53.34 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "9dd08ec0-d47d-484a-806c-f5ffd93d1531")
+	)
 )

@@ -535,11 +535,19 @@
     "netclass_patterns": [
       {
         "netclass": "USB_HS",
-        "pattern": "*/USB_D?"
+        "pattern": "*/USB_D+"
       },
       {
         "netclass": "USB_HS",
-        "pattern": "*USB_FT_D?"
+        "pattern": "*/USB_D-"
+      },
+      {
+        "netclass": "USB_HS",
+        "pattern": "*USB_FT_D+"
+      },
+      {
+        "netclass": "USB_HS",
+        "pattern": "*USB_FT_D-"
       }
     ]
   },
@@ -728,6 +736,106 @@
     [
       "2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5",
       "Root"
+    ],
+    [
+      "c5f4e78b-92c1-44f5-913e-e393dcfaf39d",
+      "power"
+    ],
+    [
+      "d6807777-092c-4171-8862-e4c45e752643",
+      "termpwr"
+    ],
+    [
+      "858bce67-3a23-4d8c-baef-1b62aed1ef48",
+      "scsi"
+    ],
+    [
+      "09e6debe-d957-4263-8f90-e8efff15a584",
+      "rp2350"
+    ],
+    [
+      "e668c732-65b6-44b8-a62c-386a17bfcd95",
+      "io"
+    ],
+    [
+      "f4f05d64-3bc1-4f44-b9d1-cb96479fcfcc",
+      "usb-hub"
+    ],
+    [
+      "ecb82d7b-30c9-4e3c-9876-96abfe1bc821",
+      "ft232h"
+    ],
+    [
+      "c6ac106f-5777-4a5b-9821-6e39c819a605",
+      "DB0"
+    ],
+    [
+      "73d4727d-5787-41be-bbc1-ffa7f04d650e",
+      "DB1"
+    ],
+    [
+      "cd36e9a2-0529-4d2c-b163-d6127b7291f0",
+      "DB2"
+    ],
+    [
+      "4fd01374-3043-462e-aa5b-108611404743",
+      "DB3"
+    ],
+    [
+      "a0985fe6-ea2b-4985-8eac-c24e80eac2d9",
+      "DB4"
+    ],
+    [
+      "be3e02dd-9320-4ea1-a822-91d669c3eb35",
+      "DB5"
+    ],
+    [
+      "72d5f37f-2382-4271-ba4e-3987bf896377",
+      "DB6"
+    ],
+    [
+      "791d7d44-0148-449f-ba79-8eede9665150",
+      "DB7"
+    ],
+    [
+      "65069103-23ca-4a4e-815c-8ab5487902ac",
+      "DBP"
+    ],
+    [
+      "f1af7595-c4a8-422c-a1e1-71e92fbc818b",
+      "ATN"
+    ],
+    [
+      "c198e40f-c4ca-4afb-8dc3-04c21d0dd4f1",
+      "BSY"
+    ],
+    [
+      "84867de2-b0ad-4175-92f5-88adf1eda379",
+      "ACK"
+    ],
+    [
+      "8f6590df-ca13-4ee2-9fd8-5a03acec4a18",
+      "RST"
+    ],
+    [
+      "640dc69e-c53b-4edb-b638-2b9708caf3e6",
+      "MSG"
+    ],
+    [
+      "461bc9bd-f13d-4c3b-b075-5ae0dc95b936",
+      "SEL"
+    ],
+    [
+      "b26db77c-67ff-4a24-b70e-24da267ac088",
+      "CD"
+    ],
+    [
+      "e8627577-5fc8-4ef9-bbae-cf892525286a",
+      "REQ"
+    ],
+    [
+      "cf02192e-8f55-4c3d-ac8a-a572d21bfd69",
+      "IO"
     ]
   ],
   "text_variables": {}
