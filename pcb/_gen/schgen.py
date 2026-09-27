@@ -271,7 +271,7 @@ class Sheet:
 
     # ---------- parts ----------
     def part(self, lib_id, ref, value, x, y, nets, a=0, props=None, dnp=False, fields=None, stub=G, unit=1,
-             hide_value=False, fsize=1.27):
+             hide_value=False, fsize=1.27, inline=False):
         props = dict(props or {})
         emb, pins = self._lib(lib_id)
         if fields is None:            # default: to the right of the body
@@ -284,7 +284,7 @@ class Sheet:
         for num, net in nets.items():
             assert num in pins, (ref, num)
             px, py, d = self.pin_pos(pins, num, x, y, a)
-            self.attach(net, px, py, d, stub)
+            self.attach(net, px, py, d, stub, inline=inline)
             if net not in (None, "NC"):
                 self.intended[(ref, num)] = net
         missing = set(pins) - set(nets)

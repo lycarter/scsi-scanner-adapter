@@ -1603,3 +1603,16 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
   - **Footprints to do:** L401 (Abracon AOTA-B201610, 2016, with a polarity mark: KiCad has none), and the BOOTSEL/RUN buttons (owner's switch). TC2030 uses the legged FP footprint (`Fit` = None, not on the BOM).
   - Owner review: the series resistors (R407–R417: 33 Ω FT1248, 100 Ω markers, 27 Ω USB) now sit inline on the RP2350B's pins, staggered in two columns. Their values and reasons are in the RP2350B box description, and the separate series-resistor box is gone. The rework-link GPIOs (36–40) carry a note on what each does. QSPI flash and PSRAM have separate boxes.
 - 2026-09-26: FT1248/FIFO nets renamed FT_* → FT232H_* (owner): FT232H_MIOSIO0–3, FT232H_SCLK, FT232H_SS_N, FT232H_MISO, FT232H_D4–D7, FT232H_WR_N, and the FT232H's own rail FT232H_3V3. _N kept where it mirrors the datasheet pin name.
+- 2026-09-26: io sheet (`pcb/5-io.kicad_sch`, A3) populated: 24 parts, 5xx references. Netlist check and ERC clean.
+  - **TCA9555 U501** (address 0x20: A0–A2 grounded), 4.7k I²C pull-ups, 10k INT pull-up with a test pad, and a pin table on the sheet.
+  - **Status and activity LEDs:** red KT-0603R through 1k, lit when the expander pin is low.
+  - **microSD J501 (TF PUSH):** 10k pull-ups on CMD and D0–D3, 10 µF + 100 nF.
+  - **Test pads** for +5V_SYS, +3V3, VTERMINATOR, TERMPWR, TERMPWR_EN_INVERTED and GND.
+  - **Net names:** SD_CARD_DETECT, LED_STATUS_INVERTED, LED_ACTIVITY_INVERTED, EXPANDER_INTERRUPT_INVERTED, SD_D1–D3. Spare pins P05–P07 and P15–P17 are no-connect.
+  - **Open:** the socket's card-detect pin number and switch polarity. LCSC's datasheet isn't downloadable by script, and the footprint is to do.
+  - **Generator fix:** the netlist check caught SD_CMD shorted to +3V3 and SD_D0 to GND. The rail symbols' dogleg on adjacent socket pins landed on the neighbouring stubs. Dense connectors now use inline power symbols.
+  - Owner review (io):
+    - **Status LED D501** is now yellow (KT-0805Y); activity D502 stays red.
+    - **Three spare LEDs on P05–P07:** D503 red, D504 yellow, D505 green (KT-0805G, C2297, basic), through R511–R513. Their use is to be decided in firmware.
+    - **Green is fine on 3.3 V after all:** the owner's datasheet curve shows ~2.4 V at 1 mA; the 2.6–3.1 V spec is at 5 mA. It gets 470 Ω instead of 1k: ~1.8 mA typical, ~0.7 mA worst case (estimate).
+    - **P15–P17 go to test pads** TP508–TP510; nothing is left unconnected on the expander.

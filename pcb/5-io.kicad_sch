@@ -9,148 +9,2536 @@
 		(date "2026-09-26")
 		(rev "0.1")
 	)
-	(lib_symbols)
-	(text "I/O (blocks/5-rp2350-pinout.md, TCA9555 section)\nTCA9555 expander (0x20) + 4.7 k I²C pull-ups, INT test point, microSD socket + SDIO pull-ups\n+ 10 µF/100 nF, LED1/LED2, board test points."
-		(exclude_from_sim no)
-		(at 25.4 20.32 0)
-		(effects
-			(font
-				(size 1.5 1.5)
+	(lib_symbols
+		(symbol "Interface_Expansion:TCA9555PWR"
+			(pin_names
+				(offset 1.016)
 			)
-			(justify left top)
-		)
-		(uuid "6c81e25f-6fcd-429c-ad87-8f27f353f4cc")
-	)
-	(hierarchical_label "I2C_SCL"
-		(shape input)
-		(at 50.8 53.34 180)
-		(effects
-			(font
-				(size 1.27 1.27)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U"
+				(at -11.43 24.13 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
 			)
-			(justify right)
-		)
-		(uuid "0d56acd3-6a41-4787-bd92-ca00a145ccae")
-	)
-	(hierarchical_label "TERMPWR_EN_INVERTED"
-		(shape input)
-		(at 343.8 50.8 0)
-		(effects
-			(font
-				(size 1.27 1.27)
+			(property "Value" "TCA9555PWR"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
 			)
-			(justify left)
-		)
-		(uuid "2e7f5f1c-b83a-4946-aa85-6c15cf05e200")
-	)
-	(hierarchical_label "I2C_SDA"
-		(shape bidirectional)
-		(at 50.8 50.8 180)
-		(effects
-			(font
-				(size 1.27 1.27)
+			(property "Footprint" "Package_SO:TSSOP-24_4.4x7.8mm_P0.65mm"
+				(at 26.67 -25.4 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
 			)
-			(justify right)
-		)
-		(uuid "3560382a-1598-4b2c-9e33-f76a6a2e5595")
-	)
-	(hierarchical_label "SD_CMD"
-		(shape bidirectional)
-		(at 50.8 60.96 180)
-		(effects
-			(font
-				(size 1.27 1.27)
+			(property "Datasheet" "http://www.ti.com/lit/ds/symlink/tca9555.pdf"
+				(at -12.7 22.86 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
 			)
-			(justify right)
-		)
-		(uuid "3a1b76de-df4a-4f8a-83cd-a489a47f1c08")
-	)
-	(hierarchical_label "TERMPWR_EFUSE_FAULT_INVERTED"
-		(shape input)
-		(at 343.8 58.42 0)
-		(effects
-			(font
-				(size 1.27 1.27)
+			(property "Description" "16-bit I/O expander, I2C and SMBus interface, interrupts, w/ pull-ups, TSSOP-24 package"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
 			)
-			(justify left)
-		)
-		(uuid "5286f9c9-7e34-4187-9280-ceb9d9e9ff98")
-	)
-	(hierarchical_label "SD_D0"
-		(shape bidirectional)
-		(at 50.8 63.5 180)
-		(effects
-			(font
-				(size 1.27 1.27)
+			(property "ki_keywords" "ti parallel port"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
 			)
-			(justify right)
-		)
-		(uuid "a406a308-8c91-4808-bbeb-698cd8426834")
-	)
-	(hierarchical_label "TERMINATOR_EN_INVERTED_FIRMWARE"
-		(shape bidirectional)
-		(at 343.8 63.5 0)
-		(effects
-			(font
-				(size 1.27 1.27)
+			(property "ki_fp_filters" "TSSOP*4.4x7.8mm*P0.65mm*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
 			)
-			(justify left)
-		)
-		(uuid "bb03daf9-8dbf-44f1-9d77-034d85fd0aba")
-	)
-	(hierarchical_label "HUB_RESET_INVERTED"
-		(shape output)
-		(at 343.8 68.58 0)
-		(effects
-			(font
-				(size 1.27 1.27)
+			(symbol "TCA9555PWR_0_1"
+				(rectangle
+					(start -12.7 22.86)
+					(end 12.7 -22.86)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
 			)
-			(justify left)
-		)
-		(uuid "c11cddf2-d3e1-4a86-b28b-d53f68eb98a7")
-	)
-	(hierarchical_label "SD_CLK"
-		(shape input)
-		(at 50.8 58.42 180)
-		(effects
-			(font
-				(size 1.27 1.27)
+			(symbol "TCA9555PWR_1_1"
+				(pin bidirectional line
+					(at -17.78 20.32 0)
+					(length 5.08)
+					(name "SDA"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "23"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -17.78 17.78 0)
+					(length 5.08)
+					(name "SCL"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "22"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin open_collector line
+					(at -17.78 15.24 0)
+					(length 5.08)
+					(name "~{INT}"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -17.78 -15.24 0)
+					(length 5.08)
+					(name "A2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -17.78 -17.78 0)
+					(length 5.08)
+					(name "A1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -17.78 -20.32 0)
+					(length 5.08)
+					(name "A0"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "21"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 27.94 270)
+					(length 5.08)
+					(name "VCC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "24"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 -27.94 90)
+					(length 5.08)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "12"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 20.32 180)
+					(length 5.08)
+					(name "P00"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 17.78 180)
+					(length 5.08)
+					(name "P01"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 15.24 180)
+					(length 5.08)
+					(name "P02"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 12.7 180)
+					(length 5.08)
+					(name "P03"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 10.16 180)
+					(length 5.08)
+					(name "P04"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 7.62 180)
+					(length 5.08)
+					(name "P05"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "9"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 5.08 180)
+					(length 5.08)
+					(name "P06"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "10"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 2.54 180)
+					(length 5.08)
+					(name "P07"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "11"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 -2.54 180)
+					(length 5.08)
+					(name "P10"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "13"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 -5.08 180)
+					(length 5.08)
+					(name "P11"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "14"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 -7.62 180)
+					(length 5.08)
+					(name "P12"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "15"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 -10.16 180)
+					(length 5.08)
+					(name "P13"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "16"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 -12.7 180)
+					(length 5.08)
+					(name "P14"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "17"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 -15.24 180)
+					(length 5.08)
+					(name "P15"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "18"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 -17.78 180)
+					(length 5.08)
+					(name "P16"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "19"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 17.78 -20.32 180)
+					(length 5.08)
+					(name "P17"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "20"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 			)
-			(justify right)
+			(embedded_fonts no)
 		)
-		(uuid "dd0a0ed3-3180-4e2a-91f7-63378be90da3")
-	)
-	(hierarchical_label "BENCH_EFUSE_FAULT_INVERTED"
-		(shape input)
-		(at 343.8 55.88 0)
-		(effects
-			(font
-				(size 1.27 1.27)
+		(symbol "power:+5V"
+			(power)
+			(pin_numbers
+				(hide yes)
 			)
-			(justify left)
-		)
-		(uuid "ddae5572-284a-4db4-8d26-a5c67fb0a732")
-	)
-	(hierarchical_label "IS_BENCH_POWERED"
-		(shape input)
-		(at 343.8 53.34 0)
-		(effects
-			(font
-				(size 1.27 1.27)
+			(pin_names
+				(offset 0)
+				(hide yes)
 			)
-			(justify left)
-		)
-		(uuid "ebc00460-8c8f-417f-95f0-e9e103e8f54b")
-	)
-	(hierarchical_label "FT232H_RESET_INVERTED"
-		(shape output)
-		(at 343.8 66.04 0)
-		(effects
-			(font
-				(size 1.27 1.27)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
 			)
-			(justify left)
+			(property "Value" "+5V"
+				(at 0 3.556 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"+5V\""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "+5V_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54) (xy 0.762 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "+5V_1_1"
+				(pin power_in line
+					(at 0 0 90)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
 		)
-		(uuid "ee472b7e-26c2-49ea-a503-b1470823b4ee")
+		(symbol "power:GND"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "GND_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Device:C"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.254)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "C"
+				(at 0.635 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "C"
+				(at 0.635 -2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" ""
+				(at 0.9652 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Unpolarized capacitor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "cap capacitor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "C_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "C_0_1"
+				(polyline
+					(pts
+						(xy -2.032 0.762) (xy 2.032 0.762)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.032 -0.762) (xy 2.032 -0.762)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "C_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 2.794)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 2.794)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Device:R"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "R"
+				(at 2.032 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "R"
+				(at 0 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at -1.778 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Device:LED"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "D"
+				(at 0 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "LED"
+				(at 0 -2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Light emitting diode"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Sim.Pins" "1=K 2=A"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "LED diode"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "LED_0_1"
+				(polyline
+					(pts
+						(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.778 -0.762) (xy -3.302 -2.286) (xy -2.54 -2.286) (xy -3.302 -2.286) (xy -3.302 -1.524)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 0) (xy 1.27 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 -1.27) (xy -1.27 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 -1.27) (xy 1.27 1.27) (xy -1.27 0) (xy 1.27 -1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "LED_1_1"
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "K"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 3.81 0 180)
+					(length 2.54)
+					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Connector:Micro_SD_Card_Det1"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at -16.51 17.78 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Micro_SD_Card_Det1"
+				(at 16.51 17.78 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify right)
+				)
+			)
+			(property "Footprint" ""
+				(at 52.07 17.78 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://datasheet.lcsc.com/lcsc/2110151630_XKB-Connectivity-XKTF-015-N_C381082.pdf"
+				(at 0 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Micro SD Card Socket with one card detection pin"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "connector SD microsd"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "microSD*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Micro_SD_Card_Det1_0_1"
+				(polyline
+					(pts
+						(xy -8.89 -8.89) (xy -8.89 11.43) (xy -1.27 11.43) (xy 2.54 15.24) (xy 3.81 15.24) (xy 3.81 13.97)
+						(xy 6.35 13.97) (xy 7.62 15.24) (xy 20.32 15.24) (xy 20.32 -8.89) (xy -8.89 -8.89)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(rectangle
+					(start -7.62 10.795)
+					(end -5.08 9.525)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -7.62 8.255)
+					(end -5.08 6.985)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -7.62 5.715)
+					(end -5.08 4.445)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -7.62 3.175)
+					(end -5.08 1.905)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -7.62 0.635)
+					(end -5.08 -0.635)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -7.62 -1.905)
+					(end -5.08 -3.175)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -7.62 -4.445)
+					(end -5.08 -5.715)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -7.62 -6.985)
+					(end -5.08 -8.255)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 16.51 15.24) (xy 16.51 16.51) (xy -19.05 16.51) (xy -19.05 -16.51) (xy 16.51 -16.51) (xy 16.51 -8.89)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "Micro_SD_Card_Det1_1_1"
+				(pin bidirectional line
+					(at -22.86 10.16 0)
+					(length 3.81)
+					(name "DAT2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at -22.86 7.62 0)
+					(length 3.81)
+					(name "DAT3/CD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -22.86 5.08 0)
+					(length 3.81)
+					(name "CMD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -22.86 2.54 0)
+					(length 3.81)
+					(name "VDD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -22.86 0 0)
+					(length 3.81)
+					(name "CLK"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -22.86 -2.54 0)
+					(length 3.81)
+					(name "VSS"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at -22.86 -5.08 0)
+					(length 3.81)
+					(name "DAT0"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at -22.86 -7.62 0)
+					(length 3.81)
+					(name "DAT1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -22.86 -12.7 0)
+					(length 3.81)
+					(name "DET"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "9"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 20.32 -12.7 180)
+					(length 3.81)
+					(name "SHIELD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "10"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Connector:TestPoint"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.762)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "TP"
+				(at 0 6.858 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "TestPoint"
+				(at 0 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "test point"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "test point tp"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Pin* Test*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "TestPoint_0_1"
+				(circle
+					(center 0 3.302)
+					(radius 0.762)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "TestPoint_1_1"
+				(pin passive line
+					(at 0 0 90)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 	)
+	(rectangle (start 12.7 12.7) (end 254 198.12) (stroke (width 0.254) (type dash)) (fill (type none)) (uuid "86d9656b-65a4-5760-82c1-d1f46a95bc60"))
+	(text "I/O expander (TCA9555, I2C0 address 0x20)" (exclude_from_sim no) (at 20.32 20.32 0) (effects (font (size 2.0 2.0) (bold yes)) (justify left top)) (uuid "0160a2a5-a9c9-5e08-9999-320289931d65"))
+	(text "Slow signals: status in on port 0, controls out on port 1 (our convention; every pin has its own\ndirection bit). All pins power up as inputs with ~100k pull-ups, so the board is safe with no firmware." (exclude_from_sim no) (at 20.32 24.82 0) (effects (font (size 1.27 1.27)) (justify left top)) (uuid "5bf6bb2f-cb40-564c-8a83-d762291b182c"))
+	(symbol (lib_id "Interface_Expansion:TCA9555PWR") (at 139.7 104.14 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "66ece28a-b8bc-50cb-8533-d3df8b490155")
+		(property "Reference" "U501" (at 142.24 73.66 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Value" "TCA9555PWR" (at 142.24 134.62 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "Package_SO:TSSOP-24_4.4x7.8mm_P0.65mm" (at 139.7 104.14 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/tca9555.pdf" (at 139.7 104.14 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "16-bit I2C expander" (at 139.7 104.14 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C465732" (at 139.7 104.14 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 139.7 104.14 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "23" (uuid "a3ef21a7-f1c9-57fa-94ce-79b3141c6726"))
+		(pin "22" (uuid "b6e7c392-ae86-53d7-897b-5d79f5dffef9"))
+		(pin "1" (uuid "7e143a53-efb5-5701-8c4c-e94bb7b19362"))
+		(pin "3" (uuid "092bc29a-623a-5f61-97c1-f771f5026ee0"))
+		(pin "2" (uuid "406aa059-402b-536b-99cc-427800a7003d"))
+		(pin "21" (uuid "71242bf1-dc72-5e1a-addc-3f44eb19c92c"))
+		(pin "24" (uuid "b225c1d5-d0b1-5f80-9129-ccbd856e4efe"))
+		(pin "12" (uuid "75ec7acd-8bf3-52d3-9366-2d98bc20ac90"))
+		(pin "4" (uuid "cd5020d9-d905-5d83-a406-5abc35b18d0e"))
+		(pin "5" (uuid "717618e7-0429-5eb9-8ef1-201487082d83"))
+		(pin "6" (uuid "287e732a-5d5e-5972-b53b-4bd81ec327d8"))
+		(pin "7" (uuid "9d9e49fe-3ffa-5449-bddc-0de14be42623"))
+		(pin "8" (uuid "95e9829f-a5df-57a6-983b-dbbf16ba7d52"))
+		(pin "9" (uuid "68fbcbe2-5909-5370-aa79-a1b075678dd9"))
+		(pin "10" (uuid "04e4f05f-599f-5ab3-892c-d78d0b0e7bc1"))
+		(pin "11" (uuid "ee83ce5c-e41f-5ecc-ab24-25d8d854da58"))
+		(pin "13" (uuid "9afd311c-ba89-5e16-b5e4-86d40e066825"))
+		(pin "14" (uuid "726306bd-1140-54bd-b96f-dcaef4fca486"))
+		(pin "15" (uuid "a18b84e6-a409-548b-9d99-e48d3be57c36"))
+		(pin "16" (uuid "9608af37-0f45-5322-a5a8-972ee05d859e"))
+		(pin "17" (uuid "fa128c6e-60d8-5504-a70d-fc46f329c534"))
+		(pin "18" (uuid "c74afd92-0640-53f4-939b-81b410229332"))
+		(pin "19" (uuid "05c188d5-c892-5b94-8fc0-382a4e110907"))
+		(pin "20" (uuid "48316b8f-29df-58c5-9a64-64992c0bd202"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "U501") (unit 1))))
+	)
+	(wire (pts (xy 121.92 83.82) (xy 119.38 83.82)) (stroke (width 0) (type default)) (uuid "e802b872-7772-58cd-be01-99ee85c1c68a"))
+	(hierarchical_label "I2C_SDA" (shape bidirectional) (at 119.38 83.82 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "0b6e7099-fe09-54cd-bdfd-315ad0041bba"))
+	(wire (pts (xy 121.92 86.36) (xy 119.38 86.36)) (stroke (width 0) (type default)) (uuid "0bfcb4b8-2589-5e0e-b1d0-07c7e3a61528"))
+	(hierarchical_label "I2C_SCL" (shape input) (at 119.38 86.36 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "35997522-8310-57c1-88e3-eb277e0dd550"))
+	(wire (pts (xy 121.92 88.9) (xy 119.38 88.9)) (stroke (width 0) (type default)) (uuid "c598c981-e65d-5c39-b497-3d829f44ec81"))
+	(label "EXPANDER_INTERRUPT_INVERTED" (at 119.38 88.9 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "6b14c9f4-d0e5-54a5-8736-3b40b5fab69e"))
+	(wire (pts (xy 139.7 76.2) (xy 139.7 73.66)) (stroke (width 0) (type default)) (uuid "68424051-113d-58f0-9dc9-489561a0eaef"))
+	(symbol (lib_id "power:+5V") (at 139.7 73.66 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "eb318eae-eec1-50c2-b8b8-2062f0499cf6")
+		(property "Reference" "#PWR501" (at 139.7 73.66 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 139.7 69.85 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 139.7 73.66 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 139.7 73.66 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 139.7 73.66 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "eebbb824-1987-5b09-b0b3-0f60de5b199f"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR501") (unit 1))))
+	)
+	(wire (pts (xy 139.7 132.08) (xy 139.7 134.62)) (stroke (width 0) (type default)) (uuid "c50d3bea-829f-5674-95c9-131f5ccb0003"))
+	(symbol (lib_id "power:GND") (at 139.7 134.62 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "5cebbba4-510d-5f89-8695-a3aa286f2c30")
+		(property "Reference" "#PWR502" (at 139.7 134.62 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "GND" (at 139.7 139.7 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 139.7 134.62 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 139.7 134.62 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 139.7 134.62 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "857c4e43-9536-5fbe-9ba9-df0e7a1af04f"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR502") (unit 1))))
+	)
+	(wire (pts (xy 157.48 83.82) (xy 160.02 83.82)) (stroke (width 0) (type default)) (uuid "098ef18b-3a42-56c5-ba8c-d243d5957831"))
+	(label "SD_CARD_DETECT" (at 160.02 83.82 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "280f5621-01cd-5131-b448-fa3418da5bb8"))
+	(wire (pts (xy 157.48 86.36) (xy 160.02 86.36)) (stroke (width 0) (type default)) (uuid "718beb2a-666c-57fa-8fe9-81c7374cc90c"))
+	(hierarchical_label "TERMPWR_EN_INVERTED" (shape input) (at 160.02 86.36 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "727cb457-e675-5e75-9f9d-1a2ce4343e5d"))
+	(wire (pts (xy 157.48 88.9) (xy 160.02 88.9)) (stroke (width 0) (type default)) (uuid "cbf5b393-dec4-52b9-aab3-7430b121ed71"))
+	(hierarchical_label "IS_BENCH_POWERED" (shape input) (at 160.02 88.9 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "0d145928-d514-5abd-aeac-99c878adf72b"))
+	(wire (pts (xy 157.48 91.44) (xy 160.02 91.44)) (stroke (width 0) (type default)) (uuid "c3b331bc-ca38-5b37-882c-659b67bc24bf"))
+	(hierarchical_label "BENCH_EFUSE_FAULT_INVERTED" (shape input) (at 160.02 91.44 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "555eae70-ba1a-5974-94c9-c011f5dd45a6"))
+	(wire (pts (xy 157.48 93.98) (xy 160.02 93.98)) (stroke (width 0) (type default)) (uuid "4509c923-f0e6-544b-8f8e-4e72f400df0d"))
+	(hierarchical_label "TERMPWR_EFUSE_FAULT_INVERTED" (shape input) (at 160.02 93.98 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "0fc0115e-6568-53cd-9ac7-5319e5bcbd14"))
+	(wire (pts (xy 157.48 99.06) (xy 160.02 99.06)) (stroke (width 0) (type default)) (uuid "b5461fa1-8fec-5d71-b3d2-aca7d2cc98a6"))
+	(label "LED_YELLOW_INVERTED" (at 160.02 99.06 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "33315392-1c27-5c59-ba4a-c6649860d144"))
+	(wire (pts (xy 157.48 101.6) (xy 160.02 101.6)) (stroke (width 0) (type default)) (uuid "626c9653-18ea-537a-b3e5-58ca34ff7840"))
+	(label "LED_GREEN_INVERTED" (at 160.02 101.6 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "982b8716-a3dd-5cb1-bdd6-14a791055065"))
+	(wire (pts (xy 157.48 106.68) (xy 160.02 106.68)) (stroke (width 0) (type default)) (uuid "88e0cdec-9e6e-50c6-9a14-3b7ce5c00186"))
+	(label "LED_STATUS_INVERTED" (at 160.02 106.68 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "c7170b32-6d71-5db7-9340-ba5e75db8efe"))
+	(wire (pts (xy 157.48 109.22) (xy 160.02 109.22)) (stroke (width 0) (type default)) (uuid "81e934a9-5c51-5258-91c9-a35313524b2d"))
+	(label "LED_ACTIVITY_INVERTED" (at 160.02 109.22 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "175f4b73-f1fb-5955-a5d6-3d89389b705c"))
+	(wire (pts (xy 157.48 111.76) (xy 160.02 111.76)) (stroke (width 0) (type default)) (uuid "57f7cacc-7f06-5905-b772-15416efa965e"))
+	(hierarchical_label "TERMINATOR_EN_INVERTED_FIRMWARE" (shape bidirectional) (at 160.02 111.76 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "3b7674ab-ac85-5a57-82d1-08a2e6891609"))
+	(wire (pts (xy 157.48 114.3) (xy 160.02 114.3)) (stroke (width 0) (type default)) (uuid "4fa438a8-ba96-55a5-b3dc-ef0997c323e6"))
+	(hierarchical_label "FT232H_RESET_INVERTED" (shape output) (at 160.02 114.3 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "0fd75abf-0a8a-5ca2-9ab6-1344cfebfe32"))
+	(wire (pts (xy 157.48 116.84) (xy 160.02 116.84)) (stroke (width 0) (type default)) (uuid "a22e6432-f103-5d4e-8086-5bd94f47dba6"))
+	(hierarchical_label "HUB_RESET_INVERTED" (shape output) (at 160.02 116.84 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "e2f55275-ffc5-5061-93fd-5f784794365e"))
+	(wire (pts (xy 157.48 121.92) (xy 160.02 121.92)) (stroke (width 0) (type default)) (uuid "cedbcdcd-31da-5d6c-a826-65bb983eb12e"))
+	(label "EXPANDER_P16" (at 160.02 121.92 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "996f86e8-7e88-5d5e-a68b-09eac80ddb24"))
+	(wire (pts (xy 157.48 124.46) (xy 160.02 124.46)) (stroke (width 0) (type default)) (uuid "2ea3c5e2-2ab0-5291-87c1-e7b0e51ff69c"))
+	(label "EXPANDER_P17" (at 160.02 124.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "a6a87574-ebd6-527d-87a3-b38d4ec808a8"))
+	(wire (pts (xy 157.48 96.52) (xy 195.58 96.52)) (stroke (width 0) (type default)) (uuid "c3ed6ecf-fec6-5039-8b49-a57e1b961b72"))
+	(label "LED_RED_INVERTED" (at 195.58 96.52 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "94240d42-9489-5696-a535-7151f8776a9f"))
+	(wire (pts (xy 157.48 119.38) (xy 182.88 119.38)) (stroke (width 0) (type default)) (uuid "6448da7d-4531-5fc3-952a-5fca66299ff8"))
+	(label "EXPANDER_P15" (at 182.88 119.38 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "ef9a374d-5066-5cb5-8bc4-ab757b3ef8b0"))
+	(wire (pts (xy 121.92 119.38) (xy 119.38 119.38)) (stroke (width 0) (type default)) (uuid "24e924bc-0183-537a-84f8-05d732eae341"))
+	(wire (pts (xy 121.92 121.92) (xy 119.38 121.92)) (stroke (width 0) (type default)) (uuid "94606c67-6f38-5e8e-993e-df901211d805"))
+	(wire (pts (xy 121.92 124.46) (xy 119.38 124.46)) (stroke (width 0) (type default)) (uuid "7b3a603a-b084-5b14-81d2-a1e1387e982f"))
+	(wire (pts (xy 119.38 119.38) (xy 119.38 121.92)) (stroke (width 0) (type default)) (uuid "5ae34c80-4f0d-52df-bd02-08dfae1bef36"))
+	(wire (pts (xy 119.38 121.92) (xy 119.38 124.46)) (stroke (width 0) (type default)) (uuid "c8a4bd86-f398-5812-a0fa-b932003592ab"))
+	(junction (at 119.38 121.92) (diameter 0) (color 0 0 0 0) (uuid "a05ae0b2-306b-5efb-8e6b-2c3202320c6a"))
+	(wire (pts (xy 119.38 124.46) (xy 119.38 127)) (stroke (width 0) (type default)) (uuid "9936abb9-50a3-590f-921c-0340f2b2d435"))
+	(symbol (lib_id "power:GND") (at 119.38 127 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "3dbac11a-b9d0-5230-88be-d842a8d70c08")
+		(property "Reference" "#PWR503" (at 119.38 127 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "GND" (at 119.38 132.08 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 119.38 127 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 119.38 127 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 119.38 127 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "85409981-9a08-5a3f-8b09-7827c6ddbd29"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR503") (unit 1))))
+	)
+	(symbol (lib_id "Device:C") (at 127 68.58 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "a216ac5f-605d-573d-a2a3-8bc4ca7b0143")
+		(property "Reference" "C501" (at 124.46 67.31 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "100nF" (at 124.46 69.85 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric" (at 127 68.58 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 127 68.58 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "U501 decoupling" (at 127 68.58 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C307331" (at 127 68.58 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 127 68.58 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "380d04cf-0ea0-5e5b-8fa2-c0e30670d593"))
+		(pin "2" (uuid "86017a47-3378-52f0-93ce-f581301e8423"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "C501") (unit 1))))
+	)
+	(wire (pts (xy 127 64.77) (xy 127 62.23)) (stroke (width 0) (type default)) (uuid "eecd8f4f-8bc2-5ec2-95d6-5bd91ab42f5c"))
+	(symbol (lib_id "power:+5V") (at 127 62.23 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "f70256e8-dc64-5f86-b667-a4dc1f12c9ca")
+		(property "Reference" "#PWR504" (at 127 62.23 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 127 58.42 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 127 62.23 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 127 62.23 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 127 62.23 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "089283e5-0c05-5bbd-95d9-bd4d2cb15d18"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR504") (unit 1))))
+	)
+	(wire (pts (xy 127 72.39) (xy 127 74.93)) (stroke (width 0) (type default)) (uuid "35f35c4e-1b71-5936-99fa-3174244a9127"))
+	(symbol (lib_id "power:GND") (at 127 74.93 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "c2b7d99b-722c-5980-b89e-0c02d7cf1ee2")
+		(property "Reference" "#PWR505" (at 127 74.93 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "GND" (at 127 80.01 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 127 74.93 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 127 74.93 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 127 74.93 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "d1bab2d1-302f-531d-82fe-f9e09a987820"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR505") (unit 1))))
+	)
+	(symbol (lib_id "Device:R") (at 38.1 63.5 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "4fae72c1-c42c-5176-900f-110826a45626")
+		(property "Reference" "R501" (at 35.56 62.23 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "4.7k" (at 35.56 64.77 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 38.1 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 38.1 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "I2C SDA pull-up" (at 38.1 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C25900" (at 38.1 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 38.1 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "f2498075-2c81-5095-8d2e-09bf4fe8fce2"))
+		(pin "2" (uuid "c9ad1088-e5fc-59d6-ab10-e246a0b8f7d4"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "R501") (unit 1))))
+	)
+	(wire (pts (xy 38.1 59.69) (xy 38.1 57.15)) (stroke (width 0) (type default)) (uuid "547562e8-84a0-57f7-9028-a03196e8ad10"))
+	(symbol (lib_id "power:+5V") (at 38.1 57.15 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "a59a7ba5-6d69-525a-85b0-f20d328b6a3c")
+		(property "Reference" "#PWR506" (at 38.1 57.15 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 38.1 53.34 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 38.1 57.15 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 38.1 57.15 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 38.1 57.15 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "c836ed15-bef9-5987-bbd4-b8cbb1483b1b"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR506") (unit 1))))
+	)
+	(wire (pts (xy 38.1 67.31) (xy 38.1 69.85)) (stroke (width 0) (type default)) (uuid "5e3744fb-6d53-5d9e-bda0-0a749f953379"))
+	(hierarchical_label "I2C_SDA" (shape bidirectional) (at 38.1 69.85 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "0ea12af2-ce7b-5fe9-a4f4-7e36e6e5bce9"))
+	(symbol (lib_id "Device:R") (at 58.42 63.5 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "2e0980a9-9bb7-5c95-ac9d-6ce2262d63be")
+		(property "Reference" "R502" (at 55.88 62.23 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "4.7k" (at 55.88 64.77 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 58.42 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 58.42 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "I2C SCL pull-up" (at 58.42 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C25900" (at 58.42 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 58.42 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "d1a9b976-32b3-5ca0-bda7-c8085101a9d6"))
+		(pin "2" (uuid "6d4f05a9-20b4-5110-8e4e-35318e2f39d2"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "R502") (unit 1))))
+	)
+	(wire (pts (xy 58.42 59.69) (xy 58.42 57.15)) (stroke (width 0) (type default)) (uuid "1d86e5a8-a0b3-5023-8c6b-5edd4698ceae"))
+	(symbol (lib_id "power:+5V") (at 58.42 57.15 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "644ef762-7946-5cc0-836a-2a3c3dcea17d")
+		(property "Reference" "#PWR507" (at 58.42 57.15 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 58.42 53.34 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 58.42 57.15 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 58.42 57.15 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 58.42 57.15 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "3a4da303-9d25-51a0-ae5b-127b9260df9e"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR507") (unit 1))))
+	)
+	(wire (pts (xy 58.42 67.31) (xy 58.42 69.85)) (stroke (width 0) (type default)) (uuid "a30e9e5f-d9e8-54ac-8c98-8eb344a25e07"))
+	(hierarchical_label "I2C_SCL" (shape input) (at 58.42 69.85 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "eeba940f-15af-574b-9d9b-bbd9075a315e"))
+	(symbol (lib_id "Device:R") (at 78.74 63.5 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "4708e85c-fb8d-50d3-a5d7-18a0f6fe237c")
+		(property "Reference" "R503" (at 76.2 62.23 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "10k" (at 76.2 64.77 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 78.74 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 78.74 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "INT pull-up (open drain)" (at 78.74 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C25744" (at 78.74 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 78.74 63.5 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "a3774526-39c8-5cba-b528-e24e4147a3a0"))
+		(pin "2" (uuid "f468e1a8-579f-57b9-9d43-ed5e9a20e614"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "R503") (unit 1))))
+	)
+	(wire (pts (xy 78.74 59.69) (xy 78.74 57.15)) (stroke (width 0) (type default)) (uuid "91b56041-a362-5b62-8e70-ca374f45a839"))
+	(symbol (lib_id "power:+5V") (at 78.74 57.15 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "deeafb60-dabd-511d-bcb8-781bf9cfb318")
+		(property "Reference" "#PWR508" (at 78.74 57.15 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 78.74 53.34 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 78.74 57.15 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 78.74 57.15 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 78.74 57.15 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "923376b4-21c2-5abc-b478-18945354de00"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR508") (unit 1))))
+	)
+	(wire (pts (xy 78.74 67.31) (xy 78.74 69.85)) (stroke (width 0) (type default)) (uuid "7748e3b5-c651-5ec8-8830-97e9bbac5ec2"))
+	(label "EXPANDER_INTERRUPT_INVERTED" (at 78.74 69.85 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "09945b24-5570-5e72-acaf-26f7078abbfa"))
+	(table (column_count 3)
+		(border (external yes) (header yes) (stroke (width 0) (type solid)))
+		(separators (rows yes) (cols yes) (stroke (width 0) (type solid)))
+		(column_widths 22.86 60.96 142.24)
+		(row_heights 4.445 4.445 4.445 4.445 4.445 4.445 4.445 4.445 4.445 4.445)
+		(cells
+			(table_cell "Pin" (exclude_from_sim no) (at 20.32 148.59 0) (size 22.86 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type color) (color 220 220 220 1)) (effects (font (size 1.016 1.016) (bold yes)) (justify left top)) (uuid "b6232a11-d4f1-56a6-91d4-b0cacef86961"))
+			(table_cell "Net" (exclude_from_sim no) (at 43.18 148.59 0) (size 60.96 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type color) (color 220 220 220 1)) (effects (font (size 1.016 1.016) (bold yes)) (justify left top)) (uuid "78c1cbe4-6ea3-55f3-aeea-e92852e58a5b"))
+			(table_cell "Meaning" (exclude_from_sim no) (at 104.14 148.59 0) (size 142.24 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type color) (color 220 220 220 1)) (effects (font (size 1.016 1.016) (bold yes)) (justify left top)) (uuid "a85dce07-f6d6-56f6-9a81-5e92d36159ac"))
+			(table_cell "P00 in" (exclude_from_sim no) (at 20.32 153.035 0) (size 22.86 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "c59165a5-49f4-5284-b7a3-eaab5cc0ce50"))
+			(table_cell "SD_CARD_DETECT" (exclude_from_sim no) (at 43.18 153.035 0) (size 60.96 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "6e0b0765-a337-5797-bea9-5a63835f70fd"))
+			(table_cell "microSD card present (switch polarity: check the socket datasheet)" (exclude_from_sim no) (at 104.14 153.035 0) (size 142.24 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "556371e6-b8c9-5eeb-985e-5d1593e52ca2"))
+			(table_cell "P01 in" (exclude_from_sim no) (at 20.32 157.48 0) (size 22.86 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "9503d4c7-90c9-543c-829f-f2a4a691e4fc"))
+			(table_cell "TERMPWR_EN_INVERTED" (exclude_from_sim no) (at 43.18 157.48 0) (size 60.96 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "e01d2a9f-21a6-56ae-8af9-0ee37ca323cd"))
+			(table_cell "low = we supply TERMPWR (CC >= 1.5 A or bench)" (exclude_from_sim no) (at 104.14 157.48 0) (size 142.24 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "7133812f-281d-5d94-aea9-876e3353eb6b"))
+			(table_cell "P02 in" (exclude_from_sim no) (at 20.32 161.925 0) (size 22.86 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "dd0052d7-2268-5aca-a454-51afbba334b8"))
+			(table_cell "IS_BENCH_POWERED" (exclude_from_sim no) (at 43.18 161.925 0) (size 60.96 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "599506d5-6200-548b-8db8-87da0216a391"))
+			(table_cell "high = running on the bench input (TPS2116 ST)" (exclude_from_sim no) (at 104.14 161.925 0) (size 142.24 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "4f095275-f588-51e7-841a-9e7ca95fa2dc"))
+			(table_cell "P03/P04 in" (exclude_from_sim no) (at 20.32 166.37 0) (size 22.86 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "20cee7b1-fa2d-5a74-a773-c9d7def9dbec"))
+			(table_cell "*_EFUSE_FAULT_INVERTED" (exclude_from_sim no) (at 43.18 166.37 0) (size 60.96 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "bd6eb5e7-a219-5ac2-a57a-ca7779ca1128"))
+			(table_cell "low = bench / TERMPWR eFuse fault (or reverse block)" (exclude_from_sim no) (at 104.14 166.37 0) (size 142.24 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "9886a07b-ca08-516e-ab9a-f1c9b9bac3f3"))
+			(table_cell "P05-P07 out" (exclude_from_sim no) (at 20.32 170.815 0) (size 22.86 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "a5180c46-ec4c-5ea4-9416-cf65e0388e36"))
+			(table_cell "LED_RED/YELLOW/GREEN_INVERTED" (exclude_from_sim no) (at 43.18 170.815 0) (size 60.96 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "eaf033f5-2eb2-543d-aa4a-88ad337f1e58"))
+			(table_cell "spare LEDs (red, yellow, green); use to be decided in firmware" (exclude_from_sim no) (at 104.14 170.815 0) (size 142.24 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "0c67167d-1e73-5982-b703-ce6935fc2196"))
+			(table_cell "P10/P11 out" (exclude_from_sim no) (at 20.32 175.26 0) (size 22.86 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "5ff6912f-651d-5c97-86d2-fabc8abce07a"))
+			(table_cell "LED_STATUS/ACTIVITY_INVERTED" (exclude_from_sim no) (at 43.18 175.26 0) (size 60.96 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "e0060c6c-6b99-569d-b20c-15ed97b13e2b"))
+			(table_cell "drive low to light the status (yellow) / activity (red) LED" (exclude_from_sim no) (at 104.14 175.26 0) (size 142.24 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "2e8832fd-e2d5-5380-91d2-51efbe75322d"))
+			(table_cell "P12 out/in" (exclude_from_sim no) (at 20.32 179.705 0) (size 22.86 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "3a506a38-7f16-5561-a27f-78423c0ec95e"))
+			(table_cell "TERMINATOR_EN_INVERTED_FIRMWARE" (exclude_from_sim no) (at 43.18 179.705 0) (size 60.96 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "054765e2-0cbd-5db8-a508-5259902053ed"))
+			(table_cell "through DIP 2; reads the /OE node back" (exclude_from_sim no) (at 104.14 179.705 0) (size 142.24 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "15d8f6c4-0591-5031-a439-4cc692607e43"))
+			(table_cell "P13/P14 out" (exclude_from_sim no) (at 20.32 184.15 0) (size 22.86 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "2a921251-0edc-516a-8e24-a3519a9697c2"))
+			(table_cell "FT232H / HUB_RESET_INVERTED" (exclude_from_sim no) (at 43.18 184.15 0) (size 60.96 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "8ad5d97c-cbb3-5bbc-9d2a-87673410f71b"))
+			(table_cell "low >= 4 us resets the chip; idle high or input" (exclude_from_sim no) (at 104.14 184.15 0) (size 142.24 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "cc93bdae-b9ad-5e54-9706-34b6c6d2e246"))
+			(table_cell "P15-P17" (exclude_from_sim no) (at 20.32 188.595 0) (size 22.86 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "d5dc2ad1-0e90-5408-996c-72d7452e6a58"))
+			(table_cell "EXPANDER_P15..P17" (exclude_from_sim no) (at 43.18 188.595 0) (size 60.96 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "f28b1148-ba94-5333-b88f-f0aca257646a"))
+			(table_cell "spare, brought out to test pads" (exclude_from_sim no) (at 104.14 188.595 0) (size 142.24 4.445) (margins 0.9525 0.9525 0.9525 0.9525) (span 1 1) (fill (type none)) (effects (font (size 1.016 1.016)) (justify left top)) (uuid "2de240aa-b41c-5be4-91c1-3504394bec3d"))
+		)
+	)
+	(rectangle (start 12.7 203.2) (end 195.58 284.48) (stroke (width 0.254) (type dash)) (fill (type none)) (uuid "a3435b80-7d73-5129-9bd4-197b26230fec"))
+	(text "LEDs" (exclude_from_sim no) (at 20.32 210.82 0) (effects (font (size 2.0 2.0) (bold yes)) (justify left top)) (uuid "1acc0faa-916e-5629-8051-d75dd2ca0090"))
+	(text "Lit when the expander drives the pin low. P05-P07: spare, use decided in firmware." (exclude_from_sim no) (at 20.32 215.32 0) (effects (font (size 1.27 1.27)) (justify left top)) (uuid "f1f575a7-1a43-5e91-be1b-adac6362dd33"))
+	(symbol (lib_id "Device:R") (at 33.02 236.22 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "16e1b648-0dde-56bf-bb08-c55409919c99")
+		(property "Reference" "R504" (at 30.48 234.95 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "1k" (at 30.48 237.49 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 33.02 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 33.02 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "status LED" (at 33.02 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C11702" (at 33.02 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 33.02 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "00602c60-9eeb-518d-a776-101e91b524f8"))
+		(pin "2" (uuid "d79de910-7fb9-58e7-a3b4-0a3228b2e2d7"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "R504") (unit 1))))
+	)
+	(wire (pts (xy 33.02 232.41) (xy 33.02 229.87)) (stroke (width 0) (type default)) (uuid "1c53f482-9d22-599f-9990-3db41edda4e3"))
+	(symbol (lib_id "power:+5V") (at 33.02 229.87 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "6f2765ae-be50-5ebe-af09-446932237967")
+		(property "Reference" "#PWR509" (at 33.02 229.87 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 33.02 226.06 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 33.02 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 33.02 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 33.02 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "ad2a33a9-468a-5b1b-b21a-b97843f2d4ef"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR509") (unit 1))))
+	)
+	(wire (pts (xy 33.02 240.03) (xy 33.02 245.11)) (stroke (width 0) (type default)) (uuid "f728e2f7-c2af-5511-a81c-a7d85d63d82f"))
+	(symbol (lib_id "Device:LED") (at 33.02 248.92 90) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "fd5932d8-d043-5da2-ab70-2068ebfd8598")
+		(property "Reference" "D501" (at 35.56 247.65 90) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "KT-0805Y yellow" (at 35.56 250.19 90) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "LED_SMD:LED_0805_2012Metric" (at 33.02 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 33.02 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "status LED" (at 33.02 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C2296" (at 33.02 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 33.02 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "1369e73a-6777-55f1-8802-898c86dc0fce"))
+		(pin "2" (uuid "200da85b-f5ab-533a-8116-014925098142"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "D501") (unit 1))))
+	)
+	(wire (pts (xy 33.02 252.73) (xy 33.02 255.27)) (stroke (width 0) (type default)) (uuid "8ef1c26c-5cfe-5926-9944-d2aabf57a684"))
+	(label "LED_STATUS_INVERTED" (at 33.02 255.27 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "51b0e193-0fb7-5d3a-98fe-79e503c1103f"))
+	(symbol (lib_id "Device:R") (at 66.04 236.22 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "28e49809-9979-541d-894f-0b59de75fc34")
+		(property "Reference" "R505" (at 63.5 234.95 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "1k" (at 63.5 237.49 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 66.04 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 66.04 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "activity LED" (at 66.04 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C11702" (at 66.04 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 66.04 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "133b05f2-4c4a-5e8f-83c0-f67b1becccad"))
+		(pin "2" (uuid "ae5f1034-9091-53f6-8801-558d3636a3c6"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "R505") (unit 1))))
+	)
+	(wire (pts (xy 66.04 232.41) (xy 66.04 229.87)) (stroke (width 0) (type default)) (uuid "93694a13-2a93-55cc-ba96-58b488bd8ea7"))
+	(symbol (lib_id "power:+5V") (at 66.04 229.87 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "1da1c57e-21e6-5713-ab57-81e89c126f63")
+		(property "Reference" "#PWR510" (at 66.04 229.87 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 66.04 226.06 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 66.04 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 66.04 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 66.04 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "c123c9cd-3537-59ea-b0d2-bc79406f76f1"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR510") (unit 1))))
+	)
+	(wire (pts (xy 66.04 240.03) (xy 66.04 245.11)) (stroke (width 0) (type default)) (uuid "8ecfba0b-5227-5397-a016-725b2ad27a17"))
+	(symbol (lib_id "Device:LED") (at 66.04 248.92 90) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "1dc60fc3-9b4c-5cb6-91c1-aed39a938f01")
+		(property "Reference" "D502" (at 68.58 247.65 90) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "KT-0603R red" (at 68.58 250.19 90) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "LED_SMD:LED_0603_1608Metric" (at 66.04 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 66.04 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "activity LED" (at 66.04 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C2286" (at 66.04 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 66.04 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "43dff5ed-2d11-5f4c-80f9-64d8995e89ef"))
+		(pin "2" (uuid "398ec1e3-b900-5e26-ab5e-0c2bf53bdf87"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "D502") (unit 1))))
+	)
+	(wire (pts (xy 66.04 252.73) (xy 66.04 255.27)) (stroke (width 0) (type default)) (uuid "5c9a632f-8a16-5251-90a7-3ea868fe3adf"))
+	(label "LED_ACTIVITY_INVERTED" (at 66.04 255.27 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "9baa84a2-e813-593a-aaab-3d9f52d9d81f"))
+	(symbol (lib_id "Device:R") (at 99.06 236.22 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "3edb78c6-3010-5642-b18c-39d35f6ada0c")
+		(property "Reference" "R511" (at 96.52 234.95 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "1k" (at 96.52 237.49 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 99.06 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 99.06 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "spare red LED" (at 99.06 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C11702" (at 99.06 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 99.06 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "3a83245f-9cbc-57c8-bec9-68264e88b81e"))
+		(pin "2" (uuid "78df4671-484a-5b5b-9232-68b4ef41bef1"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "R511") (unit 1))))
+	)
+	(wire (pts (xy 99.06 232.41) (xy 99.06 229.87)) (stroke (width 0) (type default)) (uuid "31297554-fa01-51c3-acae-bf99afe8aa17"))
+	(symbol (lib_id "power:+5V") (at 99.06 229.87 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "74ccf7a1-9404-5dc9-af0a-126a47529d0a")
+		(property "Reference" "#PWR511" (at 99.06 229.87 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 99.06 226.06 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 99.06 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 99.06 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 99.06 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "777439c1-7c6b-5ade-bc21-6133f56f0f49"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR511") (unit 1))))
+	)
+	(wire (pts (xy 99.06 240.03) (xy 99.06 245.11)) (stroke (width 0) (type default)) (uuid "9380de18-1df3-5748-915a-592f102e81cb"))
+	(symbol (lib_id "Device:LED") (at 99.06 248.92 90) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "c4b74a9e-a8b4-53e7-8677-416ab7c569de")
+		(property "Reference" "D503" (at 101.6 247.65 90) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "KT-0603R red" (at 101.6 250.19 90) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "LED_SMD:LED_0603_1608Metric" (at 99.06 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 99.06 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "spare red LED" (at 99.06 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C2286" (at 99.06 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 99.06 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "5547a82b-094c-5803-8192-f1e7f9c985a3"))
+		(pin "2" (uuid "a74e2825-d546-5263-b61c-f3f8282a81de"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "D503") (unit 1))))
+	)
+	(wire (pts (xy 99.06 252.73) (xy 99.06 255.27)) (stroke (width 0) (type default)) (uuid "123d82ca-21bd-536f-88a0-b80bb66850ca"))
+	(label "LED_RED_INVERTED" (at 99.06 255.27 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "0f83229e-ae13-5205-8540-dd66a1baeed6"))
+	(symbol (lib_id "Device:R") (at 132.08 236.22 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "a58b68b0-71ad-52b0-9bf5-bf2ccf6275e5")
+		(property "Reference" "R512" (at 129.54 234.95 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "1k" (at 129.54 237.49 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 132.08 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 132.08 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "spare yellow LED" (at 132.08 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C11702" (at 132.08 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 132.08 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "f9da83a3-27ae-59ec-bfbf-3487026ab74c"))
+		(pin "2" (uuid "dfc6281f-4057-5b38-ad7b-347e1d14d23b"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "R512") (unit 1))))
+	)
+	(wire (pts (xy 132.08 232.41) (xy 132.08 229.87)) (stroke (width 0) (type default)) (uuid "e2a4328f-785f-56ef-8849-63268e70b4ca"))
+	(symbol (lib_id "power:+5V") (at 132.08 229.87 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "e00c53ea-65ce-5118-80b7-908fb964e262")
+		(property "Reference" "#PWR512" (at 132.08 229.87 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 132.08 226.06 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 132.08 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 132.08 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 132.08 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "7e977da6-6c09-5d48-be7a-5df80c8ac3b0"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR512") (unit 1))))
+	)
+	(wire (pts (xy 132.08 240.03) (xy 132.08 245.11)) (stroke (width 0) (type default)) (uuid "9ce4511b-41a2-59ad-966b-e94a9cdcbc84"))
+	(symbol (lib_id "Device:LED") (at 132.08 248.92 90) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "69fb7a2f-dfcf-57ea-ab9b-d9bc5402fd14")
+		(property "Reference" "D504" (at 134.62 247.65 90) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "KT-0805Y yellow" (at 134.62 250.19 90) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "LED_SMD:LED_0805_2012Metric" (at 132.08 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 132.08 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "spare yellow LED" (at 132.08 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C2296" (at 132.08 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 132.08 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "6e254cf3-42da-5498-b0a8-dbf95ca67d94"))
+		(pin "2" (uuid "4ab94800-01c2-5a67-b585-66ee1a400400"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "D504") (unit 1))))
+	)
+	(wire (pts (xy 132.08 252.73) (xy 132.08 255.27)) (stroke (width 0) (type default)) (uuid "a492c146-3988-5b44-a93c-677cc32ac0d6"))
+	(label "LED_YELLOW_INVERTED" (at 132.08 255.27 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "3a1f1b23-f5b8-5b71-96fd-b5eea0b4b653"))
+	(symbol (lib_id "Device:R") (at 165.1 236.22 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "0ced187c-fb9a-5e1f-8520-462ad15f1f5a")
+		(property "Reference" "R513" (at 162.56 234.95 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "470R" (at 162.56 237.49 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 165.1 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 165.1 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "spare green LED" (at 165.1 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C25117" (at 165.1 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 165.1 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "84a3419d-cec1-5e72-b575-4b13881ecb42"))
+		(pin "2" (uuid "c22384f1-c477-5f59-9de2-c427a44ce40c"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "R513") (unit 1))))
+	)
+	(wire (pts (xy 165.1 232.41) (xy 165.1 229.87)) (stroke (width 0) (type default)) (uuid "2185b75c-d09d-52f6-83d5-3c9355d006f7"))
+	(symbol (lib_id "power:+5V") (at 165.1 229.87 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "915d3b8b-afe8-5bdf-868a-7cbe02574775")
+		(property "Reference" "#PWR513" (at 165.1 229.87 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 165.1 226.06 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 165.1 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 165.1 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 165.1 229.87 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "6c6b433d-e768-5b6d-aa21-8af3aeaf44a7"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR513") (unit 1))))
+	)
+	(wire (pts (xy 165.1 240.03) (xy 165.1 245.11)) (stroke (width 0) (type default)) (uuid "d095aaf1-b0a6-5325-af9f-e0672aa08370"))
+	(symbol (lib_id "Device:LED") (at 165.1 248.92 90) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "05480f73-de45-5fb5-a078-7d84b8f93321")
+		(property "Reference" "D505" (at 167.64 247.65 90) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "KT-0805G green" (at 167.64 250.19 90) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "LED_SMD:LED_0805_2012Metric" (at 165.1 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 165.1 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "spare green LED" (at 165.1 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C2297" (at 165.1 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 165.1 248.92 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "d233747d-604b-5535-93f5-19a78b944382"))
+		(pin "2" (uuid "3d844b0b-be40-5c3e-8236-e170699eb6b0"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "D505") (unit 1))))
+	)
+	(wire (pts (xy 165.1 252.73) (xy 165.1 255.27)) (stroke (width 0) (type default)) (uuid "e1f0cb01-01dc-5804-b84d-9ac73420a4e5"))
+	(label "LED_GREEN_INVERTED" (at 165.1 255.27 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "8f356634-1a3e-5d73-b2ad-65153aa3a9c0"))
+	(text "1k: ~1.3 mA red/yellow. Green (KT-0805G, Vf 2.6-3.1 V at 5 mA) gets 470R: ~2.4 V at\nlow current, so ~1.8 mA typical, >= ~0.7 mA at the top of the Vf spread." (exclude_from_sim no) (at 20.32 269.24 0) (effects (font (size 1.016 1.016) (italic yes)) (justify left top)) (uuid "db17c70b-80a7-5c72-accb-a19785a6f69c"))
+	(rectangle (start 259.08 12.7) (end 406.4 198.12) (stroke (width 0.254) (type dash)) (fill (type none)) (uuid "ba11f78f-615b-5052-9e44-b07babf5f470"))
+	(text "microSD (1-bit SDIO on PIO2)" (exclude_from_sim no) (at 266.7 20.32 0) (effects (font (size 2.0 2.0) (bold yes)) (justify left top)) (uuid "72a3b9a3-10d1-5a32-9059-e054954ca6a3"))
+	(text "Spill-over storage when the host stalls. CLK, CMD, D0 go to the RP2350\n(through the rework links); D1-D3 are only pulled up." (exclude_from_sim no) (at 266.7 24.82 0) (effects (font (size 1.27 1.27)) (justify left top)) (uuid "8035a550-d735-5983-9726-70e73f68dd75"))
+	(symbol (lib_id "Connector:Micro_SD_Card_Det1") (at 355.6 83.82 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "5898ebd7-49e6-56fe-9b59-70a05f30f4ad")
+		(property "Reference" "J501" (at 335.28 68.58 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Value" "TF PUSH" (at 335.28 101.6 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "" (at 355.6 83.82 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 355.6 83.82 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "SHOU HAN TF PUSH, push-push with card detect. Footprint to do (EasyEDA/LCSC, checked against the drawing)." (at 355.6 83.82 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C393941" (at 355.6 83.82 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 355.6 83.82 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "0bf43e9e-3a01-5011-b781-874fee04e865"))
+		(pin "2" (uuid "06b26b40-bd25-5926-bdaa-ccd83a876f12"))
+		(pin "3" (uuid "a9fa63a7-c0dd-5223-b46f-94d4c82c0e9c"))
+		(pin "4" (uuid "27666bf7-fded-54aa-8983-3e9fc73cb508"))
+		(pin "5" (uuid "35cb4fd6-c219-5cfc-b60e-8bfd91d5be71"))
+		(pin "6" (uuid "698f0d11-2f5e-55d0-9acf-ed9fb3816b6d"))
+		(pin "7" (uuid "31317db3-fc5a-54e1-8ff9-8fa8bee33fc8"))
+		(pin "8" (uuid "4c372c52-eeb7-5286-a773-28fb4e4f78fb"))
+		(pin "9" (uuid "aef8b94f-ec72-530b-919e-e9fe24ab8964"))
+		(pin "10" (uuid "4896b414-2377-58a1-8540-3a83eac330b4"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "J501") (unit 1))))
+	)
+	(wire (pts (xy 332.74 73.66) (xy 327.66 73.66)) (stroke (width 0) (type default)) (uuid "2c408c5d-c5f2-559d-95cb-85b89fe7e011"))
+	(label "SD_D2" (at 327.66 73.66 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "ad918f81-77e1-57ea-a482-bc22573c7bbb"))
+	(wire (pts (xy 332.74 76.2) (xy 327.66 76.2)) (stroke (width 0) (type default)) (uuid "7d2c446e-0cc9-569e-8d5e-18a4a17b88ee"))
+	(label "SD_D3" (at 327.66 76.2 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "b03a40a0-d2db-5442-b0da-ab08f38133ed"))
+	(wire (pts (xy 332.74 78.74) (xy 327.66 78.74)) (stroke (width 0) (type default)) (uuid "56380191-a78d-599b-b304-0984873dc2a7"))
+	(hierarchical_label "SD_CMD" (shape bidirectional) (at 327.66 78.74 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "60c21456-3fbc-559e-b83e-a1d6b7ca1a6c"))
+	(wire (pts (xy 332.74 81.28) (xy 327.66 81.28)) (stroke (width 0) (type default)) (uuid "e68eaec8-ea2a-5cbd-9cd8-dcdb7eeed940"))
+	(symbol (lib_id "power:+5V") (at 327.66 81.28 90) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "315f2058-aa1d-54b2-b506-2fc042432f81")
+		(property "Reference" "#PWR514" (at 327.66 81.28 90) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 321.31 81.28 90) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "" (at 327.66 81.28 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 327.66 81.28 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 327.66 81.28 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "b36ac5c8-dbd2-51f0-925f-6206637ebfcc"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR514") (unit 1))))
+	)
+	(wire (pts (xy 332.74 83.82) (xy 327.66 83.82)) (stroke (width 0) (type default)) (uuid "0b3ce429-70f3-58ff-9719-847daeee960e"))
+	(hierarchical_label "SD_CLK" (shape input) (at 327.66 83.82 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "fc18fd43-0af0-5690-bebe-fb23a52afdee"))
+	(wire (pts (xy 332.74 86.36) (xy 327.66 86.36)) (stroke (width 0) (type default)) (uuid "0bbd3248-e60e-5f16-a148-109da3f83d04"))
+	(symbol (lib_id "power:GND") (at 327.66 86.36 270) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "fd1383b9-5d5f-5fa8-8b34-4eb410a49afc")
+		(property "Reference" "#PWR515" (at 327.66 86.36 270) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "GND" (at 321.31 86.36 270) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "" (at 327.66 86.36 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 327.66 86.36 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 327.66 86.36 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "b5a3094b-3e90-5d07-bff4-87c2396d7897"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR515") (unit 1))))
+	)
+	(wire (pts (xy 332.74 88.9) (xy 327.66 88.9)) (stroke (width 0) (type default)) (uuid "dd961756-2d1c-51e5-93cd-3104185fec91"))
+	(hierarchical_label "SD_D0" (shape bidirectional) (at 327.66 88.9 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "4d56a25d-7ce3-5d21-9483-6b7693d0f1d3"))
+	(wire (pts (xy 332.74 91.44) (xy 327.66 91.44)) (stroke (width 0) (type default)) (uuid "829e4e33-41b6-5193-8411-480d8cc0662d"))
+	(label "SD_D1" (at 327.66 91.44 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "69cc0290-3c07-506b-95ac-c82d2374eab1"))
+	(wire (pts (xy 332.74 96.52) (xy 327.66 96.52)) (stroke (width 0) (type default)) (uuid "145aaf7b-0476-50ec-baf8-0f790f8ee5d5"))
+	(label "SD_CARD_DETECT" (at 327.66 96.52 180) (effects (font (size 1.27 1.27)) (justify right bottom)) (uuid "5693db4e-97c7-5807-a3fb-8516532c7ddc"))
+	(wire (pts (xy 375.92 96.52) (xy 381 96.52)) (stroke (width 0) (type default)) (uuid "3ea5d72f-25f9-5d0c-bb16-d68fbb559fc5"))
+	(symbol (lib_id "power:GND") (at 381 96.52 90) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "685c7aee-1914-5197-a3af-37a70a2b03ba")
+		(property "Reference" "#PWR516" (at 381 96.52 90) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "GND" (at 387.35 96.52 90) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "" (at 381 96.52 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 381 96.52 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 381 96.52 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "99f25f9d-f242-5d54-99d3-d41d167d9dd2"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR516") (unit 1))))
+	)
+	(symbol (lib_id "Device:R") (at 279.4 139.7 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "1b76384b-7684-5379-a0d1-95933ebe7088")
+		(property "Reference" "R506" (at 276.86 138.43 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "10k" (at 276.86 140.97 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 279.4 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 279.4 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "SDIO pull-up (SD_CMD)" (at 279.4 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C25744" (at 279.4 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 279.4 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "8a42b394-68ce-54c7-9d3a-561f35035eb2"))
+		(pin "2" (uuid "5db6cda5-a5af-51fd-9a1d-6ceb5076b06d"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "R506") (unit 1))))
+	)
+	(wire (pts (xy 279.4 135.89) (xy 279.4 133.35)) (stroke (width 0) (type default)) (uuid "fef882a1-e220-5ac7-b3b7-3972642967c7"))
+	(symbol (lib_id "power:+5V") (at 279.4 133.35 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "0d37e6a4-5e81-53c4-b364-488d99695c46")
+		(property "Reference" "#PWR517" (at 279.4 133.35 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 279.4 129.54 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 279.4 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 279.4 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 279.4 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "ec351217-6608-5e49-999a-8c5befad2ad2"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR517") (unit 1))))
+	)
+	(wire (pts (xy 279.4 143.51) (xy 279.4 146.05)) (stroke (width 0) (type default)) (uuid "eb8d6f87-b56b-5fd6-876b-5ddd97fa26d9"))
+	(hierarchical_label "SD_CMD" (shape bidirectional) (at 279.4 146.05 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "4399f4dd-e465-5ae6-ad76-bbd54472af13"))
+	(symbol (lib_id "Device:R") (at 294.64 139.7 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "7c574eae-52e7-5f2b-9c2f-c2d08134ffc5")
+		(property "Reference" "R507" (at 292.1 138.43 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "10k" (at 292.1 140.97 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 294.64 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 294.64 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "SDIO pull-up (SD_D0)" (at 294.64 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C25744" (at 294.64 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 294.64 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "54873e26-9c30-5319-8f4f-82eb7306dc27"))
+		(pin "2" (uuid "9fb5264b-cee5-5ac9-a8ce-4b3b0a5afb0e"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "R507") (unit 1))))
+	)
+	(wire (pts (xy 294.64 135.89) (xy 294.64 133.35)) (stroke (width 0) (type default)) (uuid "25bdf92c-5597-512c-bb09-f1675ce4869d"))
+	(symbol (lib_id "power:+5V") (at 294.64 133.35 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "ca7c4871-2f2a-53cb-98f9-949bd57a6c92")
+		(property "Reference" "#PWR518" (at 294.64 133.35 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 294.64 129.54 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 294.64 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 294.64 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 294.64 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "68805df9-a280-550f-a488-9d5cf792e110"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR518") (unit 1))))
+	)
+	(wire (pts (xy 294.64 143.51) (xy 294.64 146.05)) (stroke (width 0) (type default)) (uuid "c2db468d-025e-5db3-9ea3-2bbbd1752ac6"))
+	(hierarchical_label "SD_D0" (shape bidirectional) (at 294.64 146.05 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "b39bf883-87d4-5d08-bd54-5d655e970bf4"))
+	(symbol (lib_id "Device:R") (at 309.88 139.7 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "35fb47e4-133f-5cfc-99af-2354578f4507")
+		(property "Reference" "R508" (at 307.34 138.43 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "10k" (at 307.34 140.97 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 309.88 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 309.88 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "SDIO pull-up (SD_D1)" (at 309.88 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C25744" (at 309.88 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 309.88 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "2ba84fb2-5eb9-5ea0-bed3-029d62443c1f"))
+		(pin "2" (uuid "2eceff72-5d99-5963-9d5e-fbf4f2ff61ff"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "R508") (unit 1))))
+	)
+	(wire (pts (xy 309.88 135.89) (xy 309.88 133.35)) (stroke (width 0) (type default)) (uuid "d26d2ac7-7864-513c-960d-effea3a7a387"))
+	(symbol (lib_id "power:+5V") (at 309.88 133.35 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "07644e0e-4f5d-50ed-97c8-f918da417d20")
+		(property "Reference" "#PWR519" (at 309.88 133.35 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 309.88 129.54 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 309.88 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 309.88 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 309.88 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "989d8b2f-b3d9-5b03-b815-799b61f00562"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR519") (unit 1))))
+	)
+	(wire (pts (xy 309.88 143.51) (xy 309.88 146.05)) (stroke (width 0) (type default)) (uuid "86cc7ff6-4bed-50bd-a1cc-e968f0c839fb"))
+	(label "SD_D1" (at 309.88 146.05 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "0f80c36a-a3b5-5f55-a4a7-f5afef5e593f"))
+	(symbol (lib_id "Device:R") (at 325.12 139.7 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "85eaecb6-cf20-581a-bd14-45a112ded88d")
+		(property "Reference" "R509" (at 322.58 138.43 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "10k" (at 322.58 140.97 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 325.12 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 325.12 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "SDIO pull-up (SD_D2)" (at 325.12 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C25744" (at 325.12 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 325.12 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "42dd57af-a424-508f-95e2-30a2d680960a"))
+		(pin "2" (uuid "89395128-a43f-5384-a87e-c4cf20e34f03"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "R509") (unit 1))))
+	)
+	(wire (pts (xy 325.12 135.89) (xy 325.12 133.35)) (stroke (width 0) (type default)) (uuid "9e764224-091a-5c11-b577-058c6b45cfba"))
+	(symbol (lib_id "power:+5V") (at 325.12 133.35 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "6792ce4a-7de9-553b-959f-7ff67a7336c5")
+		(property "Reference" "#PWR520" (at 325.12 133.35 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 325.12 129.54 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 325.12 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 325.12 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 325.12 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "4632a0a3-c944-5599-a0d9-1640cab2a53c"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR520") (unit 1))))
+	)
+	(wire (pts (xy 325.12 143.51) (xy 325.12 146.05)) (stroke (width 0) (type default)) (uuid "daa46481-c0bb-54ca-b791-cea4991fb167"))
+	(label "SD_D2" (at 325.12 146.05 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "dc424197-bd46-5af3-9c11-e808bf0b5602"))
+	(symbol (lib_id "Device:R") (at 340.36 139.7 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "dcfda632-758a-5996-ae75-09e2fef7ec54")
+		(property "Reference" "R510" (at 337.82 138.43 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "10k" (at 337.82 140.97 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 340.36 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 340.36 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "SDIO pull-up (SD_D3)" (at 340.36 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C25744" (at 340.36 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 340.36 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "c9ffc21d-97ca-5433-9520-b33d5d3ede2c"))
+		(pin "2" (uuid "05e18c67-19db-5bc2-8961-91972bde7a17"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "R510") (unit 1))))
+	)
+	(wire (pts (xy 340.36 135.89) (xy 340.36 133.35)) (stroke (width 0) (type default)) (uuid "4d654570-8182-592f-a5ca-85ce5efb8e78"))
+	(symbol (lib_id "power:+5V") (at 340.36 133.35 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "74decacb-1962-5367-bdea-21ff22bb313b")
+		(property "Reference" "#PWR521" (at 340.36 133.35 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 340.36 129.54 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 340.36 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 340.36 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 340.36 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "32964394-8ca8-5ed7-9d2f-81b97d9c769c"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR521") (unit 1))))
+	)
+	(wire (pts (xy 340.36 143.51) (xy 340.36 146.05)) (stroke (width 0) (type default)) (uuid "b417e5fb-fd2a-50a9-942a-61cff6af863c"))
+	(label "SD_D3" (at 340.36 146.05 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "e2ac2f81-ec7f-537d-82a7-ba1d8e3a6e02"))
+	(symbol (lib_id "Device:C") (at 368.3 139.7 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "4543c01a-1daa-53ff-bc67-1e0f4bd14c01")
+		(property "Reference" "C502" (at 365.76 138.43 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "10uF 25V" (at 365.76 140.97 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric" (at 368.3 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 368.3 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "microSD bulk" (at 368.3 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C15850" (at 368.3 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 368.3 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "d9bee48e-4aa0-5a00-8388-98c270466c33"))
+		(pin "2" (uuid "175c0d9b-693a-5c70-901c-f3c90775974b"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "C502") (unit 1))))
+	)
+	(wire (pts (xy 368.3 135.89) (xy 368.3 133.35)) (stroke (width 0) (type default)) (uuid "70e249e5-301f-5c88-9ccc-3c0482e5efcc"))
+	(symbol (lib_id "power:+5V") (at 368.3 133.35 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "5cd9091b-1261-5dde-9ddf-76018909cfc4")
+		(property "Reference" "#PWR522" (at 368.3 133.35 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 368.3 129.54 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 368.3 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 368.3 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 368.3 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "3c0fac2e-777d-5441-9bcf-c39b339a8338"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR522") (unit 1))))
+	)
+	(wire (pts (xy 368.3 143.51) (xy 368.3 146.05)) (stroke (width 0) (type default)) (uuid "09399a65-0f80-5165-862b-82454af0bf62"))
+	(symbol (lib_id "power:GND") (at 368.3 146.05 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "afd5fe8b-bacf-591c-856a-642febe2f8a3")
+		(property "Reference" "#PWR523" (at 368.3 146.05 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "GND" (at 368.3 151.13 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 368.3 146.05 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 368.3 146.05 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 368.3 146.05 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "86fa51d7-1c2a-5e10-b6ef-369e346195e9"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR523") (unit 1))))
+	)
+	(symbol (lib_id "Device:C") (at 386.08 139.7 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "9dd5f4da-e4d5-505f-92a6-6fc8d159f6b8")
+		(property "Reference" "C503" (at 383.54 138.43 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Value" "100nF" (at 383.54 140.97 0) (effects (font (size 1.27 1.27)) (justify right)))
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric" (at 386.08 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 386.08 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "microSD decoupling" (at 386.08 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "C307331" (at 386.08 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "JLC" (at 386.08 139.7 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "930a9c56-257e-50a5-a83a-a83c78e3421f"))
+		(pin "2" (uuid "533514b8-d982-567f-97c6-d1034c856214"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "C503") (unit 1))))
+	)
+	(wire (pts (xy 386.08 135.89) (xy 386.08 133.35)) (stroke (width 0) (type default)) (uuid "0b69e6ea-555e-5e93-a80e-54ba8d50eb15"))
+	(symbol (lib_id "power:+5V") (at 386.08 133.35 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "d1aae55d-6860-59e9-b3be-75da5564355f")
+		(property "Reference" "#PWR524" (at 386.08 133.35 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 386.08 129.54 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 386.08 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 386.08 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 386.08 133.35 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "6eb4ae31-c816-568f-9ad6-8708e41bf2eb"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR524") (unit 1))))
+	)
+	(wire (pts (xy 386.08 143.51) (xy 386.08 146.05)) (stroke (width 0) (type default)) (uuid "a6fbb172-4030-5eb5-9060-b51fd148846a"))
+	(symbol (lib_id "power:GND") (at 386.08 146.05 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "3f811551-e533-5e9f-954a-4f92b850b33d")
+		(property "Reference" "#PWR525" (at 386.08 146.05 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "GND" (at 386.08 151.13 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 386.08 146.05 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 386.08 146.05 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 386.08 146.05 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "8a9e03cc-b6ac-53e0-972f-ee4ac3664bf5"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR525") (unit 1))))
+	)
+	(text "Pull-ups 10k (SD spec: 10-100k) on CMD and D0-D3. D3 doubles as\ncard detect in SPI mode; we use the socket's switch instead (DET -> P00).\nUnverified: DET pin number and switch polarity (LCSC datasheet\nwasn't downloadable by script). Check before drawing the footprint." (exclude_from_sim no) (at 266.7 160.02 0) (effects (font (size 1.016 1.016) (italic yes)) (justify left top)) (uuid "5a12d540-8c18-5e0c-ae95-6d9d1165197a"))
+	(rectangle (start 200.66 203.2) (end 406.4 284.48) (stroke (width 0.254) (type dash)) (fill (type none)) (uuid "f21160e1-23ab-5bf8-8114-0e8944899a16"))
+	(text "Test points" (exclude_from_sim no) (at 208.28 210.82 0) (effects (font (size 2.0 2.0) (bold yes)) (justify left top)) (uuid "0f5f5472-9e65-5c0b-b59c-2c83f463f9bd"))
+	(text "Bare pads for probing at bring-up (not on the BOM). P15-P17: spare expander pins;\nINT: the expander interrupt (firmware polls, so it goes nowhere else)." (exclude_from_sim no) (at 208.28 215.32 0) (effects (font (size 1.27 1.27)) (justify left top)) (uuid "5a099e53-3bfe-5c16-b98e-559df49d94fa"))
+	(symbol (lib_id "Connector:TestPoint") (at 213.36 233.68 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "f73b1baf-262c-5201-b490-4c091ac04755")
+		(property "Reference" "TP502" (at 214.63 228.6 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Value" "+5V_SYS" (at 214.63 231.14 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm" (at 213.36 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 213.36 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "Test pad: +5V_SYS" (at 213.36 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "" (at 213.36 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "None" (at 213.36 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "399fe654-c323-5ed8-bf8e-dc2d513534d0"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "TP502") (unit 1))))
+	)
+	(wire (pts (xy 213.36 233.68) (xy 213.36 236.22)) (stroke (width 0) (type default)) (uuid "1fb66c79-3b72-5d36-b029-c4eeddae70b1"))
+	(symbol (lib_id "power:+5V") (at 213.36 236.22 180) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "6f9a063a-5206-56ff-9d1d-cbfd24a342a9")
+		(property "Reference" "#PWR526" (at 213.36 236.22 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+5V_SYS" (at 213.36 240.03 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 213.36 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 213.36 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 213.36 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "3c17022b-9366-5651-8cc7-ee7c34223c04"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR526") (unit 1))))
+	)
+	(symbol (lib_id "Connector:TestPoint") (at 237.49 233.68 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "baa57063-2a5a-5b46-b051-5ec39fa8e25c")
+		(property "Reference" "TP503" (at 238.76 228.6 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Value" "+3V3" (at 238.76 231.14 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm" (at 237.49 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 237.49 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "Test pad: +3V3" (at 237.49 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "" (at 237.49 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "None" (at 237.49 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "88193a86-3e59-52ab-8556-ae6fce5ded4f"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "TP503") (unit 1))))
+	)
+	(wire (pts (xy 237.49 233.68) (xy 237.49 236.22)) (stroke (width 0) (type default)) (uuid "9d934b86-7d03-52bb-96c6-6fc4b70ce571"))
+	(symbol (lib_id "power:+5V") (at 237.49 236.22 180) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "236eab06-1417-5e04-8ecc-8eb10f94cffe")
+		(property "Reference" "#PWR527" (at 237.49 236.22 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "+3V3" (at 237.49 240.03 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 237.49 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 237.49 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 237.49 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "13c106d5-4d35-534d-b463-0ba8eef238da"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR527") (unit 1))))
+	)
+	(symbol (lib_id "Connector:TestPoint") (at 261.62 233.68 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "4caa96ae-2597-5198-803c-0fdc9626ea04")
+		(property "Reference" "TP504" (at 262.89 228.6 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Value" "VTERM" (at 262.89 231.14 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm" (at 261.62 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 261.62 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "Test pad: VTERMINATOR" (at 261.62 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "" (at 261.62 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "None" (at 261.62 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "040b8f6c-c683-5cc8-bb50-b8d7745fc180"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "TP504") (unit 1))))
+	)
+	(wire (pts (xy 261.62 233.68) (xy 261.62 236.22)) (stroke (width 0) (type default)) (uuid "2765d937-af67-50b8-ad82-821af6243d01"))
+	(symbol (lib_id "power:+5V") (at 261.62 236.22 180) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "e0736058-403d-5b56-856a-f45542ba7170")
+		(property "Reference" "#PWR528" (at 261.62 236.22 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "VTERMINATOR" (at 261.62 240.03 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 261.62 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 261.62 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 261.62 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "9618a83c-91d2-5b0e-a720-eb8891a32aa5"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR528") (unit 1))))
+	)
+	(symbol (lib_id "Connector:TestPoint") (at 285.75 233.68 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "85d43479-c34c-58f0-ae0c-0010a0a0bdf4")
+		(property "Reference" "TP505" (at 287.02 228.6 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Value" "TERMPWR" (at 287.02 231.14 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm" (at 285.75 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 285.75 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "Test pad: TERMPWR" (at 285.75 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "" (at 285.75 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "None" (at 285.75 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "68c3d259-a7cd-5f16-b839-2f1ac1a253a1"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "TP505") (unit 1))))
+	)
+	(wire (pts (xy 285.75 233.68) (xy 285.75 236.22)) (stroke (width 0) (type default)) (uuid "d64791af-f12c-5ade-ad71-f52e79fd88e2"))
+	(symbol (lib_id "power:+5V") (at 285.75 236.22 180) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "f306f55e-813c-5734-9e7a-1531d7c93f09")
+		(property "Reference" "#PWR529" (at 285.75 236.22 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "TERMPWR" (at 285.75 240.03 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 285.75 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 285.75 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 285.75 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "d97bcf52-b2f3-5396-8333-c684c1ffb253"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR529") (unit 1))))
+	)
+	(symbol (lib_id "Connector:TestPoint") (at 213.36 256.54 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "b055e098-ad84-548d-8629-a1a3f9e03d70")
+		(property "Reference" "TP506" (at 214.63 251.46 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Value" "TP_EN" (at 214.63 254 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm" (at 213.36 256.54 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 213.36 256.54 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "Test pad: TERMPWR_EN_INVERTED" (at 213.36 256.54 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "" (at 213.36 256.54 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "None" (at 213.36 256.54 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "69dc4fd1-3e63-5442-90a1-9276eb6de129"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "TP506") (unit 1))))
+	)
+	(wire (pts (xy 213.36 256.54) (xy 213.36 259.08)) (stroke (width 0) (type default)) (uuid "e1e189c6-ec0e-5cae-8457-262cd3d4f6c8"))
+	(hierarchical_label "TERMPWR_EN_INVERTED" (shape input) (at 213.36 259.08 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "a31ed02c-70ea-5e34-b718-120967bd5ba3"))
+	(symbol (lib_id "Connector:TestPoint") (at 309.88 233.68 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "c5a82b54-5ebc-57ce-9ae0-bbe9d81b1816")
+		(property "Reference" "TP507" (at 311.15 228.6 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Value" "GND" (at 311.15 231.14 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm" (at 309.88 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 309.88 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "Test pad: GND" (at 309.88 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "" (at 309.88 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "None" (at 309.88 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "8f2c545a-e031-5567-bd40-7c3e1faff35f"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "TP507") (unit 1))))
+	)
+	(wire (pts (xy 309.88 233.68) (xy 309.88 236.22)) (stroke (width 0) (type default)) (uuid "5add216a-3440-5aeb-9abe-58ad475bff82"))
+	(symbol (lib_id "power:GND") (at 309.88 236.22 0) (unit 1) (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "46b4f9cd-b689-5ed2-8648-1aab2bd69967")
+		(property "Reference" "#PWR530" (at 309.88 236.22 0) (effects (font (size 1.27 1.27)) (justify left) (hide yes)))
+		(property "Value" "GND" (at 309.88 241.3 0) (effects (font (size 1.27 1.27))))
+		(property "Footprint" "" (at 309.88 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 309.88 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "" (at 309.88 236.22 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "0d7c3c9e-a133-566f-a90f-661058654d1c"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "#PWR530") (unit 1))))
+	)
+	(symbol (lib_id "Connector:TestPoint") (at 334.01 233.68 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "d6435856-e3ed-5718-86a0-e20140378c96")
+		(property "Reference" "TP508" (at 335.28 228.6 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Value" "P15" (at 335.28 231.14 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm" (at 334.01 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 334.01 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "Test pad: EXPANDER_P15" (at 334.01 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "" (at 334.01 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "None" (at 334.01 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "11732754-56a2-5e9d-93c2-d0b44354e07c"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "TP508") (unit 1))))
+	)
+	(wire (pts (xy 334.01 233.68) (xy 334.01 236.22)) (stroke (width 0) (type default)) (uuid "7daea7ef-0b3d-5cde-867a-90df66b0341b"))
+	(label "EXPANDER_P15" (at 334.01 236.22 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "ba8b1637-8c04-59ea-b5bd-1f56edbd5a6a"))
+	(symbol (lib_id "Connector:TestPoint") (at 358.14 233.68 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "cca730c8-2f9e-5e50-b0f5-8809fd9fb5a2")
+		(property "Reference" "TP509" (at 359.41 228.6 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Value" "P16" (at 359.41 231.14 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm" (at 358.14 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 358.14 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "Test pad: EXPANDER_P16" (at 358.14 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "" (at 358.14 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "None" (at 358.14 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "d888f4b6-8b2d-5dd3-a3f1-03f51d83da3b"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "TP509") (unit 1))))
+	)
+	(wire (pts (xy 358.14 233.68) (xy 358.14 236.22)) (stroke (width 0) (type default)) (uuid "a49a351c-a9ef-5d11-af82-15c3fd645a87"))
+	(label "EXPANDER_P16" (at 358.14 236.22 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "d42834da-3013-5158-a9c0-b0853c8ac7e1"))
+	(symbol (lib_id "Connector:TestPoint") (at 382.27 233.68 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "7e6d2da5-9ebd-51e0-b346-bbaff567208f")
+		(property "Reference" "TP510" (at 383.54 228.6 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Value" "P17" (at 383.54 231.14 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm" (at 382.27 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 382.27 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "Test pad: EXPANDER_P17" (at 382.27 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "" (at 382.27 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "None" (at 382.27 233.68 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "30b24951-ab23-55c1-837e-3bb632feffbc"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "TP510") (unit 1))))
+	)
+	(wire (pts (xy 382.27 233.68) (xy 382.27 236.22)) (stroke (width 0) (type default)) (uuid "34613af6-c930-5e54-933b-4e5e8b1f2957"))
+	(label "EXPANDER_P17" (at 382.27 236.22 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "df489805-20b9-52a4-985a-448359fae28b"))
+	(symbol (lib_id "Connector:TestPoint") (at 251.46 256.54 0) (unit 1) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "64fa3cb7-be6b-5530-8d08-a8cb5e547e85")
+		(property "Reference" "TP501" (at 252.73 251.46 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Value" "INT" (at 252.73 254 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm" (at 251.46 256.54 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Datasheet" "" (at 251.46 256.54 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Description" "Test pad: EXPANDER_INTERRUPT_INVERTED" (at 251.46 256.54 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "LCSC" "" (at 251.46 256.54 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Fit" "None" (at 251.46 256.54 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(pin "1" (uuid "f981c9e4-3c57-5648-a26a-1d4646d7f3ec"))
+		(instances (project "scsi-adapter" (path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/e668c732-65b6-44b8-a62c-386a17bfcd95" (reference "TP501") (unit 1))))
+	)
+	(wire (pts (xy 251.46 256.54) (xy 251.46 259.08)) (stroke (width 0) (type default)) (uuid "3bb872a2-1f34-597e-8171-29a08410034f"))
+	(label "EXPANDER_INTERRUPT_INVERTED" (at 251.46 259.08 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "0b22b271-0103-5b11-8478-0f537a5dec1d"))
+	(text "FT232H_3V3 gets its own pad on the ft232h sheet." (exclude_from_sim no) (at 208.28 276.86 0) (effects (font (size 1.016 1.016) (italic yes)) (justify left top)) (uuid "dfd179fd-4e31-525e-a706-4005bb9303a1"))
+	(embedded_fonts no)
 )
