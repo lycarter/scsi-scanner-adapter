@@ -290,7 +290,7 @@ GND                                          -- | 12 GND P10 13 | -- out: LED1_N
   internal pull-up. So:
   - FT232H_RESET_INVERTED and HUB_RESET_INVERTED read high (running), so both chips run even if the expander
     is gone after the FT1248 rework (NOTES rule). FT232H RESET# has its own 10 kΩ pull-up (to
-    FT_3V3) + 10 nF. The CH334 RESET# has **no** external pull-up (its internal ~25 kΩ means
+    FT232H_3V3) + 10 nF. The CH334 RESET# has **no** external pull-up (its internal ~25 kΩ means
     "run"; driving it high at power-up would enable CDP mode), and P14 reaches it through a
     Schottky (cathode at P14), so P14 can only pull it low.
   - The LEDs are wired 3.3 V → resistor → LED → pin, so they're off until firmware drives

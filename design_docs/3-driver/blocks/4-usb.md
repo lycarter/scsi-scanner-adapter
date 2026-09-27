@@ -84,10 +84,10 @@ updates over USB). Decision: `../NOTES.md`, open question 10. Source: `_src/usb.
     supply and the host switched off, its 1.5 kΩ D+ pull-up back-drives the host (USB 2.0
     §7.1.5). Switch the bench supply off before the host.
 - **FT232H power (DS v2.0 Fig. 6.2, copied exactly):** VREGIN from +5V_SYS. **VCCD is then an
-  output** (the FT232H's own 3.3 V, net `FT_3V3`) that feeds VCCIO ×3, VPHY and VPLL (each
+  output** (the FT232H's own 3.3 V, net `FT232H_3V3`) that feeds VCCIO ×3, VPHY and VPLL (each
   through a 600 Ω ferrite) and the EEPROM. **VCCD never connects to the board 3.3 V.** The
   FT232H's I/O at its own 3.3 V talks to the RP2350's 3.3 V directly.
-- **FT232H support parts:** REF = 12 kΩ 1 % to GND; TEST to GND; RESET# 10 kΩ to FT_3V3 +
+- **FT232H support parts:** REF = 12 kΩ 1 % to GND; TEST to GND; RESET# 10 kΩ to FT232H_3V3 +
   10 nF (and expander P13); 0.1 µF on VCCA and VCORE; 4.7 µF + 0.1 µF on VREGIN and VCCD; a
   12 MHz crystal with 2 × 15 pF; and a **93LC56B EEPROM** (DO pulled up with 10 kΩ, DO → DI
   through 2.2 kΩ). The EEPROM is required: without it the chip starts in UART mode, not FT1248

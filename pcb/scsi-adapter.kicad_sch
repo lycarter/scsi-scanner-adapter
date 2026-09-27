@@ -10,7 +10,7 @@
 		(rev "0.1")
 	)
 	(lib_symbols)
-	(text "Sheets connect by net labels on the stubs (same name = same net).\nGlobal power symbols: +5V_SYS, +3V3, VTERMINATOR, TERMPWR, GND.\nLocal rails stay on their sheet: FT_3V3 (ft232h), DVDD 1.1 V (rp2350)."
+	(text "Sheets connect by net labels on the stubs (same name = same net).\nGlobal power symbols: +5V_SYS, +3V3, VTERMINATOR, TERMPWR, GND.\nLocal rails stay on their sheet: FT232H_3V3 (ft232h), DVDD 1.1 V (rp2350)."
 		(exclude_from_sim no)
 		(at 25.4 228.6 0)
 		(effects
@@ -1351,7 +1351,7 @@
 		)
 		(uuid "01c02658-39d6-43ae-961d-ebc85480cc6d")
 	)
-	(label "FT_MIOSIO3"
+	(label "FT232H_MIOSIO3"
 		(at 264.16 35.56 180)
 		(effects
 			(font
@@ -1371,7 +1371,7 @@
 		)
 		(uuid "0941b575-81f9-4b38-a2e9-523b7e629283")
 	)
-	(label "FT_MISO"
+	(label "FT232H_MISO"
 		(at 264.16 43.18 180)
 		(effects
 			(font
@@ -1381,7 +1381,7 @@
 		)
 		(uuid "0a099ca6-e562-4746-a263-958835ee2b9c")
 	)
-	(label "FT_MIOSIO0"
+	(label "FT232H_MIOSIO0"
 		(at 264.16 27.94 180)
 		(effects
 			(font
@@ -1391,7 +1391,7 @@
 		)
 		(uuid "0b9c816d-8c60-491f-b943-12965eb46a39")
 	)
-	(label "FT_D7"
+	(label "FT232H_D7"
 		(at 205.74 53.34 0)
 		(effects
 			(font
@@ -1441,7 +1441,7 @@
 		)
 		(uuid "11b48c56-33c4-4fd0-9140-95aec0ece910")
 	)
-	(label "FT_SCLK"
+	(label "FT232H_SCLK"
 		(at 264.16 38.1 180)
 		(effects
 			(font
@@ -1591,7 +1591,7 @@
 		)
 		(uuid "2ce64d78-e78c-49ee-9e74-215724fa7a78")
 	)
-	(label "FT_MIOSIO1"
+	(label "FT232H_MIOSIO1"
 		(at 264.16 30.48 180)
 		(effects
 			(font
@@ -1601,7 +1601,7 @@
 		)
 		(uuid "2e914723-c979-43d8-8ab9-d540a1a77c61")
 	)
-	(label "FT_WR_N"
+	(label "FT232H_WR_N"
 		(at 205.74 55.88 0)
 		(effects
 			(font
@@ -1681,7 +1681,7 @@
 		)
 		(uuid "40ef9dcb-c888-4e9a-b19f-f59bcc7841b6")
 	)
-	(label "FT_MIOSIO1"
+	(label "FT232H_MIOSIO1"
 		(at 205.74 30.48 0)
 		(effects
 			(font
@@ -1691,7 +1691,7 @@
 		)
 		(uuid "4150b5be-ec16-4c30-83d8-e96c5dfff234")
 	)
-	(label "FT_D5"
+	(label "FT232H_D5"
 		(at 264.16 48.26 180)
 		(effects
 			(font
@@ -1791,7 +1791,7 @@
 		)
 		(uuid "4b1c091a-7020-4b06-b3b1-7e5439010572")
 	)
-	(label "FT_D5"
+	(label "FT232H_D5"
 		(at 205.74 48.26 0)
 		(effects
 			(font
@@ -1861,7 +1861,7 @@
 		)
 		(uuid "6522f795-5e9a-4d4a-a8f0-62a2366b3d08")
 	)
-	(label "FT_SCLK"
+	(label "FT232H_SCLK"
 		(at 205.74 38.1 0)
 		(effects
 			(font
@@ -1891,7 +1891,7 @@
 		)
 		(uuid "675f246a-5ab6-4fbc-8375-4bda12b6ba7d")
 	)
-	(label "FT_D4"
+	(label "FT232H_D4"
 		(at 205.74 45.72 0)
 		(effects
 			(font
@@ -1951,7 +1951,7 @@
 		)
 		(uuid "6fe4b89a-4c64-4600-8a8d-9977eb7abe80")
 	)
-	(label "FT_D4"
+	(label "FT232H_D4"
 		(at 264.16 45.72 180)
 		(effects
 			(font
@@ -1971,7 +1971,7 @@
 		)
 		(uuid "7508de64-fb97-49e0-8acd-ddf46f68b363")
 	)
-	(label "FT_SS_N"
+	(label "FT232H_SS_N"
 		(at 264.16 40.64 180)
 		(effects
 			(font
@@ -2051,7 +2051,7 @@
 		)
 		(uuid "8a33c836-4457-4b99-a598-11bed865117d")
 	)
-	(label "FT_MIOSIO3"
+	(label "FT232H_MIOSIO3"
 		(at 205.74 35.56 0)
 		(effects
 			(font
@@ -2071,7 +2071,7 @@
 		)
 		(uuid "8a984400-e528-4036-a0d2-43cc12384b41")
 	)
-	(label "FT_D6"
+	(label "FT232H_D6"
 		(at 264.16 50.8 180)
 		(effects
 			(font
@@ -2091,7 +2091,7 @@
 		)
 		(uuid "8f0acd87-6622-4a67-84d3-ad63f3660596")
 	)
-	(label "FT_MIOSIO0"
+	(label "FT232H_MIOSIO0"
 		(at 205.74 27.94 0)
 		(effects
 			(font
@@ -2191,7 +2191,7 @@
 		)
 		(uuid "a1e02c75-1636-41ba-b4d2-0ad1dd3df42e")
 	)
-	(label "FT_D6"
+	(label "FT232H_D6"
 		(at 205.74 50.8 0)
 		(effects
 			(font
@@ -2251,7 +2251,7 @@
 		)
 		(uuid "a5d566a0-e1d5-4cbc-bddb-fa0fe5c617bd")
 	)
-	(label "FT_WR_N"
+	(label "FT232H_WR_N"
 		(at 264.16 55.88 180)
 		(effects
 			(font
@@ -2411,7 +2411,7 @@
 		)
 		(uuid "cca76be6-26ec-429e-a546-deb037f89f94")
 	)
-	(label "FT_MIOSIO2"
+	(label "FT232H_MIOSIO2"
 		(at 205.74 33.02 0)
 		(effects
 			(font
@@ -2421,7 +2421,7 @@
 		)
 		(uuid "ce0ba721-f00d-47f0-9c28-3f9261dfff1e")
 	)
-	(label "FT_SS_N"
+	(label "FT232H_SS_N"
 		(at 205.74 40.64 0)
 		(effects
 			(font
@@ -2461,7 +2461,7 @@
 		)
 		(uuid "d24b55e1-fefa-457d-bbe0-db4c0974590a")
 	)
-	(label "FT_MISO"
+	(label "FT232H_MISO"
 		(at 205.74 43.18 0)
 		(effects
 			(font
@@ -2631,7 +2631,7 @@
 		)
 		(uuid "f5b8ef16-66b6-4210-89c0-7868af26b422")
 	)
-	(label "FT_MIOSIO2"
+	(label "FT232H_MIOSIO2"
 		(at 264.16 33.02 180)
 		(effects
 			(font
@@ -2651,7 +2651,7 @@
 		)
 		(uuid "fd769c2a-eb5a-4239-b0d0-85a0bec00abe")
 	)
-	(label "FT_D7"
+	(label "FT232H_D7"
 		(at 264.16 53.34 180)
 		(effects
 			(font
@@ -3035,7 +3035,7 @@
 				(justify left)
 			)
 		)
-		(pin "FT_MIOSIO0" bidirectional
+		(pin "FT232H_MIOSIO0" bidirectional
 			(at 198.12 27.94 0)
 			(uuid "b55ee004-93d5-48e1-8a29-14748dcf4d27")
 			(effects
@@ -3045,7 +3045,7 @@
 				(justify right)
 			)
 		)
-		(pin "FT_MIOSIO1" bidirectional
+		(pin "FT232H_MIOSIO1" bidirectional
 			(at 198.12 30.48 0)
 			(uuid "aed44555-d4e1-4f13-a256-8ec01bfa8307")
 			(effects
@@ -3055,7 +3055,7 @@
 				(justify right)
 			)
 		)
-		(pin "FT_MIOSIO2" bidirectional
+		(pin "FT232H_MIOSIO2" bidirectional
 			(at 198.12 33.02 0)
 			(uuid "9b97da86-e28a-4ab9-bc53-450d343db010")
 			(effects
@@ -3065,7 +3065,7 @@
 				(justify right)
 			)
 		)
-		(pin "FT_MIOSIO3" bidirectional
+		(pin "FT232H_MIOSIO3" bidirectional
 			(at 198.12 35.56 0)
 			(uuid "e8213160-14cc-4bec-ac04-b0df26f267f6")
 			(effects
@@ -3075,7 +3075,7 @@
 				(justify right)
 			)
 		)
-		(pin "FT_SCLK" output
+		(pin "FT232H_SCLK" output
 			(at 198.12 38.1 0)
 			(uuid "ba8504f2-fa91-4c47-98d9-428efede4bb4")
 			(effects
@@ -3085,7 +3085,7 @@
 				(justify right)
 			)
 		)
-		(pin "FT_SS_N" output
+		(pin "FT232H_SS_N" output
 			(at 198.12 40.64 0)
 			(uuid "b0bb506d-eaa1-4123-aa26-8d82eee1764c")
 			(effects
@@ -3095,7 +3095,7 @@
 				(justify right)
 			)
 		)
-		(pin "FT_MISO" input
+		(pin "FT232H_MISO" input
 			(at 198.12 43.18 0)
 			(uuid "a74f4a9d-6861-42f7-ac5b-2222fdf6daf2")
 			(effects
@@ -3105,7 +3105,7 @@
 				(justify right)
 			)
 		)
-		(pin "FT_D4" bidirectional
+		(pin "FT232H_D4" bidirectional
 			(at 198.12 45.72 0)
 			(uuid "9f241e40-425f-466e-a0d2-41a405a92181")
 			(effects
@@ -3115,7 +3115,7 @@
 				(justify right)
 			)
 		)
-		(pin "FT_D5" bidirectional
+		(pin "FT232H_D5" bidirectional
 			(at 198.12 48.26 0)
 			(uuid "42eb817b-bd85-46fe-809b-d8f05c4f21c6")
 			(effects
@@ -3125,7 +3125,7 @@
 				(justify right)
 			)
 		)
-		(pin "FT_D6" bidirectional
+		(pin "FT232H_D6" bidirectional
 			(at 198.12 50.8 0)
 			(uuid "ad7fc1ef-9a8a-4786-885b-f48ec4f2c3f6")
 			(effects
@@ -3135,7 +3135,7 @@
 				(justify right)
 			)
 		)
-		(pin "FT_D7" bidirectional
+		(pin "FT232H_D7" bidirectional
 			(at 198.12 53.34 0)
 			(uuid "ce9acc80-2c14-4c8d-8d3d-263f799c2f11")
 			(effects
@@ -3145,7 +3145,7 @@
 				(justify right)
 			)
 		)
-		(pin "FT_WR_N" bidirectional
+		(pin "FT232H_WR_N" bidirectional
 			(at 198.12 55.88 0)
 			(uuid "c7637dd8-481d-461b-b398-f863b8b347fc")
 			(effects
@@ -3995,7 +3995,7 @@
 				(justify left top)
 			)
 		)
-		(pin "FT_MIOSIO0" bidirectional
+		(pin "FT232H_MIOSIO0" bidirectional
 			(at 271.78 27.94 180)
 			(uuid "a2765ba2-0a90-49ee-8e8e-8c140a6f383b")
 			(effects
@@ -4005,7 +4005,7 @@
 				(justify left)
 			)
 		)
-		(pin "FT_MIOSIO1" bidirectional
+		(pin "FT232H_MIOSIO1" bidirectional
 			(at 271.78 30.48 180)
 			(uuid "91780ca5-ce34-4d6f-a168-ba8c1331f069")
 			(effects
@@ -4015,7 +4015,7 @@
 				(justify left)
 			)
 		)
-		(pin "FT_MIOSIO2" bidirectional
+		(pin "FT232H_MIOSIO2" bidirectional
 			(at 271.78 33.02 180)
 			(uuid "64839a82-780c-47d8-8e99-f6d332bb84d5")
 			(effects
@@ -4025,7 +4025,7 @@
 				(justify left)
 			)
 		)
-		(pin "FT_MIOSIO3" bidirectional
+		(pin "FT232H_MIOSIO3" bidirectional
 			(at 271.78 35.56 180)
 			(uuid "f7d9a8d1-db1e-4abb-a39b-e7186b0399c4")
 			(effects
@@ -4035,7 +4035,7 @@
 				(justify left)
 			)
 		)
-		(pin "FT_SCLK" input
+		(pin "FT232H_SCLK" input
 			(at 271.78 38.1 180)
 			(uuid "2d218b7e-0463-4138-9083-9625b789417a")
 			(effects
@@ -4045,7 +4045,7 @@
 				(justify left)
 			)
 		)
-		(pin "FT_SS_N" input
+		(pin "FT232H_SS_N" input
 			(at 271.78 40.64 180)
 			(uuid "81560e83-a3a9-491d-9e85-46672d74d8b8")
 			(effects
@@ -4055,7 +4055,7 @@
 				(justify left)
 			)
 		)
-		(pin "FT_MISO" output
+		(pin "FT232H_MISO" output
 			(at 271.78 43.18 180)
 			(uuid "8e6e8cfb-a22e-4ee7-a86c-e1af9aff78f2")
 			(effects
@@ -4065,7 +4065,7 @@
 				(justify left)
 			)
 		)
-		(pin "FT_D4" bidirectional
+		(pin "FT232H_D4" bidirectional
 			(at 271.78 45.72 180)
 			(uuid "7f98c41f-b1ea-4560-86e5-d5721e185c37")
 			(effects
@@ -4075,7 +4075,7 @@
 				(justify left)
 			)
 		)
-		(pin "FT_D5" bidirectional
+		(pin "FT232H_D5" bidirectional
 			(at 271.78 48.26 180)
 			(uuid "13e7d940-cd54-4d18-bf92-f6afdda0bbd5")
 			(effects
@@ -4085,7 +4085,7 @@
 				(justify left)
 			)
 		)
-		(pin "FT_D6" bidirectional
+		(pin "FT232H_D6" bidirectional
 			(at 271.78 50.8 180)
 			(uuid "a18b284b-4997-495a-aed5-2bc64c2d5288")
 			(effects
@@ -4095,7 +4095,7 @@
 				(justify left)
 			)
 		)
-		(pin "FT_D7" bidirectional
+		(pin "FT232H_D7" bidirectional
 			(at 271.78 53.34 180)
 			(uuid "92b241ca-dfa5-4f18-aeb5-5afa099aedbf")
 			(effects
@@ -4105,7 +4105,7 @@
 				(justify left)
 			)
 		)
-		(pin "FT_WR_N" bidirectional
+		(pin "FT232H_WR_N" bidirectional
 			(at 271.78 55.88 180)
 			(uuid "1409c002-4ddb-4055-b0e2-f2fce39f83a0")
 			(effects
