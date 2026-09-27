@@ -2,7 +2,7 @@
 
 Some sheets are written by Python scripts here rather than drawn by hand, and each script is checked
 against KiCad's own netlist. Sheets generated so far: `1-power`, `2-termpwr`, `3-scsi` (with the channel sheets
-`scsi_line_bidir` and `scsi_line_in`), `4-rp2350`, `5-io`, `6-usb-hub`.
+`scsi_line_bidir` and `scsi_line_in`), `4-rp2350`, `5-io`, `6-usb-hub`, `7-ft232h`.
 
 ```
 python3 pcb/_gen/build.py            # regenerate, then ERC + netlist check

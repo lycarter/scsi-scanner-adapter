@@ -1494,6 +1494,22 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
 13. ~~Open for the owner's second pass~~ **(accepted by the owner, 2026-09-26):** R059 asked to scale up the bench eFuse string
     for < 10 µA reverse-polarity current, but that conflicts with R061's over-voltage accuracy
     (see "Bench 5 V input protection"). Kept at 510 k (~28 µA, meets TI's ≥ 350 kΩ footnote).
+14. **Final design review: re-check the FT232H symbol (owner, 2026-09-26).** U701 uses a project copy,
+    `scsi-adapter:FT232H`, and not KiCad's `Interface_USB:FT232H`. The only differences are three pin
+    types: EECS (45) and EECLK (44) go input → output, and VCCD (39) goes power_in → power_out.
+    - **Triple-check against DS_FT232H:** Table 3.3 (EEPROM pins, driven by the FT232H), and Fig. 6.2 /
+      §6.2 (VCCD is the regulator output in our 5 V configuration).
+    - **Upstream status (checked 2026-09-26):** kicad-symbols master
+      (`Interface_USB.kicad_symdir/FT232H.kicad_sym` on gitlab.com/kicad/libraries/kicad-symbols) still
+      has EECS/EECLK as inputs. We found no issue or MR on GitLab about it (the searches for "FT232H" and
+      "FTDI" turned up only unrelated symbol additions and splits). The old GitHub repo's issue #232,
+      "SPI interface pins of a lot of symbols have the wrong electrical type", is the same kind of bug.
+    - **Follow-up task (owner, 2026-09-26): we contribute the fix upstream.** Open a kicad-symbols issue,
+      and preferably an MR, retyping EECS/EECLK as outputs. Check the draft with the owner before
+      posting, since it's public. Upstream should keep VCCD as power_in. In the FT232H's 3.3 V-only configuration VCCD
+      is an input, so our power_out is right only for this board.
+    - **Later:** re-check once we move to KiCad 10 or a newer library, and switch back to the stock
+      symbol if it has been fixed.
 
 ## Log
 
@@ -1629,3 +1645,9 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
     - Patterns are now `*USB_D±` and `*USB_FT_D±`. The old `*/USB_D±` form was dropped.
     - After the first PCB update, confirm the classes in Board Setup → Net Classes.
   - Owner: add the PGANG LED. D607 (KT-0805G green) + R604 470 Ω from +3V3 to PGANG (net HUB_ACTIVE_INVERTED): lit while the hub is active, off in suspend. It doesn't disturb the reset-time mode strap: the internal pull-up keeps the pin high, so there's no voltage across the LED. We read PGANG as "power gang" (ganged port power / overcurrent mode on the bigger packages); WCH doesn't spell it out.
+- 2026-09-26: ft232h sheet (`pcb/7-ft232h.kicad_sch`, A3) populated: 29 parts, 7xx references. Netlist check and ERC clean.
+  - **FT232HL U701** (LQFP-48, C51997), powered per DS Fig. 6.2: VREGIN from +5V_SYS. VCCD is the chip's own 3.3 V output (FT232H_3V3), which feeds VCCIO ×3, the EEPROM, and VPHY/VPLL through 600 Ω ferrites FB701/FB702. It is never tied to the board's +3V3. The sheet has decoupling on every supply pin, and DNP 4.7 µF pads C709/C711 on VPHY/VPLL.
+  - **Project symbol `scsi-adapter:FT232H`:** a copy of KiCad's, with EECS/EECLK retyped as outputs (the chip drives the EEPROM; KiCad types them as inputs, which gave ERC "input not driven") and VCCD as power_out, so it needs no PWR_FLAG.
+  - **93LC56BT-I/OT U702** (C190271): EEDATA → DI directly, DO → EEDATA through R704 2.2k, with a 10k pull-up on DO (DS Table 3.3). The EEPROM is required: it sets FT1248 mode.
+  - **Support parts:** crystal Y701 ABM8 12 MHz + 2 × 15 pF, REF 12k 1 %, RESET# 10k + 10 nF (expander P13 can also pull it low). WR# and SIWU# have 10k pull-ups for the 245-FIFO fallback. ACBUS5–9 are no-connect; TEST goes to GND.
+- 2026-09-26: FT232H_WR_N renamed **FT232H_WRITE_INVERTED** (owner: expand WR). WR# is the 245 FIFO's active-low write strobe: a falling edge latches D0–D7 into the transmit FIFO (see "FT232H pins in detail"). With the abbreviation spelled out, the name no longer mirrors the datasheet pin name, so it follows the `_INVERTED` convention. Only FT232H_SS_N keeps the datasheet `_N`. Changed in sheet_4, sheet_7 and the root sheet. The FT232H symbol question went into open question 14.

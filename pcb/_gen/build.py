@@ -16,7 +16,7 @@ sys.path.insert(0, HERE)
 from netcheck import netcheck
 from semdiff import semdiff, fingerprint
 
-SHEETS = ["sheet_1_power", "sheet_2_termpwr", "sheet_3_scsi", "sheet_4_rp2350", "sheet_5_io", "sheet_6_usb_hub"]
+SHEETS = ["sheet_1_power", "sheet_2_termpwr", "sheet_3_scsi", "sheet_4_rp2350", "sheet_5_io", "sheet_6_usb_hub", "sheet_7_ft232h"]
 CLI = os.environ.get("KICAD_CLI", "/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli")
 ROOT_SCH = os.path.join(PCB, "scsi-adapter.kicad_sch")
 FINGERPRINTS = os.path.join(HERE, "fingerprints.json")   # content hash of each sheet as last written
@@ -71,7 +71,7 @@ def main():
     kicad("sch", "erc", "--severity-all", "-o", erc, ROOT_SCH)
     rpt = open(erc).read()
     sheet_names = {"sheet_1_power": ["power"], "sheet_2_termpwr": ["termpwr"],
-                   "sheet_4_rp2350": ["rp2350"], "sheet_5_io": ["io"], "sheet_6_usb_hub": ["usb-hub"], "sheet_3_scsi": ["scsi"] + [f"scsi/{n}" for n in importlib.import_module("sheet_3_scsi").PAGE]}
+                   "sheet_4_rp2350": ["rp2350"], "sheet_5_io": ["io"], "sheet_6_usb_hub": ["usb-hub"], "sheet_7_ft232h": ["ft232h"], "sheet_3_scsi": ["scsi"] + [f"scsi/{n}" for n in importlib.import_module("sheet_3_scsi").PAGE]}
     for name in SHEETS:
         items = []
         for sheet in sheet_names[name]:
