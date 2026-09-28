@@ -1800,3 +1800,24 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
   - Y701 sits just off the FT232H's SW corner, west of pin 1 and below pins 47/48 (GND), at 270°. The crystal's signal pads are diagonal, so one trace has to go around; this orientation splits it evenly. XCSI 4.9 mm: pin 1 → C715 → top-left pad. XCSO 7.3 mm: pin 2 → down the east side → bottom-right pad → C716. Straight below the pins was rejected because it blocks VPHY/AGND/REF on pins 3–5.
   - An F.Cu GND guard pour ("FT232H crystal GND guard", 109.7–113.6 × 65.85–75.3, 0.3 mm clearance) covers the cluster. It ties the crystal's GND pads, both cap grounds and FT232H GND pins 47/48, with 5 vias to L2. A B.Cu rule area of the same size keeps tracks out from under the oscillator; vias are allowed.
   - The remaining FT232H support parts (VPHY/VPLL, REF, decoupling) aren't placed yet. XCSO runs down at x 114.5, so pin 3's parts go at x ≥ 115.
+- 2026-09-28: **Autonomous place-and-route pass (owner asleep; commits d17db70, 6784faa, 5363f0d, 80e7fa5).** Every part is now on the board. DRC is clean apart from silkscreen. 66 on-board connections are still open (list below).
+  - **Tooling** (scratchpad scripts, not in the repo):
+    - Freerouting 2.4.1 on a portable JRE, fed a DSN with inner layers as power planes and existing copper protected, importing only the section's nets.
+    - A courtyard-aware legalizer for placement.
+    - A plane-stitch pass that gives GND/+3V3 SMD pads a via.
+    - A grid maze router for the leftovers.
+  - **Moves:** hub U601 to under the FT232H, rotated 90°. Terminator LDO U104 to (153,97.8) beside U301–U303. CC-detect block (U202, U203 and parts) east of the buttons (x 130–143, y 86–104).
+  - **USB HS, hand-routed:**
+    - FT232H↔hub: 12.4/12.7 mm with one D− via swap. It's needed because both chips number their pins counter-clockwise, which mirrors D+/D− between them.
+    - USB-C↔hub: 14.3/14.3 mm, including the A6/B6 and A7/B7 joins.
+    - FT232H pins 3–11 (VPHY, AGND, REF, VPLL, GND) escape to vias under the LQFP body, and their parts sit east of the pair.
+  - **Placement:**
+    - SCSI: 18 receiver/driver tiles in two columns east of the MCU (DB0..DBP by J302, ATN..IO west). A strip of 2×220R + TVS per line sits above J301 at each line's pin.
+    - I/O: LEDs between J303 and J302, 10 test pads east of U501, SD pull-ups west of J501.
+  - **Open:**
+    - **The 32 MCU RX/GATE escapes.** The RP2350B's 0.4 mm-pitch 45° pins can't be escaped one net at a time; they need a planned fan-out bundle like the FT1248 one.
+    - **MCU-area nets open since before this pass:** SWD/RUN to J401, BOOTSEL/RUN buttons, PSRAM CE (pin 58), TERMPWR_SENSE into pin 57, J401 +3V3.
+    - **Fine-pitch power escapes:** U102 pins 3/6/8, U201 pins 5 (+5V_SYS in, partly done), 8 (GND) and 9 (ILM). Rip up locally and route those pins first.
+    - **VBUS J601→D605 link.**
+    - **SCSI:** ~DB2/DBP/RST/ACK bus segments, DB1 LA tap, Q901 gate, C2002/C2102 GND.
+    - **I/O:** INT, P15–P17 to test pads, green/yellow LEDs, D503.

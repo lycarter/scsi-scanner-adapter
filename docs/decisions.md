@@ -81,3 +81,4 @@ Status: **proposed** (awaiting owner), **accepted**, **superseded**.
 | 2026-09-27 | 3 | RP2350B GPIO 32–46 reordered by a crossing-count solver (`design_docs/3-driver/tools/ft1248_pinsolve.py`): LA 32/33, SD D0 34, FT MISO/SS_n/SCLK 35–37, MIOSIO0–3 38–41, I²C1 42/43, SD CLK/CMD 44/45. FT1248 bit order stays forward (6 unavoidable MIOSIO crossings); FT232H faces the RP2350B | accepted |
 | 2026-09-27 | 3 | FT1248 DNP rework links (R419/R421/R423/R425/R427) are 0805 (C17477) for hand-soldering; fitted links stay 0402 | accepted |
 | 2026-09-27 | 3 | L2 GND / L3 +3V3 planes extended to the full 120 × 90 mm outline (they stopped at y 50 after the resize) | accepted |
+| 2026-09-28 | 3 | Placement moves in the full layout pass: hub U601 under the FT232H (rot 90), terminator LDO U104 beside U301-U303, CC-detect block east of the buttons; FT232H<->hub USB pair uses one via swap (mirrored CCW pinouts) | proposed |
