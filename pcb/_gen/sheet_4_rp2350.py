@@ -24,6 +24,7 @@ MARKERS = {33: "LOGIC_ANALYZER_MARKER0", 32: "LOGIC_ANALYZER_MARKER1"}
 
 R0402, R0603, C0402, C0805 = ("Resistor_SMD:R_0402_1005Metric", "Resistor_SMD:R_0603_1608Metric",
                               "Capacitor_SMD:C_0402_1005Metric", "Capacitor_SMD:C_0805_2012Metric")
+R0805 = "Resistor_SMD:R_0805_2012Metric"      # DNP rework links: big enough to hand-solder later
 
 
 def props(fp, lcsc, dnp=False, note="", fit="JLC", ds=""):
@@ -351,7 +352,7 @@ def build(path):
                fields=((x + 3.81, y - 2.54, ""), (x + 3.81, y + 2.54, "")))
         s.wire(x - 2.54, y, x, y)
         s.part("Device:R", f"R{419 + 2 * i}", "0R", x + 3.81, y + 7.62, {"1": None, "2": dnp}, a=90,
-               props=props(R0402, "C17168", True, f"GPIO{n} -> FT232H pin {ftpin} (rework, DNP)"), dnp=True,
+               props=props(R0805, "C17477", True, f"GPIO{n} -> FT232H pin {ftpin} (rework, DNP)"), dnp=True,
                fields=((x + 3.81, y + 10.16, ""), (x + 3.81, y + 12.7, "")))
         s.wire(x - 2.54, y + 7.62, x, y + 7.62)
         for k in ((f"R{418 + 2 * i}", "1"), (f"R{419 + 2 * i}", "1")):

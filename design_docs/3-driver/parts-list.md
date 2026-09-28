@@ -146,7 +146,8 @@ LA 100 Ω, 220 Ω terminators, 33 Ω, 12 k, 2.2 k, 3.3 k CS1, …) aren't repeat
 | 1 | 1 MΩ | C26083 | B | CC hysteresis |
 | 3 | 470 Ω | C25117 | B | CJ431 bias (was 510 Ω, R087); green LEDs ×2 |
 | 6 | 1 kΩ | C11702 | B | 3.3 V LEDs ×5 (TERMPWR enable, status, activity, spare red, spare yellow); terminator DIP 1 pull-down |
-| 15 | 0 Ω | C17168 | B | FT1248 rework links: 5 fitted (GPIO 42–45, 34 → I²C/SD), 5 DNP (FT232H pins 17–20, 27); RESERVED ×4 (§2); USB-C shell ×1 |
+| 10 | 0 Ω | C17168 | B | FT1248 rework links: 5 fitted (GPIO 42–45, 34 → I²C/SD); RESERVED ×4 (§2); USB-C shell ×1 |
+| 5 | 0 Ω 0805 | C17477 | B | FT1248 rework links, DNP (FT232H pins 17–20, 27). 0805 so they're easy to hand-solder at rework (owner, 2026-09-27) |
 
 Dropped on 2026-09-26: 110 Ω C2909312 (→ 2 × 220 Ω), 20 kΩ and 15 kΩ of the old 2.80 V divider,
 56 k/150 k/150 Ω of the old bench string (56 k now used for the OVLO divider, 150 k kept),
