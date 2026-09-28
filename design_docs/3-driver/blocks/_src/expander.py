@@ -28,8 +28,8 @@ pins = {
     19: ('P16', 'spare, test pad'),
     20: ('P17', 'spare, test pad'),
     21: ('A0', 'GND'),
-    22: ('SCL', 'GPIO 37 (I2C0), 4.7k up'),
-    23: ('SDA', 'GPIO 36 (I2C0), 4.7k up'),
+    22: ('SCL', 'GPIO 43 (I2C1), 4.7k up'),
+    23: ('SDA', 'GPIO 42 (I2C1), 4.7k up'),
     24: ('VCC', '3.3 V, 100 nF'),
 }
 D.chip2('exp', 0, 0, pins, title=["TCA9555PWR", "TSSOP-24, top view"], name='TCA9555')

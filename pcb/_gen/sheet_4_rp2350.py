@@ -14,11 +14,13 @@ SHEET_SYM = "09e6debe-d957-4263-8f90-e8efff15a584"          # the "rp2350" sheet
 LINES = ["DB0", "DB1", "DB2", "DB3", "DB4", "DB5", "DB6", "DB7", "DBP", "ATN", "BSY", "ACK", "RST", "MSG",
          "SEL", "CD", "REQ", "IO"]                               # GPIO 0-17 = receiver outputs
 GATES = ["DB0", "DB1", "DB2", "DB3", "DB4", "DB5", "DB6", "DB7", "DBP", "ATN", "BSY", "ACK", "RST", "SEL"]
-FT1248 = {32: "FT232H_MIOSIO0", 33: "FT232H_MIOSIO1", 34: "FT232H_MIOSIO2", 35: "FT232H_MIOSIO3", 41: "FT232H_SCLK",
-          42: "FT232H_SS_N", 43: "FT232H_MISO"}
-REWORK = {36: ("I2C_SDA", "FT232H_D4", 17), 37: ("I2C_SCL", "FT232H_D5", 18), 38: ("SD_CLK", "FT232H_D6", 19),
-          39: ("SD_CMD", "FT232H_D7", 20), 40: ("SD_D0", "FT232H_WRITE_INVERTED", 27)}   # GPIO: (fitted, DNP, FT232H pin)
-MARKERS = {44: "LOGIC_ANALYZER_MARKER0", 45: "LOGIC_ANALYZER_MARKER1"}
+# GPIO 32-46 order from the crossing-count solver (design_docs/3-driver/tools/ft1248_pinsolve.py, 2026-09-27)
+FT1248 = {38: "FT232H_MIOSIO0", 39: "FT232H_MIOSIO1", 40: "FT232H_MIOSIO2", 41: "FT232H_MIOSIO3", 37: "FT232H_SCLK",
+          36: "FT232H_SS_N", 35: "FT232H_MISO"}
+# GPIO: (fitted, DNP, FT232H pin); listed in link order R418/R419 ... R426/R427
+REWORK = {42: ("I2C_SDA", "FT232H_D4", 17), 43: ("I2C_SCL", "FT232H_D5", 18), 44: ("SD_CLK", "FT232H_D6", 19),
+          45: ("SD_CMD", "FT232H_D7", 20), 34: ("SD_D0", "FT232H_WRITE_INVERTED", 27)}
+MARKERS = {33: "LOGIC_ANALYZER_MARKER0", 32: "LOGIC_ANALYZER_MARKER1"}
 
 R0402, R0603, C0402, C0805 = ("Resistor_SMD:R_0402_1005Metric", "Resistor_SMD:R_0603_1608Metric",
                               "Capacitor_SMD:C_0402_1005Metric", "Capacitor_SMD:C_0805_2012Metric")
@@ -110,11 +112,12 @@ def build(path):
     nets.update({"35": "RUN", "66": "RP2350_USB_D-", "67": "RP2350_USB_D+", "75": "QSPI_SS_INVERTED",
                  "71": "QSPI_SCLK", "72": "QSPI_SD0", "74": "QSPI_SD1", "73": "QSPI_SD2", "70": "QSPI_SD3",
                  "30": "XIN", "31": "XOUT", "33": "SWCLK", "34": "SWDIO"})
-    SERIES = {"40": ("FT232H_MIOSIO0", "R407"), "42": ("FT232H_MIOSIO1", "R408"), "43": ("FT232H_MIOSIO2", "R409"),
-              "44": ("FT232H_MIOSIO3", "R410"), "52": ("FT232H_SCLK", "R411"), "53": ("FT232H_SS_N", "R412"),
-              "54": ("FT232H_MISO", "R413"), "55": ("LOGIC_ANALYZER_MARKER0", "R414"),
-              "56": ("LOGIC_ANALYZER_MARKER1", "R415"), "67": ("USB_RP_D+", "R416"), "66": ("USB_RP_D-", "R417")}
-    for num in SERIES:
+    SERIES = {"47": ("FT232H_MIOSIO0", "R407"), "48": ("FT232H_MIOSIO1", "R408"), "49": ("FT232H_MIOSIO2", "R409"),
+              "52": ("FT232H_MIOSIO3", "R410"), "46": ("FT232H_SCLK", "R411"), "45": ("FT232H_SS_N", "R412"),
+              "44": ("FT232H_MISO", "R413"), "42": ("LOGIC_ANALYZER_MARKER0", "R414"),
+              "40": ("LOGIC_ANALYZER_MARKER1", "R415"), "67": ("USB_RP_D+", "R416"), "66": ("USB_RP_D-", "R417")}
+    RWPIN = {"43": 34, "53": 42, "54": 43, "55": 44, "56": 45}   # package pin -> rework GPIO, labelled out past the Rs
+    for num in list(SERIES) + list(RWPIN):
         nets[num] = None
     # top and bottom pins are wired by hand below
     for num in ("61", "68", "59", "69", "50", "60", "76", "15", "24", "29", "41", "5", "64", "63", "65", "10",
@@ -150,12 +153,14 @@ def build(path):
         s.intended[("U401", n)] = s.intended[(ref, pn)] = f"~pin{n}"
         s.intended[(ref, pf)] = out
     # what the rework-link GPIOs do (their links are in the rework box)
-    for n, txt in (("45", "I2C0 SDA (rework: FT232H_D4)"), ("46", "I2C0 SCL (rework: FT232H_D5)"),
-                   ("47", "microSD CLK (rework: FT232H_D6)"), ("48", "microSD CMD (rework: FT232H_D7)")):
+    for n, txt in (("43", "SD D0 / rework WR#"), ("53", "I2C1 SDA / rework D4"), ("54", "I2C1 SCL / rework D5"),
+                   ("55", "SD CLK / rework D6"), ("56", "SD CMD / rework D7")):
         px, py, d = s.pin_pos(upins, n, MX, MY, 0)
-        s.note(txt, px + 12.7, py - 0.635)
-    px, py, d = s.pin_pos(upins, "49", MX, MY, 0)
-    s.note("microSD D0 (rework: FT232H_WRITE_INVERTED)", px - 58.42, py - 0.635)
+        sg = 1 if d == 0 else -1
+        s.wire(px, py, px + sg * 30.48, py)
+        s.net_at(f"GPIO{RWPIN[n]}", px + sg * 30.48, py, d)
+        s.intended[("U401", n)] = f"GPIO{RWPIN[n]}"
+        s.note(txt, px + 43.18 if d == 0 else px - 62.23, py - 0.635)
 
     top = MY - 55.88                                          # top pin ends
     Y1 = top - 5.08
@@ -332,10 +337,10 @@ def build(path):
     # ================= FT1248 rework links =================
     s.rect(12.7, 195.58, 154.94, 300.99)
     heading(s, "FT1248 rework links", 20.32, 203.2,
-            "Fitted 0R: GPIO 36-40 -> I2C / microSD (normal). Unfitted 0R: the\n"
-            "same GPIO -> FT232H pins 17-20, 27. Moving the links trades I2C +\n"
-            "microSD for 8-bit FT1248 (36-39) or 245-FIFO mode (36-40).")
-    for i, (n, (fit, dnp, ftpin)) in enumerate(sorted(REWORK.items())):
+            "Fitted 0R: GPIO 42-45 and 34 -> I2C / microSD (normal). Unfitted 0R:\n"
+            "the same GPIO -> FT232H pins 17-20, 27. Moving the links trades I2C +\n"
+            "microSD for 8-bit FT1248 (42-45) or 245-FIFO mode (42-45 and 34).")
+    for i, (n, (fit, dnp, ftpin)) in enumerate(REWORK.items()):
         x, y = 40.64 + (i % 2) * 58.42, 233.68 + (i // 2) * 22.86
         s.net_at(f"GPIO{n}", x - 7.62, y, 180)
         s.wire(x - 7.62, y, x - 2.54, y)

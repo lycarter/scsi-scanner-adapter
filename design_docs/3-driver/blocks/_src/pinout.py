@@ -37,16 +37,18 @@ for k, s in enumerate(DB):
 GPIO.update({
     27: ('ATN gate', 'PIO0 out+9'), 28: ('BSY gate', 'CPU'), 29: ('ACK gate', 'PIO0 side-set'),
     30: ('RST gate', 'CPU only'), 31: ('SEL gate', 'CPU'),
-    32: ('FT MIOSIO0', 'PIO1; FIFO D0'), 33: ('FT MIOSIO1', 'PIO1; FIFO D1'),
-    34: ('FT MIOSIO2', 'PIO1; FIFO D2'), 35: ('FT MIOSIO3', 'PIO1; FIFO D3'),
+    # GPIO 32-46 order from the crossing-count solver (../tools/ft1248_pinsolve.py, 2026-09-27).
+    32: ('LA marker 1', 'CPU'), 33: ('LA marker 0', 'CPU'),
     # Fallback (NOTES "FT1248 fallback plan"): move the 0R links and these pins become FT232H
     # FIFO / 8-bit FT1248 lines. FT pin numbers are FT232H package pins (DS v2.0).
-    36: ('I2C0 SDA', '0R >> FIFO D4 (FT 17)'), 37: ('I2C0 SCL', '0R >> FIFO D5 (FT 18)'),
-    38: ('SD CLK', '0R >> FIFO D6 (FT 19)'), 39: ('SD CMD', '0R >> FIFO D7 (FT 20)'),
-    40: ('SD D0', '0R >> FIFO WR# (FT 27)'),
-    41: ('FT SCLK', 'PIO1; FIFO RXF#'), 42: ('FT SS_n', 'PIO1; FIFO TXE#'),
-    43: ('FT MISO', 'PIO1; FIFO RD#'),
-    44: ('LA marker 0', 'CPU'), 45: ('LA marker 1', 'CPU'), 46: ('TERMPWR ADC', 'ADC6, 100k/100k'),
+    34: ('SD D0', '0R >> FIFO WR# (FT 27)'),
+    35: ('FT MISO', 'PIO1; FIFO RD#'), 36: ('FT SS_n', 'PIO1; FIFO TXE#'),
+    37: ('FT SCLK', 'PIO1; FIFO RXF#'),
+    38: ('FT MIOSIO0', 'PIO1; FIFO D0'), 39: ('FT MIOSIO1', 'PIO1; FIFO D1'),
+    40: ('FT MIOSIO2', 'PIO1; FIFO D2'), 41: ('FT MIOSIO3', 'PIO1; FIFO D3'),
+    42: ('I2C1 SDA', '0R >> FIFO D4 (FT 17)'), 43: ('I2C1 SCL', '0R >> FIFO D5 (FT 18)'),
+    44: ('SD CLK', '0R >> FIFO D6 (FT 19)'), 45: ('SD CMD', '0R >> FIFO D7 (FT 20)'),
+    46: ('TERMPWR ADC', 'ADC6, 100k/100k'),
     47: ('PSRAM CS1', 'QMI, 3.3k up'),
 })
 OTHER = {

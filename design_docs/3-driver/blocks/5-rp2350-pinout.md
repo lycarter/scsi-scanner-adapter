@@ -1,6 +1,6 @@
 # Block diagram 5: RP2350B pin map
 
-Status: **accepted 2026-09-25.** Physical pins from the RP2350 datasheet
+Status: **accepted 2026-09-25; GPIO 32–46 reordered 2026-09-27.** Physical pins from the RP2350 datasheet
 §1.2.1, Figure 3 (QFN-80, top view). Reasoning: `../NOTES.md` (GPIO budget, SCSI drivers and
 receivers). Source: `_src/pinout.py`.
 
@@ -20,23 +20,23 @@ core reg (33R+4u7)     ----------------------- VREG_AVDD 61 / \ 60 IOVDD -------
 core reg GND           ---------------------- VREG_PGND 62 /   \ 59 ADC_AVDD ---------------------- 3.3 V
 core reg L             ----------------------- VREG_LX 63 /     \ 58 GPIO47_ADC7 ------------------ PSRAM CS1   QMI, 3.3k up
 core reg 3.3 V in      --------------------- VREG_VIN 64 /       \ 57 GPIO46_ADC6 ----------------- TERMPWR ADC ADC6, 100k/100k
-core reg -> DVDD       --------------------- VREG_FB 65 /         \ 56 GPIO45_ADC5 ---------------- LA marker 1 CPU
-hub port 2 D-          --------------------- USB_DM 66 /           \ 55 GPIO44_ADC4 --------------- LA marker 0 CPU
-hub port 2 D+          -------------------- USB_DP 67 /             \ 54 GPIO43_ADC3 -------------- FT MISO     PIO1; FIFO RD#
-3.3 V                  -------------- USB_OTP_VDD 68 /               \ 53 GPIO42_ADC2 ------------- FT SS_n     PIO1; FIFO TXE#
-3.3 V                  -------------- QSPI_IOVDD 69 /                 \ 52 GPIO41_ADC1 ------------ FT SCLK     PIO1; FIFO RXF#
+core reg -> DVDD       --------------------- VREG_FB 65 /         \ 56 GPIO45_ADC5 ---------------- SD CMD      0R >> FIFO D7 (FT 20)
+hub port 2 D-          --------------------- USB_DM 66 /           \ 55 GPIO44_ADC4 --------------- SD CLK      0R >> FIFO D6 (FT 19)
+hub port 2 D+          -------------------- USB_DP 67 /             \ 54 GPIO43_ADC3 -------------- I2C1 SCL    0R >> FIFO D5 (FT 18)
+3.3 V                  -------------- USB_OTP_VDD 68 /               \ 53 GPIO42_ADC2 ------------- I2C1 SDA    0R >> FIFO D4 (FT 17)
+3.3 V                  -------------- QSPI_IOVDD 69 /                 \ 52 GPIO41_ADC1 ------------ FT MIOSIO3  PIO1; FIFO D3
 flash + PSRAM          --------------- QSPI_SD3 70 /                   \ 51 DVDD ------------------ 1.1 V core
 flash + PSRAM          ------------- QSPI_SCLK 71 /                     \ 50 IOVDD ---------------- 3.3 V
-flash + PSRAM          ------------- QSPI_SD0 72 /                       \ 49 GPIO40_ADC0 --------- SD D0       0R >> FIFO WR# (FT 27)
-flash + PSRAM          ------------ QSPI_SD2 73 /                         \ 48 GPIO39 ------------- SD CMD      0R >> FIFO D7 (FT 20)
-flash + PSRAM          ----------- QSPI_SD1 74 /                           \ 47 GPIO38 ------------ SD CLK      0R >> FIFO D6 (FT 19)
-flash CS, BOOTSEL      ----------- QSPI_SS 75 /                             \ 46 GPIO37 ----------- I2C0 SCL    0R >> FIFO D5 (FT 18)
-3.3 V                  ------------ IOVDD 76 /                               \ 45 GPIO36 ---------- I2C0 SDA    0R >> FIFO D4 (FT 17)
-DB0 in      PIO0 in+0  ----------- GPIO0 77 /             RP2350B             \ 44 GPIO35 --------- FT MIOSIO3  PIO1; FIFO D3
-DB1 in      PIO0 in+1  ---------- GPIO1 78 /         QFN-80, top view          \ 43 GPIO34 -------- FT MIOSIO2  PIO1; FIFO D2
-DB2 in      PIO0 in+2  --------- GPIO2 79 /                                     \ 42 GPIO33 ------- FT MIOSIO1  PIO1; FIFO D1
+flash + PSRAM          ------------- QSPI_SD0 72 /                       \ 49 GPIO40_ADC0 --------- FT MIOSIO2  PIO1; FIFO D2
+flash + PSRAM          ------------ QSPI_SD2 73 /                         \ 48 GPIO39 ------------- FT MIOSIO1  PIO1; FIFO D1
+flash + PSRAM          ----------- QSPI_SD1 74 /                           \ 47 GPIO38 ------------ FT MIOSIO0  PIO1; FIFO D0
+flash CS, BOOTSEL      ----------- QSPI_SS 75 /                             \ 46 GPIO37 ----------- FT SCLK     PIO1; FIFO RXF#
+3.3 V                  ------------ IOVDD 76 /                               \ 45 GPIO36 ---------- FT SS_n     PIO1; FIFO TXE#
+DB0 in      PIO0 in+0  ----------- GPIO0 77 /             RP2350B             \ 44 GPIO35 --------- FT MISO     PIO1; FIFO RD#
+DB1 in      PIO0 in+1  ---------- GPIO1 78 /         QFN-80, top view          \ 43 GPIO34 -------- SD D0       0R >> FIFO WR# (FT 27)
+DB2 in      PIO0 in+2  --------- GPIO2 79 /                                     \ 42 GPIO33 ------- LA marker 0 CPU
 DB3 in      PIO0 in+3  -------- GPIO3 80 /          rotated 45 deg CCW:          \ 41 IOVDD ------- 3.3 V
-DB4 in      PIO0 in+4  -------- GPIO4  1 \ *         package top edge            / 40 GPIO32 ------ FT MIOSIO0  PIO1; FIFO D0
+DB4 in      PIO0 in+4  -------- GPIO4  1 \ *         package top edge            / 40 GPIO32 ------ LA marker 1 CPU
 DB5 in      PIO0 in+5  --------- GPIO5  2 \          faces upper-left           / 39 GPIO31 ------- SEL gate    CPU
 DB6 in      PIO0 in+6  ---------- GPIO6  3 \                                   / 38 GPIO30 -------- RST gate    CPU only
 DB7 in      PIO0 in+7  ----------- GPIO7  4 \            * = pin 1            / 37 GPIO29 --------- ACK gate    PIO0 side-set
@@ -100,23 +100,23 @@ DB2 gate    PIO0 out+2 -------------------------- GPIO20 20 \ / 21 GPIO21 ------
 - pin 37 GPIO29: ACK gate PIO0 side-set
 - pin 38 GPIO30: RST gate CPU only
 - pin 39 GPIO31: SEL gate CPU
-- pin 40 GPIO32: FT MIOSIO0 PIO1; FIFO D0
+- pin 40 GPIO32: LA marker 1 CPU
 - pin 41 IOVDD: 3.3 V
-- pin 42 GPIO33: FT MIOSIO1 PIO1; FIFO D1
-- pin 43 GPIO34: FT MIOSIO2 PIO1; FIFO D2
-- pin 44 GPIO35: FT MIOSIO3 PIO1; FIFO D3
-- pin 45 GPIO36: I2C0 SDA 0R >> FIFO D4 (FT 17)
-- pin 46 GPIO37: I2C0 SCL 0R >> FIFO D5 (FT 18)
-- pin 47 GPIO38: SD CLK 0R >> FIFO D6 (FT 19)
-- pin 48 GPIO39: SD CMD 0R >> FIFO D7 (FT 20)
-- pin 49 GPIO40_ADC0: SD D0 0R >> FIFO WR# (FT 27)
+- pin 42 GPIO33: LA marker 0 CPU
+- pin 43 GPIO34: SD D0 0R >> FIFO WR# (FT 27)
+- pin 44 GPIO35: FT MISO PIO1; FIFO RD#
+- pin 45 GPIO36: FT SS_n PIO1; FIFO TXE#
+- pin 46 GPIO37: FT SCLK PIO1; FIFO RXF#
+- pin 47 GPIO38: FT MIOSIO0 PIO1; FIFO D0
+- pin 48 GPIO39: FT MIOSIO1 PIO1; FIFO D1
+- pin 49 GPIO40_ADC0: FT MIOSIO2 PIO1; FIFO D2
 - pin 50 IOVDD: 3.3 V
 - pin 51 DVDD: 1.1 V core
-- pin 52 GPIO41_ADC1: FT SCLK PIO1; FIFO RXF#
-- pin 53 GPIO42_ADC2: FT SS_n PIO1; FIFO TXE#
-- pin 54 GPIO43_ADC3: FT MISO PIO1; FIFO RD#
-- pin 55 GPIO44_ADC4: LA marker 0 CPU
-- pin 56 GPIO45_ADC5: LA marker 1 CPU
+- pin 52 GPIO41_ADC1: FT MIOSIO3 PIO1; FIFO D3
+- pin 53 GPIO42_ADC2: I2C1 SDA 0R >> FIFO D4 (FT 17)
+- pin 54 GPIO43_ADC3: I2C1 SCL 0R >> FIFO D5 (FT 18)
+- pin 55 GPIO44_ADC4: SD CLK 0R >> FIFO D6 (FT 19)
+- pin 56 GPIO45_ADC5: SD CMD 0R >> FIFO D7 (FT 20)
 - pin 57 GPIO46_ADC6: TERMPWR ADC ADC6, 100k/100k
 - pin 58 GPIO47_ADC7: PSRAM CS1 QMI, 3.3k up
 - pin 59 ADC_AVDD: 3.3 V
@@ -178,10 +178,14 @@ DB2 gate    PIO0 out+2 -------------------------- GPIO20 20 \ / 21 GPIO21 ------
       sit beyond the SWD and RUN pins.
 - **Everything else, GPIO 32–47**, on the right edge, facing the FT232H, the hub and the SD
   card:
-  - FT1248: MIOSIO0–3 on 32–35; SCLK, SS_n and MISO on 41–43 (PIO1, base 16).
-  - I²C0 on 36/37.
-  - SD CLK, CMD and D0 on 38–40 (PIO2, base 16).
-  - LA markers on 44/45.
+  - **Order chosen by a crossing-count solver (2026-09-27)**, `../tools/ft1248_pinsolve.py`;
+    reasoning in `../NOTES.md`, "GPIO 32–46 order". Along the package edge the nets now fan out in the
+    FT232H's own pin order, except MIOSIO0–3, which must cross (see there).
+  - LA markers on 32/33 (marker 1 on 32), on the corner nearest the LA header.
+  - FT1248 (PIO1, base 16): MISO 35, SS_n 36, SCLK 37 (SS_n + SCLK adjacent for a 2-pin side-set),
+    MIOSIO0–3 on 38–41.
+  - I²C**1** on 42/43 (SDA 42, SCL 43; I²C0 can't sit there: its SDA is on GPIO 4k).
+  - SD CLK 44, CMD 45, D0 34 (PIO2, base 16; 1-bit SDIO needs no consecutive group).
   - **TERMPWR sense on 46 (ADC6)**, through 100 k / 100 k with 100 nF at the pin (design
     review R066; it was the spare). Firmware keeps the pad's digital input off (ADC use).
   - PSRAM CS1 on 47, next to the QSPI pins, with a **3.3 kΩ** pull-up.
@@ -193,28 +197,28 @@ DB2 gate    PIO0 out+2 -------------------------- GPIO20 20 \ / 21 GPIO21 ------
   over; the `FT nn` in each label is the FT232H package pin its unfitted link comes from.
   Pins marked `; FIFO …` keep their wiring and only change role, through the FT232H EEPROM
   mode setting and firmware:
-  - 32–35: MIOSIO0–3 become FIFO D0–3.
-  - 41: SCLK becomes RXF#, an FT232H output, so the GPIO becomes an input.
-  - 42: SS_n becomes TXE#, also an FT232H output read by the GPIO.
-  - 43: MISO becomes RD#, which the GPIO now drives.
-  - 8-bit FT1248: GPIO 36–39 become MIOSIO4–7.
-  - 245 FIFO: WR# goes to GPIO 40. SIWU# (FT232H pin 28) is tied high with a 10 kΩ pull-up to
+  - 38–41: MIOSIO0–3 become FIFO D0–3.
+  - 37: SCLK becomes RXF#, an FT232H output, so the GPIO becomes an input.
+  - 36: SS_n becomes TXE#, also an FT232H output read by the GPIO.
+  - 35: MISO becomes RD#, which the GPIO now drives.
+  - 8-bit FT1248: GPIO 42–45 become MIOSIO4–7, so D0–D7 are GPIO 38–45.
+  - 245 FIFO: WR# goes to GPIO 34, next to RD# on 35 (one 2-pin side-set or `set` group). SIWU# (FT232H pin 28) is tied high with a 10 kΩ pull-up to
     the FT232H's VCCIO (no GPIO: GPIO 46 now senses TERMPWR); the host latency timer or the
     flush command sends short packets instead. WR# (pin 27) also gets a 10 kΩ pull-up so it
     idles during the swap.
-  - How: GPIO 36–40 reach their I²C/SD nets through **fitted 0 Ω links**, and FT232H pins
-    17–20 and 27 have **unfitted 0 Ω links** to GPIO 36–40. Moving resistors does the swap.
+  - How: GPIO 42–45 and 34 reach their I²C/SD nets through **fitted 0 Ω links**, and FT232H pins
+    17–20 and 27 have **unfitted 0 Ω links** to the same GPIOs. Moving resistors does the swap.
   - The swap, pin by pin:
 
     | GPIO | Normal (fitted 0 Ω) | After the swap (bridge the unfitted 0 Ω) | Lost |
     |---|---|---|---|
-    | 36 | I²C0 SDA | FT232H pin 17: FIFO D4 / MIOSIO4 | I²C expander (LEDs, card detect, fault flags, resets) |
-    | 37 | I²C0 SCL | FT232H pin 18: FIFO D5 / MIOSIO5 | ″ |
-    | 38 | SD CLK | FT232H pin 19: FIFO D6 / MIOSIO6 | microSD |
-    | 39 | SD CMD | FT232H pin 20: FIFO D7 / MIOSIO7 | ″ |
-    | 40 | SD D0 | FT232H pin 27: FIFO WR# (FIFO mode only) | ″ |
+    | 42 | I²C1 SDA | FT232H pin 17: FIFO D4 / MIOSIO4 | I²C expander (LEDs, card detect, fault flags, resets) |
+    | 43 | I²C1 SCL | FT232H pin 18: FIFO D5 / MIOSIO5 | ″ |
+    | 44 | SD CLK | FT232H pin 19: FIFO D6 / MIOSIO6 | microSD |
+    | 45 | SD CMD | FT232H pin 20: FIFO D7 / MIOSIO7 | ″ |
+    | 34 | SD D0 | FT232H pin 27: FIFO WR# (FIFO mode only) | ″ |
 
-    8-bit FT1248 needs only the 36–39 swaps. FIFO mode needs 36–40. (GPIO 46 used to offer an
+    8-bit FT1248 needs only the 42–45 swaps. FIFO mode also needs 34. (GPIO 46 used to offer an
     optional SIWU# link; it's the TERMPWR ADC input since 2026-09-26.)
 - **Firmware rule (RP2350-E9):**
   - Never leave a gate pin as an input with its input buffer on; clear the input enable on all 14.
@@ -236,8 +240,8 @@ package). Part decision: `../NOTES.md`, "GPIO budget" (TCA9555PWR, C465732). Sou
 
                                                 +-------U-------+
 test point (firmware polls)                  -- |  1 INT VCC 24 | -- 3.3 V, 100 nF
-GND (addr 0x20)                              -- |  2 A1  SDA 23 | -- GPIO 36 (I2C0), 4.7k up
-GND                                          -- |  3 A2  SCL 22 | -- GPIO 37 (I2C0), 4.7k up
+GND (addr 0x20)                              -- |  2 A1  SDA 23 | -- GPIO 42 (I2C1), 4.7k up
+GND                                          -- |  3 A2  SCL 22 | -- GPIO 43 (I2C1), 4.7k up
 in: SD_CARD_DETECT (socket switch)           -- |  4 P00  A0 21 | -- GND
 in: TERMPWR_EN_INVERTED (enable node)        -- |  5 P01 P17 20 | -- spare, test pad
 in: IS_BENCH_POWERED (TPS2116 ST, 1 = bench) -- |  6 P02 P16 19 | -- spare, test pad
@@ -273,14 +277,14 @@ GND                                          -- | 12 GND P10 13 | -- out: LED_ST
 - pin 19 P16: spare, test pad
 - pin 20 P17: spare, test pad
 - pin 21 A0: GND
-- pin 22 SCL: GPIO 37 (I2C0), 4.7k up
-- pin 23 SDA: GPIO 36 (I2C0), 4.7k up
+- pin 22 SCL: GPIO 43 (I2C1), 4.7k up
+- pin 23 SDA: GPIO 42 (I2C1), 4.7k up
 - pin 24 VCC: 3.3 V, 100 nF
 
 </details>
 <!-- END generated -->
 
-- **Address 0x20** (A0–A2 to GND). The bus is I²C0 on GPIO 36/37, with 4.7 kΩ pull-ups to
+- **Address 0x20** (A0–A2 to GND). The bus is I²C1 on GPIO 42/43, with 4.7 kΩ pull-ups to
   3.3 V. That bus is lost in the FT1248/FIFO fallback, along with everything below.
 - **Port 0 = inputs (status), port 1 = outputs.** That's our convention, not a hardware limit:
   every P pin has its own direction bit (configuration register; 1 = input, the power-up

@@ -580,7 +580,7 @@ pins. That's enough for either:
 Layout rules that keep this a bodge job, not a respin:
 - **Pin order:** MIOSIO0–3 on GPIO *n*…*n*+3, and the SDIO and I²C pins on *n*+4…*n*+7, so
   after rework they become MIOSIO4–7 / D4–D7 on consecutive GPIOs (PIO `in`/`out` needs that).
-  Keep all of them inside PIO1's window (GPIO 16–47).
+  Keep all of them inside PIO1's window (GPIO 16–47). (Now *n* = 38; see "GPIO 32–46 order".)
 - Route FT232H pins 17–20 and 27 to DNP 0 Ω links toward those GPIOs. Pins 27 (WR#) and 28
   (SIWU#) each get a 10 kΩ pull-up to the FT232H VCCIO, so they're never floating.
 - Losing the expander loses the LEDs, card detect, fault flags and PWR_SRC readback (TERMPWR
@@ -624,20 +624,20 @@ The diagram with every package pin is `blocks/5-rp2350-pinout.md`. The reasoning
   - Rejected: an all-PIO "control" SM. It's atomic, but two SMs writing overlapping pins
     need ownership handoffs ("last writer wins"), and it costs slots we may want for sync
     transfers.
-- **Everything else on GPIO 32–47:**
-  - FT1248 on 32–35 and 41–43 (PIO1, base 16).
-  - I²C0 on 36/37.
-  - SD CLK, CMD and D0 on 38–40 (PIO2, base 16).
-  - LA markers on 44/45.
+- **Everything else on GPIO 32–47** (reordered 2026-09-27; see "GPIO 32–46 order" below):
+  - LA markers on 32/33 (marker 1 on 32).
+  - FT1248 (PIO1, base 16): MISO 35, SS_n 36, SCLK 37, MIOSIO0–3 on 38–41.
+  - I²C1 on 42/43.
+  - SD CLK 44, CMD 45, D0 34 (PIO2, base 16).
   - **TERMPWR sense on 46 (ADC6)**, through 100 k / 100 k with 100 nF (2026-09-26, R066; it
     was the spare). 0–5.6 V reads as 0–2.8 V. Accuracy is the ADC reference's (ADC_AVDD = the
     3.3 V rail, ±3 %), so calibrate against a measured rail at bring-up for the 4.25 V warning.
   - PSRAM CS1 on 47 (3.3 kΩ pull-up).
   - 33 Ω series resistors on the 7 FT1248 nets at the RP2350 end (R021).
 - **FT1248 fallback links (accepted):**
-  - Fitted 0 Ω from GPIO 36–40 to their I²C/SD nets.
-  - Unfitted 0 Ω from FT232H pins 17–20 and 27 to GPIO 36–40 (pin 28, SIWU#, is pulled up
-    instead; 46 is the TERMPWR ADC).
+  - Fitted 0 Ω from GPIO 42–45 and 34 to their I²C/SD nets.
+  - Unfitted 0 Ω from FT232H pins 17–20 to GPIO 42–45 and from pin 27 to GPIO 34 (pin 28,
+    SIWU#, is pulled up instead; 46 is the TERMPWR ADC).
   - That's 10 × C17168. The swap table is on page 5.
 - **RP2350-E9 (datasheet erratum):** a Bank 0 pad set as an input (input buffer on, output
   off) at a mid-level voltage sources about 120 µA and floats to about 2.2 V. Only a pull of
@@ -707,6 +707,50 @@ phase:
 - Resources: PIO0 ≈ 5 + 9 + 2 × 3 + 6 = 26 of 32 slots (initiator and listen programs can also
   be swapped). PIO1 (FT1248 4-bit master) ≈ 26–30 slots, PIO2 (1-bit SDIO) ≈ 20–26. DMA and
   IRQs fit (design review R106, R107).
+
+### GPIO 32–46 order (2026-09-27): set by a crossing-count solver
+
+The first pin map (2026-09-25) put the GPIO 32–47 functions in a sensible *list* order. Once the
+board floorplan was known, the owner saw that the FT232H nets would weave on the way out of the
+RP2350B. The order is now chosen by `tools/ft1248_pinsolve.py`, which states the rules as
+constraints and searches every legal assignment.
+
+- **Model:** each net is a taut string (a shortest path around the RP2350B and FT232H bodies) from
+  just outside its RP2350B pad to each pad it reaches. Two strings that cross cost the smaller of
+  their two weights, because the cheaper net takes the via pair. Weights: FT1248 3, SD 2, and 1 for
+  I²C, the LA markers and the DNP rework copper (it's real copper, so it has to route too).
+  TERMPWR_SENSE is 0.25: its divider sits at the pin and the TERMPWR feed can come from anywhere.
+  Wire length is a small tie-breaker.
+- **Hard constraints:** PSRAM CS1 on 47 (the only QMI CS1n in 32–47; datasheet §1.2 function table,
+  p. 19–20). TERMPWR_SENSE on an ADC pin (40–46). MIOSIO0–3 on *n*…*n*+3 and four of {SDA, SCL,
+  SD CLK, CMD, D0} on *n*+4…*n*+7, in bit order; the fifth takes the WR# link. I²C SDA/SCL on a
+  legal hardware pair: I²C0 SDA on GPIO 4k and SCL on 4k+1, or I²C1 on 4k+2/4k+3 (function table
+  p. 19–20).
+  **Soft constraint:** SS_n and SCLK adjacent, for the 2-pin side-set in design review R106.
+- **Placement assumed:** the FT232H is rotated so that pins 13–24 face the RP2350B (KiCad 90°:
+  13–24 on its east side, 25–28 on its north side), with the microSD and LA header where the board
+  has them now. **Owner, 2026-09-27:** the FT232H will face the RP2350B. The answer came out the
+  same for three FT232H positions and three expander positions.
+- **Result:** LA1 32, LA0 33, SD D0 34 (WR# link), MISO 35, SS_n 36, SCLK 37, MIOSIO0–3 38–41,
+  I²C1 SDA/SCL 42/43, SD CLK/CMD 44/45 (D4–D7 links), TERMPWR 46, PSRAM 47. Crossings among the
+  7 FT1248 nets drop from about 21 to 6, and all crossings from 145 to 91 (averaged over the
+  placements). In the 245-FIFO fallback, RD# (35) and WR# (34) end up adjacent too.
+- **Why 6 crossings remain (a topology fact, not a solver limit):** both packages number their
+  pins counter-clockwise (top view). A crossing-free bundle between two facing chips maps one
+  chip's counter-clockwise order onto the other's clockwise order. With MIOSIO *k* on GPIO *n*+*k*,
+  both chips run the bus the same way round, so MIOSIO0–3 cross each other completely (6 pairs; 28
+  across D0–D7 with the rework links) wherever the chips sit. Only reversing the bit order (MIOSIO
+  *k* on GPIO *n*+7−*k*) removes that. It scored 39 against 117 for forward order.
+  **Owner, 2026-09-27: keep forward order.** Reversed order would cost firmware (PIO
+  `mov ::` bit-reverse plus manual push/pull, in a PIO1 already at 26–30 of 32 slots, or a host-side
+  lookup table and pre-reversed FT1248 commands). The layout routes the 6 crossings with vias.
+- **What remains beyond that:** the rework GPIOs fork both west (FT232H D4–D7, WR#) and north
+  (microSD) or toward the expander. So the SD and I²C nets cross the FT bundle whatever the order.
+  They are slower than FT1248, so they take the vias.
+- **Firmware changes:** I²C moves from I²C0 to **I²C1**. The PIO1 pin bases are OUT/IN_BASE 38,
+  side-set base 36 (SS_n = bit 0, SCLK = bit 1), JMP_PIN 35. PIO2's SD pins: CLK 44, CMD 45, D0 34.
+- Rerun the solver if the FT232H, microSD, LA header or expander move a lot. It reads pad positions
+  from `pcb/scsi-adapter.kicad_pcb`.
 
 ### Firmware rules from the design review (2026-09-26)
 
@@ -1734,3 +1778,4 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
   - **Owner decision: C402/C403 use Raspberry Pi's wide 0402** (`C_0402_1005Metric_Wide`: 0.47 × 0.55 pads at ±0.515, 0.56 gap vs KiCad's 0.42) because the VREG_LX pour runs a 0.3 mm leg between their pads to pin 63; **L401 takes Raspberry Pi's land** (0.70 × 1.70 at ±0.70; Abracon's was 1.00 × 1.60 at ±1.00). Both are generated in `footprints.py` with the source cited.
   - DRC inside the outline: 0 errors other than silkscreen (reference labels overlap in the packed block; for the silkscreen pass). Remaining unconnected: the GPIO fan-out (owner), USB_RP_D± to the hub, and the parts not yet placed.
   - **Next:** PSRAM (U403, C422, C423, R403), the FT1248 series resistors and rework links, TERMPWR sense parts, TC2030 and buttons; then the hub and USB-C; then the FT232H.
+- 2026-09-27: **GPIO 32–46 reordered** to cut FT1248 track crossings (see "GPIO 32–46 order"): LA 32/33, SD D0 34, MISO/SS_n/SCLK 35–37, MIOSIO0–3 38–41, I²C1 42/43, SD CLK/CMD 44/45; TERMPWR 46 and PSRAM 47 unchanged. Forward bit order kept (owner). The FT232H will be rotated to face the RP2350B (owner). Series-resistor and rework-link references keep their functions (R407 = MIOSIO0 … R426/R427 = SD D0/WR#). The PCB needs Update from Schematic (F8) for the new pad nets.
