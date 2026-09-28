@@ -1558,6 +1558,11 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
 15. **Pre-order checks (must be done before the JLC order).** J601 closed 2026-09-27 (below); only the SW401/402 routing rule remains, and it's a layout rule. Small layout fixes, so they don't block the
     current work:
     - **SW401/SW402:** route each switch through diagonally opposite legs (see the 2026-09-27 log entry).
+    - **L3 split vs L4 signals (owner, 2026-09-28):** L3 is +3V3 except for a +5V_SYS pour on the west
+      12 mm (x ≤ 112) and a TERMPWR pour in the south + east-edge L (see the 2026-09-28 log entry). The plan is
+      to route every fast signal on the west side on L1, over solid GND on L2. Check that no fast L4 track crosses
+      the +3V3 / +5V_SYS or +3V3 / TERMPWR boundary, since its return current would have to detour around the split.
+      If one does, reshape the +5V_SYS pour (or move the track) so the signal stays over one plane.
     - ~~**J601 USB-C outer pads**~~ **closed 2026-09-27: keep KiCad's footprint.** The owner's caliper measurements match HRO's drawing (VBUS 4.80 / GND 6.40 c-c) better than KiCad (4.90 / 6.50). Kept anyway: HRO's bottom view puts the legs 0.25 wide (VBUS 4.55–5.05, GND 6.15–6.65), so they sit fully on KiCad's 0.60 pads, 0.05 off-centre; that's within HRO's ±0.05 layout tolerance, and KiCad's layout leaves 0.25 to the CC/SBU pads instead of 0.20 (less bridging risk). Original item: HRO's drawing puts the outer VBUS/GND pads at
       4.80 / 6.40 mm centre-to-centre, and KiCad has 4.90 / 6.50. Check against the connector actually in the kit.
 16. **Follow-up task: LA adapter board (owner, 2026-09-27).** A small 2-layer board: a plain 2x16 male
@@ -1800,3 +1805,8 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
   - Y701 sits just off the FT232H's SW corner, west of pin 1 and below pins 47/48 (GND), at 270°. The crystal's signal pads are diagonal, so one trace has to go around; this orientation splits it evenly. XCSI 4.9 mm: pin 1 → C715 → top-left pad. XCSO 7.3 mm: pin 2 → down the east side → bottom-right pad → C716. Straight below the pins was rejected because it blocks VPHY/AGND/REF on pins 3–5.
   - An F.Cu GND guard pour ("FT232H crystal GND guard", 109.7–113.6 × 65.85–75.3, 0.3 mm clearance) covers the cluster. It ties the crystal's GND pads, both cap grounds and FT232H GND pins 47/48, with 5 vias to L2. A B.Cu rule area of the same size keeps tracks out from under the oscillator; vias are allowed.
   - The remaining FT232H support parts (VPHY/VPLL, REF, decoupling) aren't placed yet. XCSO runs down at x 114.5, so pin 3's parts go at x ≥ 115.
+- 2026-09-28: **L3 split into three power pours** (owner). The west edge takes incoming power and makes 3.3 V, and the SCSI side carries TERMPWR, so L3 serves those rails there:
+  - **+5V_SYS**, x 99.95–112 (west 12 mm), full height. It covers U102/U202's +5V_SYS pads. U601 (hub) pins 15/16 are +3V3 and sit inside it, so their plane via has to go east of x ≈ 112.2.
+  - **TERMPWR**, an L shape: y 105 to the south edge from x 130 east, and up the east edge (x ≥ 208.31) to the NW corner of J302's courtyard (y 46.77). THT pads join it directly: J201 pin 2, J301 pin 26, J302 pin 38.
+  - Both are priority 1 over the full-board priority-0 "L3 +3V3 plane", so they cut it back by the 0.2 mm zone clearance. Either can be resized on its own.
+  - Open question 15 has the check that no fast L4 signal crosses the splits.
