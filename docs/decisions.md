@@ -82,3 +82,4 @@ Status: **proposed** (awaiting owner), **accepted**, **superseded**.
 | 2026-09-27 | 3 | FT1248 DNP rework links (R419/R421/R423/R425/R427) are 0805 (C17477) for hand-soldering; fitted links stay 0402 | accepted |
 | 2026-09-27 | 3 | L2 GND / L3 +3V3 planes extended to the full 120 × 90 mm outline (they stopped at y 50 after the resize) | accepted |
 | 2026-09-28 | 3 | L3 power pours: +5V_SYS on the west 12 mm (power entry) and TERMPWR in a south + east-edge L (from x 130, y 105, and up the east edge to J302), both priority 1 over the +3V3 plane. Fast signals on the west side go on L1; a pre-order check confirms no fast L4 track crosses the splits | accepted |
+| 2026-10-02 | 3 | Track width standard: signals 0.15 mm (Default net class), power 0.3 mm (new `Power` class), narrower only where DRC or a fine-pitch pad forces it; DVDD_1V1 and USB_HS unchanged. Vias 0.6/0.3 mm, except two 0.5/0.3 pairs at 0.6 mm spacing in the RP2350B block | accepted |

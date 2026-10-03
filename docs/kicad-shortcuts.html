@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KiCad PCB Shortcuts</title>
+<style>
+  :root {
+    --bg: #f6f5f1;
+    --panel: #ffffff;
+    --ink: #1d1d1b;
+    --muted: #6b6a64;
+    --line: #e2e0d8;
+    --accent: #b5532a;
+    --accent-soft: #f7e6dc;
+    --key-bg: #fbfaf7;
+    --key-edge: #c9c6bb;
+    --ctx: #2f6f8f;
+    --ctx-soft: #e1eef4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161614;
+      --panel: #1f1f1c;
+      --ink: #ecebe6;
+      --muted: #9b9a92;
+      --line: #34332f;
+      --accent: #e08a5f;
+      --accent-soft: #3a2a21;
+      --key-bg: #2a2a26;
+      --key-edge: #4a4943;
+      --ctx: #7fb6d1;
+      --ctx-soft: #1e2d35;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #161614; --panel: #1f1f1c; --ink: #ecebe6; --muted: #9b9a92; --line: #34332f;
+    --accent: #e08a5f; --accent-soft: #3a2a21; --key-bg: #2a2a26; --key-edge: #4a4943;
+    --ctx: #7fb6d1; --ctx-soft: #1e2d35;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+  header h1 { margin: 0 0 4px; font-size: 24px; letter-spacing: -0.01em; }
+  header p { margin: 0; color: var(--muted); font-size: 13.5px; }
+
+  nav {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin: 20px 0 18px;
+    position: sticky; top: 0; z-index: 2;
+    background: var(--bg); padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  nav button {
+    font: inherit; font-size: 14px;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+    padding: 6px 12px; border-radius: 999px; cursor: pointer;
+  }
+  nav button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  nav .spacer { flex: 1; }
+  nav input {
+    font: inherit; font-size: 14px; min-width: 0; width: 180px;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+    padding: 6px 12px; border-radius: 999px;
+  }
+
+  section.page { display: none; }
+  section.page.active { display: block; }
+  body.searching section.page { display: block; }
+  body.searching .flow, body.searching .page-intro { display: none; }
+
+  .page-intro { color: var(--muted); margin: 0 0 14px; max-width: 70ch; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px 16px 10px;
+  }
+  .card.hero { border-color: var(--accent); }
+  .card h3 { margin: 0 0 8px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .card h3 .tag {
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--ctx); background: var(--ctx-soft); padding: 2px 7px; border-radius: 4px;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 5px 0; vertical-align: top; border-top: 1px solid var(--line); }
+  tr:first-child td { border-top: 0; }
+  td.k { width: 1%; white-space: nowrap; padding-right: 14px; }
+  td.d small { display: block; color: var(--muted); font-size: 12.5px; }
+  tr.hide { display: none; }
+  .card.hide { display: none; }
+
+  kbd {
+    display: inline-block; min-width: 1.7em; text-align: center;
+    font: 600 12.5px/1 ui-monospace, "SF Mono", Menlo, monospace;
+    padding: 4px 6px; margin: 0 1px;
+    background: var(--key-bg); color: var(--ink);
+    border: 1px solid var(--key-edge); border-bottom-width: 2px; border-radius: 5px;
+  }
+  .plus { color: var(--muted); font-size: 11px; margin: 0 1px; }
+  .or { color: var(--muted); font-size: 12px; margin: 0 4px; }
+  .unbound { color: var(--muted); font-style: italic; font-size: 13px; }
+
+  .flow {
+    background: var(--accent-soft); border-radius: 10px; padding: 14px 16px; margin-bottom: 14px;
+  }
+  .flow h2 { margin: 0 0 10px; font-size: 15px; }
+  .flow ol { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+  .flow li {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px;
+    font-size: 13.5px;
+  }
+  .flow li::after { content: "→"; color: var(--muted); margin-left: 4px; }
+  .flow li:last-child::after { content: ""; }
+
+  .note {
+    margin-top: 18px; font-size: 13px; color: var(--muted);
+    border-top: 1px solid var(--line); padding-top: 12px;
+  }
+  .note code { font-size: 12.5px; }
+
+  @media print {
+    nav { display: none; }
+    section.page { display: block !important; break-before: page; }
+    section.page:first-of-type { break-before: auto; }
+    .card { break-inside: avoid; }
+    body { background: #fff; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>KiCad 9 PCB Editor shortcuts</h1>
+    <p>Taken from your own <code>~/Library/Preferences/kicad/9.0/user.hotkeys</code> (macOS, so Ctrl is <kbd>⌘</kbd>). The full list in KiCad is <kbd>⌘</kbd><span class="plus">+</span><kbd>F1</kbd>.</p>
+  </header>
+
+  <nav role="tablist">
+    <button role="tab" data-page="routing" aria-selected="true">Routing</button>
+    <button role="tab" data-page="tune">Length tuning</button>
+    <button role="tab" data-page="select">Select &amp; edit</button>
+    <button role="tab" data-page="layers">Layers &amp; view</button>
+    <button role="tab" data-page="place">Place &amp; zones</button>
+    <button role="tab" data-page="bind">Worth binding</button>
+    <span class="spacer"></span>
+    <input id="q" type="search" placeholder="Filter… (e.g. via)" aria-label="Filter shortcuts">
+  </nav>
+
+  <!-- ROUTING -->
+  <section class="page active" id="routing">
+    <div class="flow">
+      <h2>A typical trace</h2>
+      <ol>
+        <li><kbd>X</kbd> start</li>
+        <li>click pad</li>
+        <li><kbd>W</kbd> width</li>
+        <li><kbd>/</kbd> flip the corner</li>
+        <li>click to commit</li>
+        <li><kbd>V</kbd> via, change layer</li>
+        <li><kbd>F</kbd> auto-finish <span class="or">or</span> click pad</li>
+        <li><kbd>Esc</kbd> exit</li>
+      </ol>
+    </div>
+
+    <div class="grid">
+      <div class="card hero">
+        <h3>Start routing</h3>
+        <table>
+          <tr><td class="k"><kbd>X</kbd></td><td class="d">Route single track</td></tr>
+          <tr><td class="k"><kbd>6</kbd></td><td class="d">Route differential pair<small>Nets must be named as a pair, like <code>FOO_P</code>/<code>FOO_N</code> or <code>FOO+</code>/<code>FOO-</code></small></td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span><kbd>X</kbd></td><td class="d">Route from the selected item</td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span><kbd>E</kbd></td><td class="d">Route from the selected item's other end</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>E</kbd></td><td class="d">Continue routing from the end of a track</td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span><kbd>F</kbd></td><td class="d">Autoroute the selected items<small>A simple point-to-point router, not a full autorouter</small></td></tr>
+        </table>
+      </div>
+
+      <div class="card hero">
+        <h3>While routing <span class="tag">in route</span></h3>
+        <table>
+          <tr><td class="k"><kbd>/</kbd></td><td class="d">Switch posture: 45° first or straight first</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>/</kbd></td><td class="d">Switch corner style: mitred, rounded (arc), or 90°</td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span><kbd>Space</kbd></td><td class="d">Toggle the 45° angle constraint</td></tr>
+          <tr><td class="k"><kbd>⌫</kbd></td><td class="d">Undo the last segment</td></tr>
+          <tr><td class="k"><kbd>F</kbd></td><td class="d">Try to finish the route to the nearest target<small>Outside routing, <kbd>F</kbd> flips the item to the other side</small></td></tr>
+          <tr><td class="k"><kbd>End</kbd></td><td class="d">Finish here (leaves a dangling end)</td></tr>
+          <tr><td class="k"><kbd>Esc</kbd></td><td class="d">Cancel the current trace. Press it again to leave the tool.</td></tr>
+          <tr><td class="k">click <span class="or">/</span> <kbd>⏎</kbd></td><td class="d">Commit the segments up to the cursor</td></tr>
+        </table>
+      </div>
+
+      <div class="card hero">
+        <h3>Vias &amp; layer change <span class="tag">in route</span></h3>
+        <table>
+          <tr><td class="k"><kbd>V</kbd></td><td class="d">Place a through via and switch to the paired layer<small>Not routing: <kbd>V</kbd> swaps the active layer between the pair</small></td></tr>
+          <tr><td class="k"><kbd>&lt;</kbd></td><td class="d">Pick the target layer, then place a via<small>On a US keyboard that's <kbd>⇧</kbd><span class="plus">+</span><kbd>,</kbd>. Use it to reach In1/In2.</small></td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span><kbd>V</kbd></td><td class="d">Cycle the layer-pair presets</td></tr>
+          <tr><td class="k"><kbd>PgUp</kbd> <kbd>PgDn</kbd></td><td class="d">Jump to F.Cu or B.Cu (adds a via while routing)</td></tr>
+          <tr><td class="k"><kbd>+</kbd> <kbd>-</kbd></td><td class="d">Next or previous copper layer</td></tr>
+          <tr><td class="k"><kbd>⌥</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>V</kbd></td><td class="d">Blind/buried via <small>Not used on this 4-layer JLC board</small></td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>V</kbd></td><td class="d">Microvia (in route; otherwise it's Paste)</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Track &amp; via size</h3>
+        <table>
+          <tr><td class="k"><kbd>W</kbd> <kbd>⇧</kbd><span class="plus">+</span><kbd>W</kbd></td><td class="d">Next or previous track width preset<small>Works on selected tracks too. Presets live in Board Setup → Pre-defined Sizes.</small></td></tr>
+          <tr><td class="k"><kbd>'</kbd> <kbd>\</kbd></td><td class="d">Next or previous via size preset</td></tr>
+          <tr><td class="k"><kbd>Q</kbd></td><td class="d">Custom track and via size for this route</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>&lt;</kbd></td><td class="d">Router settings: shove, walkaround, or highlight-collisions mode; optimizer</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Fix existing traces</h3>
+        <table>
+          <tr><td class="k"><kbd>D</kbd></td><td class="d">Drag the segment, keeping 45° (pushes neighbors)</td></tr>
+          <tr><td class="k"><kbd>G</kbd></td><td class="d">Drag at any angle</td></tr>
+          <tr><td class="k"><kbd>U</kbd></td><td class="d">Select the connected copper; press again to grow the selection</td></tr>
+          <tr><td class="k"><kbd>⌫</kbd></td><td class="d">Delete the selected segments</td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span><kbd>Del</kbd></td><td class="d">Delete the whole track (all connected segments)<small>On a Mac laptop <kbd>Del</kbd> is <kbd>fn</kbd><span class="plus">+</span><kbd>⌫</kbd></small></td></tr>
+          <tr><td class="k"><kbd>E</kbd></td><td class="d">Properties: width, layer, net, lock</td></tr>
+          <tr><td class="k"><kbd>L</kbd></td><td class="d">Lock or unlock (the router won't shove locked tracks)</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Find what's left</h3>
+        <table>
+          <tr><td class="k"><kbd>`</kbd></td><td class="d">Highlight the net under the cursor</td></tr>
+          <tr><td class="k"><kbd>⌥</kbd><span class="plus">+</span><kbd>`</kbd></td><td class="d">Toggle the last net highlight</td></tr>
+          <tr><td class="k"><kbd>~</kbd></td><td class="d">Clear the net highlight</td></tr>
+          <tr><td class="k"><kbd>O</kbd></td><td class="d">Select unconnected (from the selected footprint)</td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span><kbd>O</kbd></td><td class="d">Grab the nearest unconnected footprint</td></tr>
+          <tr><td class="k"><kbd>K</kbd></td><td class="d">Toggle track outline or fill display</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- LENGTH TUNING -->
+  <section class="page" id="tune">
+    <p class="page-intro">Meander tuning. Set the target length in the settings dialog (or in a net-class rule), then click the track you want to tune.</p>
+    <div class="grid">
+      <div class="card hero">
+        <h3>Start a tuner</h3>
+        <table>
+          <tr><td class="k"><kbd>7</kbd></td><td class="d">Tune a single track's length</td></tr>
+          <tr><td class="k"><kbd>8</kbd></td><td class="d">Tune a differential pair's length</td></tr>
+          <tr><td class="k"><kbd>9</kbd></td><td class="d">Tune a differential pair's skew (P vs N)</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>L</kbd></td><td class="d">Length-tuning settings (target, tolerance, shape)</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Shape the meander <span class="tag">in tuner</span></h3>
+        <table>
+          <tr><td class="k"><kbd>1</kbd> <kbd>2</kbd></td><td class="d">Increase or decrease meander spacing</td></tr>
+          <tr><td class="k"><kbd>3</kbd> <kbd>4</kbd></td><td class="d">Increase or decrease meander amplitude</td></tr>
+          <tr><td class="k"><kbd>Esc</kbd></td><td class="d">Leave the tuner</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SELECT & EDIT -->
+  <section class="page" id="select">
+    <div class="grid">
+      <div class="card">
+        <h3>Move &amp; transform</h3>
+        <table>
+          <tr><td class="k"><kbd>M</kbd></td><td class="d">Move (ignores connected tracks)</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>M</kbd></td><td class="d">Move the selected items one at a time</td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span><kbd>M</kbd></td><td class="d">Move by an exact offset</td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span><kbd>P</kbd></td><td class="d">Position relative to a reference item</td></tr>
+          <tr><td class="k"><kbd>R</kbd> <kbd>⇧</kbd><span class="plus">+</span><kbd>R</kbd></td><td class="d">Rotate counter-clockwise or clockwise</td></tr>
+          <tr><td class="k"><kbd>F</kbd></td><td class="d">Flip to the other side</td></tr>
+          <tr><td class="k"><kbd>⌥</kbd><span class="plus">+</span><kbd>S</kbd></td><td class="d">Swap the positions of two items</td></tr>
+          <tr><td class="k"><kbd>Tab</kbd></td><td class="d">Skip to the next item during a multi-item move</td></tr>
+          <tr><td class="k"><kbd>Space</kbd></td><td class="d">Reset the relative coordinate origin to the cursor</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Edit</h3>
+        <table>
+          <tr><td class="k"><kbd>E</kbd></td><td class="d">Properties of the selection</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>D</kbd></td><td class="d">Duplicate</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>T</kbd></td><td class="d">Create an array</td></tr>
+          <tr><td class="k"><kbd>L</kbd></td><td class="d">Toggle lock</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>E</kbd></td><td class="d">Open the footprint in the Footprint Editor</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>Z</kbd></td><td class="d">Undo</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>Z</kbd></td><td class="d">Redo</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Select &amp; find</h3>
+        <table>
+          <tr><td class="k"><kbd>U</kbd></td><td class="d">Select the connected copper (press again to grow it)</td></tr>
+          <tr><td class="k"><kbd>T</kbd></td><td class="d">Find a footprint by reference and move it</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>F</kbd></td><td class="d">Find</td></tr>
+          <tr><td class="k"><kbd>F3</kbd> <kbd>⇧</kbd><span class="plus">+</span><kbd>F3</kbd></td><td class="d">Next or previous match</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>G</kbd></td><td class="d">Search panel</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>A</kbd></td><td class="d">Select all</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>A</kbd></td><td class="d">Clear the selection</td></tr>
+          <tr><td class="k"><kbd>F8</kbd></td><td class="d">Update the PCB from the schematic</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAYERS & VIEW -->
+  <section class="page" id="layers">
+    <p class="page-intro">This board stacks F.Cu, In1.Cu, In2.Cu, B.Cu. Nothing jumps straight to an inner layer by default. Use <kbd>+</kbd>/<kbd>-</kbd>, <kbd>&lt;</kbd> while routing, or bind keys (see <em>Worth binding</em>).</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Active layer</h3>
+        <table>
+          <tr><td class="k"><kbd>PgUp</kbd></td><td class="d">F.Cu (top)<small>On a Mac laptop: <kbd>fn</kbd><span class="plus">+</span><kbd>↑</kbd></small></td></tr>
+          <tr><td class="k"><kbd>PgDn</kbd></td><td class="d">B.Cu (bottom)<small><kbd>fn</kbd><span class="plus">+</span><kbd>↓</kbd></small></td></tr>
+          <tr><td class="k"><kbd>+</kbd> <kbd>-</kbd></td><td class="d">Next or previous copper layer</td></tr>
+          <tr><td class="k"><kbd>V</kbd></td><td class="d">Swap between the two layers of the current pair</td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span><kbd>V</kbd></td><td class="d">Cycle the layer-pair presets</td></tr>
+          <tr><td class="k"><kbd>H</kbd></td><td class="d">Cycle how other layers show: normal, dimmed, hidden<small>Hidden is handy when routing inner layers</small></td></tr>
+          <tr><td class="k"><kbd>}</kbd> <kbd>{</kbd></td><td class="d">Make the active layer more or less opaque</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Zoom &amp; pan</h3>
+        <table>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>0</kbd></td><td class="d">Zoom to fit the page</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>Home</kbd></td><td class="d">Zoom to fit the board's objects</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>+</kbd> <kbd>⌘</kbd><span class="plus">+</span><kbd>-</kbd></td><td class="d">Zoom in or out</td></tr>
+          <tr><td class="k"><kbd>F4</kbd></td><td class="d">Center the view on the cursor</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>F5</kbd></td><td class="d">Zoom to a drawn box</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>R</kbd></td><td class="d">Redraw</td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span>arrows</td><td class="d">Pan</td></tr>
+          <tr><td class="k"><kbd>⌥</kbd><span class="plus">+</span><kbd>3</kbd></td><td class="d">3D viewer</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Grid &amp; units</h3>
+        <table>
+          <tr><td class="k"><kbd>N</kbd> <kbd>⇧</kbd><span class="plus">+</span><kbd>N</kbd></td><td class="d">Next or previous grid size</td></tr>
+          <tr><td class="k"><kbd>⌥</kbd><span class="plus">+</span><kbd>1</kbd> <kbd>⌥</kbd><span class="plus">+</span><kbd>2</kbd></td><td class="d">Fast grid 1 or 2 (set in Preferences)</td></tr>
+          <tr><td class="k"><kbd>⌥</kbd><span class="plus">+</span><kbd>4</kbd></td><td class="d">Cycle between the fast grids</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>G</kbd></td><td class="d">Toggle grid overrides (separate grids for tracks, vias, footprints)</td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span><kbd>S</kbd></td><td class="d">Toggle magnetic snapping</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>U</kbd></td><td class="d">Switch mm and inch</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>M</kbd></td><td class="d">Measure</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLACE & ZONES -->
+  <section class="page" id="place">
+    <div class="grid">
+      <div class="card">
+        <h3>Zones (pours)</h3>
+        <table>
+          <tr><td class="k"><kbd>B</kbd></td><td class="d">Fill all zones<small>Refill after routing near a pour, before you run DRC</small></td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>B</kbd></td><td class="d">Unfill all zones (faster redraw while routing)</td></tr>
+          <tr><td class="k"><kbd>⌥</kbd><span class="plus">+</span><kbd>Z</kbd></td><td class="d">Draw a filled zone</td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span><kbd>C</kbd></td><td class="d">Draw a cutout in a zone</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>.</kbd></td><td class="d">Add a similar zone (same settings)</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>K</kbd></td><td class="d">Draw a rule area or keepout</td></tr>
+          <tr><td class="k"><kbd>F1</kbd></td><td class="d">Add a corner while editing an outline</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Place</h3>
+        <table>
+          <tr><td class="k"><kbd>A</kbd></td><td class="d">Place a footprint</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>X</kbd></td><td class="d">Place a free via (stitching or thermal)</td></tr>
+          <tr><td class="k"><kbd>P</kbd></td><td class="d">Pack the selected footprints and move them</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>T</kbd></td><td class="d">Text</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>L</kbd></td><td class="d">Graphic line</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>A</kbd></td><td class="d">Arc (in the drawing tools)</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>C</kbd></td><td class="d">Circle</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>P</kbd></td><td class="d">Polygon</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>H</kbd></td><td class="d">Orthogonal dimension</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORTH BINDING -->
+  <section class="page" id="bind">
+    <p class="page-intro">These routing actions have no key by default. The suggested keys are free in your current setup. Bind them in Preferences → Hotkeys (<kbd>⌘</kbd><span class="plus">+</span><kbd>,</kbd>) by searching for the action name.</p>
+    <div class="grid">
+      <div class="card hero">
+        <h3>Suggested</h3>
+        <table>
+          <tr><td class="k"><kbd>F5</kbd></td><td class="d">Switch to Inner Layer 1 <small>Action: <code>layerInner1</code></small></td></tr>
+          <tr><td class="k"><kbd>F6</kbd></td><td class="d">Switch to Inner Layer 2 <small>Action: <code>layerInner2</code>. Mac F-keys may need <kbd>fn</kbd>.</small></td></tr>
+          <tr><td class="k"><kbd>Y</kbd></td><td class="d">Cycle router mode: highlight, shove, walkaround <small>Action: <code>CycleRouterMode</code></small></td></tr>
+          <tr><td class="k"><kbd>I</kbd></td><td class="d">Run DRC <small>Action: <code>runDRC</code></small></td></tr>
+          <tr><td class="k"><kbd>J</kbd></td><td class="d">Break a track at the cursor <small>Action: <code>BreakTrack</code></small></td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Other unbound actions</h3>
+        <table>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Show or hide the ratsnest <small><code>showRatsnest</code></small></td></tr>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Select every track in a net <small><code>SelectNet</code></small></td></tr>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Clean up tracks and vias <small><code>cleanupTracksAndVias</code></small></td></tr>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Show zones as fill or outline <small><code>zoneDisplayToggle</code></small></td></tr>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Choose the layer pair <small><code>SelectLayerPair</code></small></td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <p class="note">Some keys change meaning while the router is active. <kbd>V</kbd>, <kbd>F</kbd>, <kbd>⌫</kbd>, <kbd>⌘</kbd><span class="plus">+</span><kbd>V</kbd> and <kbd>⌘</kbd><span class="plus">+</span><kbd>E</kbd> are the main ones; their cards say which meaning applies when. Source: KiCad 9.0 <code>user.hotkeys</code>, read 2026-10-02. If you rebind keys, re-check against <kbd>⌘</kbd><span class="plus">+</span><kbd>F1</kbd>.</p>
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('nav button');
+  const pages = document.querySelectorAll('section.page');
+  function show(id) {
+    tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.page === id));
+    pages.forEach(p => p.classList.toggle('active', p.id === id));
+    try { localStorage.setItem('kicad-tab', id); } catch (e) {}
+  }
+  tabs.forEach(t => t.addEventListener('click', () => { q.value = ''; filter(''); show(t.dataset.page); }));
+  try { const saved = localStorage.getItem('kicad-tab'); if (saved && document.getElementById(saved)) show(saved); } catch (e) {}
+
+  const q = document.getElementById('q');
+  function filter(term) {
+    term = term.trim().toLowerCase();
+    document.body.classList.toggle('searching', !!term);
+    document.querySelectorAll('.card').forEach(card => {
+      let any = false;
+      card.querySelectorAll('tr').forEach(tr => {
+        const hit = !term || tr.textContent.toLowerCase().includes(term);
+        tr.classList.toggle('hide', !hit);
+        any = any || hit;
+      });
+      card.classList.toggle('hide', !any);
+    });
+    pages.forEach(p => {
+      p.style.display = term ? (p.querySelector('.card:not(.hide)') ? 'block' : 'none') : '';
+    });
+  }
+  q.addEventListener('input', () => filter(q.value));
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
+    if (e.key === 'Escape' && document.activeElement === q) { q.value = ''; filter(''); q.blur(); }
+  });
+</script>
+</body>
+</html>
