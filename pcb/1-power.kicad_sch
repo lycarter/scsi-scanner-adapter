@@ -200,113 +200,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Connector:TestPoint"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0.762)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "TP"
-				(at 0 6.858 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "TestPoint"
-				(at 0 5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 5.08 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 5.08 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "test point"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "test point tp"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "Pin* Test*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "TestPoint_0_1"
-				(circle
-					(center 0 3.302)
-					(radius 0.762)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "TestPoint_1_1"
-				(pin passive line
-					(at 0 0 90)
-					(length 2.54)
-					(name "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "Device:C"
 			(pin_numbers
 				(hide yes)
@@ -2785,16 +2678,6 @@
 	)
 	(wire
 		(pts
-			(xy 96.52 38.1) (xy 96.52 40.64)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "90fb1a9c-3a24-5d37-8513-415e629352ab")
-	)
-	(wire
-		(pts
 			(xy 50.8 45.72) (xy 48.26 45.72)
 		)
 		(stroke
@@ -2902,16 +2785,6 @@
 			(type default)
 		)
 		(uuid "a7224de3-f470-5039-9dbe-7d922eac20b5")
-	)
-	(wire
-		(pts
-			(xy 109.22 38.1) (xy 109.22 40.64)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a75fcbbc-6196-5ac6-9ad6-0a58a5936deb")
 	)
 	(wire
 		(pts
@@ -3392,16 +3265,6 @@
 			(justify left bottom)
 		)
 		(uuid "6b42a06e-9515-546d-8179-a09e18592d94")
-	)
-	(label "BENCH_RAW"
-		(at 96.52 40.64 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "6df917d0-957c-5ac3-998e-0c3c8f01029c")
 	)
 	(label "BENCH_RAW"
 		(at 50.8 64.77 0)
@@ -6486,72 +6349,6 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 109.22 40.64 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(dnp no)
-		(uuid "74015740-d4fa-5471-9906-541013f11c50")
-		(property "Reference" "#PWR103"
-			(at 109.22 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 109.22 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 109.22 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 109.22 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 109.22 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "a66133c3-a30d-5844-bbf1-55073eb4237e")
-		)
-		(instances
-			(project "scsi-adapter"
-				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/c5f4e78b-92c1-44f5-913e-e393dcfaf39d"
-					(reference "#PWR103")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
 		(at 48.26 50.8 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7763,90 +7560,6 @@
 			(project "scsi-adapter"
 				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/c5f4e78b-92c1-44f5-913e-e393dcfaf39d"
 					(reference "#PWR122")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint")
-		(at 96.52 38.1 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "a7bc16ae-3276-5d74-b53b-2f9a05aabd92")
-		(property "Reference" "TP101"
-			(at 97.79 33.02 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "BENCH+"
-			(at 97.79 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Loop_D2.50mm_Drill1.0mm"
-			(at 96.52 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 96.52 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Test loop, any 0.1 in loop"
-			(at 96.52 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC" ""
-			(at 96.52 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Fit" "Hand"
-			(at 96.52 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "0a65211c-2586-5c93-92e7-dcc9ababf7dc")
-		)
-		(instances
-			(project "scsi-adapter"
-				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/c5f4e78b-92c1-44f5-913e-e393dcfaf39d"
-					(reference "TP101")
 					(unit 1)
 				)
 			)
@@ -9290,90 +9003,6 @@
 			(project "scsi-adapter"
 				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/c5f4e78b-92c1-44f5-913e-e393dcfaf39d"
 					(reference "#PWR112")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint")
-		(at 109.22 38.1 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "d766cb77-4d37-5189-bd24-00058d9a0ce4")
-		(property "Reference" "TP102"
-			(at 110.49 33.02 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "GND"
-			(at 110.49 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Loop_D2.50mm_Drill1.0mm"
-			(at 109.22 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 109.22 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Test loop, any 0.1 in loop"
-			(at 109.22 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC" ""
-			(at 109.22 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Fit" "Hand"
-			(at 109.22 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "1e970073-abab-5500-abda-0a2ba1f7cc96")
-		)
-		(instances
-			(project "scsi-adapter"
-				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/c5f4e78b-92c1-44f5-913e-e393dcfaf39d"
-					(reference "TP102")
 					(unit 1)
 				)
 			)
