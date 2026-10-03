@@ -11423,7 +11423,7 @@
 		)
 		(uuid "06c637e8-4a08-505f-9391-eae694fd80af")
 	)
-	(label "DB3_LOGIC_ANALYZER"
+	(label "ATN_LOGIC_ANALYZER"
 		(at 193.04 73.66 180)
 		(effects
 			(font
@@ -11453,7 +11453,7 @@
 		)
 		(uuid "0be8fb24-3fbd-5ac1-949b-337efea773e2")
 	)
-	(label "BSY_LOGIC_ANALYZER"
+	(label "DB3_LOGIC_ANALYZER"
 		(at 193.04 63.5 180)
 		(effects
 			(font
@@ -11463,7 +11463,7 @@
 		)
 		(uuid "0c2b2025-2f00-55c9-ac64-18152ff0e454")
 	)
-	(label "TERMINATOR_OUT_REQ"
+	(label "TERMINATOR_OUT_MSG"
 		(at 231.14 231.14 0)
 		(effects
 			(font
@@ -11483,7 +11483,7 @@
 		)
 		(uuid "0f712c90-121f-5d2f-9e57-475a6a408174")
 	)
-	(label "DB7_LOGIC_ANALYZER"
+	(label "BSY_LOGIC_ANALYZER"
 		(at 210.82 73.66 0)
 		(effects
 			(font
@@ -11583,7 +11583,7 @@
 		)
 		(uuid "2d8e4e33-123f-5b22-8052-4906b4f3e68b")
 	)
-	(label "TERMINATOR_OUT_CD"
+	(label "TERMINATOR_OUT_RST"
 		(at 231.14 228.6 0)
 		(effects
 			(font
@@ -11593,7 +11593,7 @@
 		)
 		(uuid "2f631c36-a31a-5d78-afe0-0a2111832f25")
 	)
-	(label "DB0_LOGIC_ANALYZER"
+	(label "CD_LOGIC_ANALYZER"
 		(at 193.04 81.28 180)
 		(effects
 			(font
@@ -11713,7 +11713,7 @@
 		)
 		(uuid "4d0b12bd-53e7-5b5a-af9c-56fa75366bb4")
 	)
-	(label "SEL_LOGIC_ANALYZER"
+	(label "DB4_LOGIC_ANALYZER"
 		(at 210.82 63.5 0)
 		(effects
 			(font
@@ -11733,7 +11733,7 @@
 		)
 		(uuid "52055693-6267-59b2-8ab9-2bcb3e18a462")
 	)
-	(label "DB5_LOGIC_ANALYZER"
+	(label "RST_LOGIC_ANALYZER"
 		(at 210.82 78.74 0)
 		(effects
 			(font
@@ -11763,7 +11763,7 @@
 		)
 		(uuid "57380279-4a72-5bcf-958c-102f4b7ccf27")
 	)
-	(label "MSG_LOGIC_ANALYZER"
+	(label "DBP_LOGIC_ANALYZER"
 		(at 210.82 66.04 0)
 		(effects
 			(font
@@ -11813,7 +11813,7 @@
 		)
 		(uuid "5932a6d0-edda-5bee-a863-b26e5be7f17d")
 	)
-	(label "TERMINATOR_OUT_MSG"
+	(label "TERMINATOR_OUT_REQ"
 		(at 231.14 223.52 0)
 		(effects
 			(font
@@ -11873,7 +11873,7 @@
 		)
 		(uuid "63b5dc92-2b0d-5c5c-8abf-f8e234b728ca")
 	)
-	(label "DBP_LOGIC_ANALYZER"
+	(label "ACK_LOGIC_ANALYZER"
 		(at 193.04 68.58 180)
 		(effects
 			(font
@@ -11903,7 +11903,7 @@
 		)
 		(uuid "6c88d5f3-0b26-5817-97db-dca9f64fd5fb")
 	)
-	(label "TERMINATOR_OUT_IO"
+	(label "TERMINATOR_OUT_SEL"
 		(at 231.14 233.68 0)
 		(effects
 			(font
@@ -11953,7 +11953,7 @@
 		)
 		(uuid "73c7e080-b1e2-511c-b896-0079eefc00f7")
 	)
-	(label "REQ_LOGIC_ANALYZER"
+	(label "DB1_LOGIC_ANALYZER"
 		(at 193.04 55.88 180)
 		(effects
 			(font
@@ -12003,7 +12003,7 @@
 		)
 		(uuid "7aa59d6b-4d60-5f4a-99e5-fd1f4fc02e36")
 	)
-	(label "DB4_LOGIC_ANALYZER"
+	(label "REQ_LOGIC_ANALYZER"
 		(at 210.82 81.28 0)
 		(effects
 			(font
@@ -12033,7 +12033,7 @@
 		)
 		(uuid "7ea6c73f-76bb-5a90-b7f4-08bdbba40e7f")
 	)
-	(label "ACK_LOGIC_ANALYZER"
+	(label "DB5_LOGIC_ANALYZER"
 		(at 193.04 60.96 180)
 		(effects
 			(font
@@ -12213,7 +12213,7 @@
 		)
 		(uuid "9b2b2a3a-1b6b-5e46-b564-61c11cbfb358")
 	)
-	(label "ATN_LOGIC_ANALYZER"
+	(label "DB7_LOGIC_ANALYZER"
 		(at 193.04 66.04 180)
 		(effects
 			(font
@@ -12233,7 +12233,7 @@
 		)
 		(uuid "9e068570-1c14-586d-b5f9-126c5f0772a2")
 	)
-	(label "IO_LOGIC_ANALYZER"
+	(label "DB2_LOGIC_ANALYZER"
 		(at 193.04 53.34 180)
 		(effects
 			(font
@@ -12323,7 +12323,7 @@
 		)
 		(uuid "aca9a2ab-2468-556b-8e60-960cdaef9eb6")
 	)
-	(label "TERMINATOR_OUT_RST"
+	(label "TERMINATOR_OUT_CD"
 		(at 231.14 220.98 0)
 		(effects
 			(font
@@ -12343,7 +12343,7 @@
 		)
 		(uuid "b031439f-32d5-5017-9501-d0848eb68473")
 	)
-	(label "TERMINATOR_OUT_SEL"
+	(label "TERMINATOR_OUT_IO"
 		(at 231.14 226.06 0)
 		(effects
 			(font
@@ -12353,7 +12353,7 @@
 		)
 		(uuid "b03cc6b2-19b4-5c98-a46c-ab30a7a2ffb4")
 	)
-	(label "DB2_LOGIC_ANALYZER"
+	(label "MSG_LOGIC_ANALYZER"
 		(at 193.04 76.2 180)
 		(effects
 			(font
@@ -12373,7 +12373,7 @@
 		)
 		(uuid "b1148362-a514-575a-b32b-50c398d54d18")
 	)
-	(label "DB6_LOGIC_ANALYZER"
+	(label "SEL_LOGIC_ANALYZER"
 		(at 210.82 76.2 0)
 		(effects
 			(font
@@ -12473,7 +12473,7 @@
 		)
 		(uuid "bf67dc31-c2bd-5511-a4c2-12f61d91d3fb")
 	)
-	(label "CD_LOGIC_ANALYZER"
+	(label "DB0_LOGIC_ANALYZER"
 		(at 210.82 60.96 0)
 		(effects
 			(font
@@ -12523,7 +12523,7 @@
 		)
 		(uuid "ccacf98c-10e0-5133-b557-24759cfdecb2")
 	)
-	(label "DB1_LOGIC_ANALYZER"
+	(label "IO_LOGIC_ANALYZER"
 		(at 193.04 78.74 180)
 		(effects
 			(font
@@ -12613,7 +12613,7 @@
 		)
 		(uuid "df079325-b569-54b7-8e87-fef798ce3ef6")
 	)
-	(label "RST_LOGIC_ANALYZER"
+	(label "DB6_LOGIC_ANALYZER"
 		(at 210.82 68.58 0)
 		(effects
 			(font
