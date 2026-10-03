@@ -3283,7 +3283,7 @@
 		)
 		(uuid "175f4b73-f1fb-5955-a5d6-3d89389b705c")
 	)
-	(label "SD_CARD_DETECT"
+	(label "TERMPWR_EFUSE_FAULT_INVERTED"
 		(at 160.02 83.82 0)
 		(effects
 			(font
@@ -3602,7 +3602,7 @@
 		)
 		(uuid "4d56a25d-7ce3-5d21-9483-6b7693d0f1d3")
 	)
-	(hierarchical_label "BENCH_EFUSE_FAULT_INVERTED"
+	(hierarchical_label "SD_CARD_DETECT"
 		(shape input)
 		(at 160.02 91.44 0)
 		(effects
