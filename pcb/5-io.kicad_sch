@@ -1767,7 +1767,7 @@
 		)
 		(uuid "5a099e53-3bfe-5c16-b98e-559df49d94fa")
 	)
-	(text "Pull-ups 10k (SD spec: 10-100k) on CMD and D0-D3. D3 doubles as\ncard detect in SPI mode; we use the socket's switch instead (DET -> P00).\nDET = the drawing's 'Cd' pad; it switches against the shell (GND).\nP00's internal pull-up (TCA9555) is the only pull-up. Polarity\n(closed with or without a card) isn't on the drawing: check at bring-up."
+	(text "Pull-ups 10k (SD spec: 10-100k) on CMD and D0-D3. D3 doubles as\ncard detect in SPI mode; we use the socket's switch instead (DET -> P10).\nDET = the drawing's 'Cd' pad; it switches against the shell (GND).\nP10's internal pull-up (TCA9555) is the only pull-up. Polarity\n(closed with or without a card) isn't on the drawing: check at bring-up."
 		(exclude_from_sim no)
 		(at 266.7 160.02 0)
 		(effects
@@ -1779,7 +1779,7 @@
 		)
 		(uuid "5a12d540-8c18-5e0c-ae95-6d9d1165197a")
 	)
-	(text "Slow signals: status in on port 0, controls out on port 1 (our convention; every pin has its own\ndirection bit). All pins power up as inputs with ~100k pull-ups, so the board is safe with no firmware."
+	(text "Slow signals: inputs and outputs are mixed across both ports to suit the routing (every pin has\nits own direction bit; see the table). All pins power up as inputs with ~100k pull-ups, so the board is safe with no firmware."
 		(exclude_from_sim no)
 		(at 20.32 24.82 0)
 		(effects
@@ -1837,7 +1837,7 @@
 		)
 		(uuid "dfd179fd-4e31-525e-a706-4005bb9303a1")
 	)
-	(text "Lit when the expander drives the pin low. P05-P07: spare, use decided in firmware."
+	(text "Lit when the expander drives the pin low. P02-P04: spare, use decided in firmware."
 		(exclude_from_sim no)
 		(at 20.32 215.32 0)
 		(effects
@@ -2772,7 +2772,7 @@
 				)
 				(uuid "a85dce07-f6d6-56f6-9a81-5e92d36159ac")
 			)
-			(table_cell "P00 in"
+			(table_cell "P00/P07 in"
 				(exclude_from_sim no)
 				(at 20.32 153.035 0)
 				(size 22.86 4.445)
@@ -2789,7 +2789,7 @@
 				)
 				(uuid "c59165a5-49f4-5284-b7a3-eaab5cc0ce50")
 			)
-			(table_cell "SD_CARD_DETECT"
+			(table_cell "*_EFUSE_FAULT_INVERTED"
 				(exclude_from_sim no)
 				(at 43.18 153.035 0)
 				(size 60.96 4.445)
@@ -2806,7 +2806,7 @@
 				)
 				(uuid "6e0b0765-a337-5797-bea9-5a63835f70fd")
 			)
-			(table_cell "microSD card switch (Cd to shell/GND; polarity: check at bring-up)"
+			(table_cell "low = TERMPWR (P00) / bench (P07) eFuse fault (or reverse block)"
 				(exclude_from_sim no)
 				(at 104.14 153.035 0)
 				(size 142.24 4.445)
@@ -2874,7 +2874,7 @@
 				)
 				(uuid "7133812f-281d-5d94-aea9-876e3353eb6b")
 			)
-			(table_cell "P02 in"
+			(table_cell "P02-P04 out"
 				(exclude_from_sim no)
 				(at 20.32 161.925 0)
 				(size 22.86 4.445)
@@ -2891,7 +2891,7 @@
 				)
 				(uuid "dd0052d7-2268-5aca-a454-51afbba334b8")
 			)
-			(table_cell "IS_BENCH_POWERED"
+			(table_cell "LED_GREEN/YELLOW/RED_INVERTED"
 				(exclude_from_sim no)
 				(at 43.18 161.925 0)
 				(size 60.96 4.445)
@@ -2908,7 +2908,7 @@
 				)
 				(uuid "599506d5-6200-548b-8db8-87da0216a391")
 			)
-			(table_cell "high = running on the bench input (TPS2116 ST)"
+			(table_cell "spare LEDs (green, yellow, red); use to be decided in firmware"
 				(exclude_from_sim no)
 				(at 104.14 161.925 0)
 				(size 142.24 4.445)
@@ -2925,7 +2925,7 @@
 				)
 				(uuid "4f095275-f588-51e7-841a-9e7ca95fa2dc")
 			)
-			(table_cell "P03/P04 in"
+			(table_cell "P05/P06 out"
 				(exclude_from_sim no)
 				(at 20.32 166.37 0)
 				(size 22.86 4.445)
@@ -2942,7 +2942,7 @@
 				)
 				(uuid "20cee7b1-fa2d-5a74-a773-c9d7def9dbec")
 			)
-			(table_cell "*_EFUSE_FAULT_INVERTED"
+			(table_cell "LED_ACTIVITY/STATUS_INVERTED"
 				(exclude_from_sim no)
 				(at 43.18 166.37 0)
 				(size 60.96 4.445)
@@ -2959,7 +2959,7 @@
 				)
 				(uuid "bd6eb5e7-a219-5ac2-a57a-ca7779ca1128")
 			)
-			(table_cell "low = bench / TERMPWR eFuse fault (or reverse block)"
+			(table_cell "drive low to light the activity (red) / status (yellow) LED"
 				(exclude_from_sim no)
 				(at 104.14 166.37 0)
 				(size 142.24 4.445)
@@ -2976,7 +2976,7 @@
 				)
 				(uuid "9886a07b-ca08-516e-ab9a-f1c9b9bac3f3")
 			)
-			(table_cell "P05-P07 out"
+			(table_cell "P10 in"
 				(exclude_from_sim no)
 				(at 20.32 170.815 0)
 				(size 22.86 4.445)
@@ -2993,7 +2993,7 @@
 				)
 				(uuid "a5180c46-ec4c-5ea4-9416-cf65e0388e36")
 			)
-			(table_cell "LED_RED/YELLOW/GREEN_INVERTED"
+			(table_cell "SD_CARD_DETECT"
 				(exclude_from_sim no)
 				(at 43.18 170.815 0)
 				(size 60.96 4.445)
@@ -3010,7 +3010,7 @@
 				)
 				(uuid "eaf033f5-2eb2-543d-aa4a-88ad337f1e58")
 			)
-			(table_cell "spare LEDs (red, yellow, green); use to be decided in firmware"
+			(table_cell "microSD card switch (Cd to shell/GND; polarity: check at bring-up)"
 				(exclude_from_sim no)
 				(at 104.14 170.815 0)
 				(size 142.24 4.445)
@@ -3027,7 +3027,7 @@
 				)
 				(uuid "0c67167d-1e73-5982-b703-ce6935fc2196")
 			)
-			(table_cell "P10/P11 out"
+			(table_cell "P11 in"
 				(exclude_from_sim no)
 				(at 20.32 175.26 0)
 				(size 22.86 4.445)
@@ -3044,7 +3044,7 @@
 				)
 				(uuid "5ff6912f-651d-5c97-86d2-fabc8abce07a")
 			)
-			(table_cell "LED_STATUS/ACTIVITY_INVERTED"
+			(table_cell "IS_BENCH_POWERED"
 				(exclude_from_sim no)
 				(at 43.18 175.26 0)
 				(size 60.96 4.445)
@@ -3061,7 +3061,7 @@
 				)
 				(uuid "e0060c6c-6b99-569d-b20c-15ed97b13e2b")
 			)
-			(table_cell "drive low to light the status (yellow) / activity (red) LED"
+			(table_cell "high = running on the bench input (TPS2116 ST)"
 				(exclude_from_sim no)
 				(at 104.14 175.26 0)
 				(size 142.24 4.445)
@@ -3273,23 +3273,25 @@
 		)
 		(uuid "0f83229e-ae13-5205-8540-dd66a1baeed6")
 	)
-	(label "LED_ACTIVITY_INVERTED"
+	(hierarchical_label "IS_BENCH_POWERED"
+		(shape input)
 		(at 160.02 109.22 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left bottom)
+			(justify left)
 		)
 		(uuid "175f4b73-f1fb-5955-a5d6-3d89389b705c")
 	)
-	(label "TERMPWR_EFUSE_FAULT_INVERTED"
+	(hierarchical_label "TERMPWR_EFUSE_FAULT_INVERTED"
+		(shape input)
 		(at 160.02 83.82 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left bottom)
+			(justify left)
 		)
 		(uuid "280f5621-01cd-5131-b448-fa3418da5bb8")
 	)
@@ -3373,13 +3375,14 @@
 		)
 		(uuid "94240d42-9489-5696-a535-7151f8776a9f")
 	)
-	(label "LED_YELLOW_INVERTED"
+	(hierarchical_label "BENCH_EFUSE_FAULT_INVERTED"
+		(shape input)
 		(at 160.02 101.6 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left bottom)
+			(justify left)
 		)
 		(uuid "982b8716-a3dd-5cb1-bdd6-14a791055065")
 	)
@@ -3443,7 +3446,7 @@
 		)
 		(uuid "ba8b1637-8c04-59ea-b5bd-1f56edbd5a6a")
 	)
-	(label "LED_RED_INVERTED"
+	(label "SD_CARD_DETECT"
 		(at 160.02 106.68 0)
 		(effects
 			(font
@@ -3514,14 +3517,13 @@
 		)
 		(uuid "0b6e7099-fe09-54cd-bdfd-315ad0041bba")
 	)
-	(hierarchical_label "LED_GREEN_INVERTED"
-		(shape input)
+	(label "LED_GREEN_INVERTED"
 		(at 160.02 88.9 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify left bottom)
 		)
 		(uuid "0d145928-d514-5abd-aeac-99c878adf72b")
 	)
@@ -3536,14 +3538,13 @@
 		)
 		(uuid "0ea12af2-ce7b-5fe9-a4f4-7e36e6e5bce9")
 	)
-	(hierarchical_label "LED_RED_INVERTED"
-		(shape input)
+	(label "LED_RED_INVERTED"
 		(at 160.02 93.98 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify left bottom)
 		)
 		(uuid "0fc0115e-6568-53cd-9ac7-5319e5bcbd14")
 	)
@@ -3602,14 +3603,13 @@
 		)
 		(uuid "4d56a25d-7ce3-5d21-9483-6b7693d0f1d3")
 	)
-	(hierarchical_label "LED_YELLOW_INVERTED"
-		(shape input)
+	(label "LED_YELLOW_INVERTED"
 		(at 160.02 91.44 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify left bottom)
 		)
 		(uuid "555eae70-ba1a-5974-94c9-c011f5dd45a6")
 	)
