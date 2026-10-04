@@ -3293,7 +3293,7 @@
 		)
 		(uuid "280f5621-01cd-5131-b448-fa3418da5bb8")
 	)
-	(label "LED_YELLOW_INVERTED"
+	(label "LED_STATUS_INVERTED"
 		(at 160.02 99.06 0)
 		(effects
 			(font
@@ -3363,7 +3363,7 @@
 		)
 		(uuid "8f356634-1a3e-5d73-b2ad-65153aa3a9c0")
 	)
-	(label "LED_RED_INVERTED"
+	(label "LED_ACTIVITY_INVERTED"
 		(at 195.58 96.52 0)
 		(effects
 			(font
@@ -3373,7 +3373,7 @@
 		)
 		(uuid "94240d42-9489-5696-a535-7151f8776a9f")
 	)
-	(label "LED_GREEN_INVERTED"
+	(label "LED_YELLOW_INVERTED"
 		(at 160.02 101.6 0)
 		(effects
 			(font
@@ -3443,7 +3443,7 @@
 		)
 		(uuid "ba8b1637-8c04-59ea-b5bd-1f56edbd5a6a")
 	)
-	(label "LED_STATUS_INVERTED"
+	(label "LED_RED_INVERTED"
 		(at 160.02 106.68 0)
 		(effects
 			(font
@@ -3514,7 +3514,7 @@
 		)
 		(uuid "0b6e7099-fe09-54cd-bdfd-315ad0041bba")
 	)
-	(hierarchical_label "IS_BENCH_POWERED"
+	(hierarchical_label "LED_GREEN_INVERTED"
 		(shape input)
 		(at 160.02 88.9 0)
 		(effects
@@ -3536,7 +3536,7 @@
 		)
 		(uuid "0ea12af2-ce7b-5fe9-a4f4-7e36e6e5bce9")
 	)
-	(hierarchical_label "TERMPWR_EFUSE_FAULT_INVERTED"
+	(hierarchical_label "LED_RED_INVERTED"
 		(shape input)
 		(at 160.02 93.98 0)
 		(effects
@@ -3602,7 +3602,7 @@
 		)
 		(uuid "4d56a25d-7ce3-5d21-9483-6b7693d0f1d3")
 	)
-	(hierarchical_label "SD_CARD_DETECT"
+	(hierarchical_label "LED_YELLOW_INVERTED"
 		(shape input)
 		(at 160.02 91.44 0)
 		(effects
