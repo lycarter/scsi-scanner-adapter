@@ -6841,6 +6841,16 @@
 	)
 	(wire
 		(pts
+			(xy 210.82 132.08) (xy 210.82 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1a1e2c2b-a0ff-4bd9-a4d6-7163c27214cd")
+	)
+	(wire
+		(pts
 			(xy 302.26 160.02) (xy 309.88 160.02)
 		)
 		(stroke
@@ -8471,6 +8481,16 @@
 	)
 	(wire
 		(pts
+			(xy 210.82 139.7) (xy 210.82 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6dfca84a-3e19-406b-b0e8-43790ffc92bb")
+	)
+	(wire
+		(pts
 			(xy 58.42 345.44) (xy 53.34 345.44)
 		)
 		(stroke
@@ -8718,6 +8738,16 @@
 			(type default)
 		)
 		(uuid "7d3c611f-3a02-5dcf-9e7a-f0fc365faafa")
+	)
+	(wire
+		(pts
+			(xy 149.86 132.08) (xy 149.86 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7d8019e1-258b-481b-a46d-cb015930e202")
 	)
 	(wire
 		(pts
@@ -9151,6 +9181,16 @@
 	)
 	(wire
 		(pts
+			(xy 149.86 139.7) (xy 149.86 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "92c52c7d-4c09-41fc-b43d-191cd638b210")
+	)
+	(wire
+		(pts
 			(xy 76.2 228.6) (xy 78.74 228.6)
 		)
 		(stroke
@@ -9158,6 +9198,16 @@
 			(type default)
 		)
 		(uuid "92f6802e-c9c0-5f04-9d03-bcd6d7eb2b7f")
+	)
+	(wire
+		(pts
+			(xy 190.5 132.08) (xy 190.5 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "93084e65-cf14-4baa-8764-b7a6d57d2786")
 	)
 	(wire
 		(pts
@@ -10001,6 +10051,16 @@
 	)
 	(wire
 		(pts
+			(xy 170.18 132.08) (xy 170.18 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c11a007a-e2b1-41c6-be8f-1f8394b8f628")
+	)
+	(wire
+		(pts
 			(xy 518.16 165.1) (xy 525.78 165.1)
 		)
 		(stroke
@@ -10601,6 +10661,16 @@
 	)
 	(wire
 		(pts
+			(xy 190.5 139.7) (xy 190.5 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e374fa29-8934-4b1d-aded-07f1f2fec1f9")
+	)
+	(wire
+		(pts
 			(xy 518.16 109.22) (xy 525.78 109.22)
 		)
 		(stroke
@@ -11071,6 +11141,16 @@
 	)
 	(wire
 		(pts
+			(xy 170.18 139.7) (xy 170.18 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ffa00684-5736-4093-83ae-264efdb48f87")
+	)
+	(wire
+		(pts
 			(xy 459.74 58.42) (xy 457.2 58.42)
 		)
 		(stroke
@@ -11363,6 +11443,16 @@
 			)
 		)
 	)
+	(label "SCSI_RESERVED_28_hd50"
+		(at 210.82 129.54 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "00e11bc9-cafc-484d-ac22-ed20a5a119b1")
+	)
 	(label "TERMINATOR_OUT_ATN"
 		(at 457.2 58.42 180)
 		(effects
@@ -11473,7 +11563,7 @@
 		)
 		(uuid "0dffa87d-085e-5127-8971-deab54b69c5c")
 	)
-	(label "SCSI_RESERVED_28"
+	(label "SCSI_RESERVED_28_hd50"
 		(at 127 78.74 0)
 		(effects
 			(font
@@ -11883,6 +11973,16 @@
 		)
 		(uuid "655f2f4c-e011-5478-942f-86cd910dec0c")
 	)
+	(label "SCSI_RESERVED_27_hd50"
+		(at 190.5 129.54 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "69bdb3be-7991-40fd-84f8-e230c8661a8d")
+	)
 	(label "TERMINATOR_OUT_MSG"
 		(at 457.2 213.36 180)
 		(effects
@@ -12203,7 +12303,7 @@
 		)
 		(uuid "98898558-454d-5df9-8906-e5c99600d7db")
 	)
-	(label "SCSI_RESERVED_23"
+	(label "SCSI_RESERVED_23_hd50"
 		(at 109.22 73.66 180)
 		(effects
 			(font
@@ -12292,6 +12392,16 @@
 			(justify left bottom)
 		)
 		(uuid "a50f5f68-93f0-544d-ab29-711904660476")
+	)
+	(label "SCSI_RESERVED_24_hd50"
+		(at 170.18 129.54 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a798b2d1-cf4a-450f-ad8e-925c8fb5cb3e")
 	)
 	(label "TERMINATOR_OUT_DB5"
 		(at 78.74 226.06 0)
@@ -12533,7 +12643,7 @@
 		)
 		(uuid "d337c9aa-cb6c-5d53-b2fc-a0b766d72652")
 	)
-	(label "SCSI_RESERVED_27"
+	(label "SCSI_RESERVED_27_hd50"
 		(at 109.22 78.74 180)
 		(effects
 			(font
@@ -12713,6 +12823,16 @@
 		)
 		(uuid "f77cd9c3-a49e-5068-b9d0-9974f298be0a")
 	)
+	(label "SCSI_RESERVED_23_hd50"
+		(at 149.86 129.54 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "f91e423c-0e70-4b48-9e3d-171e8941bab1")
+	)
 	(label "~{REQ}"
 		(at 127 104.14 0)
 		(effects
@@ -12743,7 +12863,7 @@
 		)
 		(uuid "fb75dc93-32b6-5928-ae96-92950ab62663")
 	)
-	(label "SCSI_RESERVED_24"
+	(label "SCSI_RESERVED_24_hd50"
 		(at 127 73.66 0)
 		(effects
 			(font
@@ -12926,7 +13046,7 @@
 		)
 		(uuid "7413b3b8-eb36-5885-ae4b-86cb1b44b8f9")
 	)
-	(hierarchical_label "LOGIC_ANALYZER_MARKER1"
+	(hierarchical_label "LOGIC_ANALYZER_MARKER0"
 		(shape input)
 		(at 193.04 48.26 180)
 		(effects
@@ -12981,7 +13101,7 @@
 		)
 		(uuid "9a65130c-a459-58bf-affb-1f28e75c8049")
 	)
-	(hierarchical_label "LOGIC_ANALYZER_MARKER0"
+	(hierarchical_label "LOGIC_ANALYZER_MARKER1"
 		(shape input)
 		(at 193.04 50.8 180)
 		(effects
@@ -14652,6 +14772,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 190.5 142.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(uuid "1c6fb49c-0687-4290-a854-5458f41c6764")
+		(property "Reference" "#PWR03"
+			(at 190.5 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 190.5 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 190.5 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 190.5 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 190.5 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "28d80eb7-e557-4a3b-b1b8-08e34b546b2e")
+		)
+		(instances
+			(project "scsi-adapter"
+				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/858bce67-3a23-4d8c-baef-1b62aed1ef48"
+					(reference "#PWR03")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 298.45 87.63 90)
 		(unit 1)
@@ -14732,6 +14918,93 @@
 			(project "scsi-adapter"
 				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/858bce67-3a23-4d8c-baef-1b62aed1ef48"
 					(reference "R304")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 210.82 135.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1e55e1dd-db16-4b06-aa75-af4d66512823")
+		(property "Reference" "R4"
+			(at 208.28 134.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "0R"
+			(at 208.28 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 210.82 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 210.82 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "RESERVED line to ground (SCSI-2 5.4.4); remove if mid-chain"
+			(at 210.82 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C17168"
+			(at 210.82 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Fit" "JLC"
+			(at 210.82 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bf0ef6d8-1934-4e2e-9821-4520fd2b07c2")
+		)
+		(pin "2"
+			(uuid "fb98f986-974b-4428-9470-43521aaebf9b")
+		)
+		(instances
+			(project "scsi-adapter"
+				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/858bce67-3a23-4d8c-baef-1b62aed1ef48"
+					(reference "R4")
 					(unit 1)
 				)
 			)
@@ -16944,6 +17217,93 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 190.5 135.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4713dede-14f4-4f0e-8cab-c0af1f9e5747")
+		(property "Reference" "R3"
+			(at 187.96 134.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "0R"
+			(at 187.96 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 190.5 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 190.5 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "RESERVED line to ground (SCSI-2 5.4.4); remove if mid-chain"
+			(at 190.5 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C17168"
+			(at 190.5 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Fit" "JLC"
+			(at 190.5 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a6b22fdd-3d6b-4c9e-b965-6c2716205b65")
+		)
+		(pin "2"
+			(uuid "a508cd90-de92-4909-be4b-5428cc04c7bc")
+		)
+		(instances
+			(project "scsi-adapter"
+				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/858bce67-3a23-4d8c-baef-1b62aed1ef48"
+					(reference "R3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 63.5 256.54 0)
 		(unit 1)
@@ -17938,6 +18298,72 @@
 			(project "scsi-adapter"
 				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/858bce67-3a23-4d8c-baef-1b62aed1ef48"
 					(reference "R310")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 149.86 142.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(uuid "5f981910-4cca-4312-9c19-630f5938542d")
+		(property "Reference" "#PWR01"
+			(at 149.86 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 149.86 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 149.86 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 149.86 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 149.86 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "727487c6-50ef-4b0f-8129-511cb43fa28f")
+		)
+		(instances
+			(project "scsi-adapter"
+				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/858bce67-3a23-4d8c-baef-1b62aed1ef48"
+					(reference "#PWR01")
 					(unit 1)
 				)
 			)
@@ -19639,6 +20065,93 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 170.18 135.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "9c48fea0-d4c2-4a5f-8262-8b391f46ce48")
+		(property "Reference" "R2"
+			(at 167.64 134.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "0R"
+			(at 167.64 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 170.18 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 170.18 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "RESERVED line to ground (SCSI-2 5.4.4); remove if mid-chain"
+			(at 170.18 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C17168"
+			(at 170.18 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Fit" "JLC"
+			(at 170.18 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c8ce45ec-b13e-4eae-9ac9-3defa84b7147")
+		)
+		(pin "2"
+			(uuid "b5bbba04-4d20-4bf4-a24b-aa46fed7064e")
+		)
+		(instances
+			(project "scsi-adapter"
+				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/858bce67-3a23-4d8c-baef-1b62aed1ef48"
+					(reference "R2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:D_TVS")
 		(at 474.98 270.51 270)
 		(unit 1)
@@ -20278,6 +20791,93 @@
 			(project "scsi-adapter"
 				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/858bce67-3a23-4d8c-baef-1b62aed1ef48"
 					(reference "#PWR356")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 149.86 135.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "aa5d6a5c-ded1-44f8-b783-177cbe557abb")
+		(property "Reference" "R1"
+			(at 147.32 134.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "0R"
+			(at 147.32 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 149.86 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 149.86 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "RESERVED line to ground (SCSI-2 5.4.4); remove if mid-chain"
+			(at 149.86 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C17168"
+			(at 149.86 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Fit" "JLC"
+			(at 149.86 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8d113871-d0aa-4517-93da-2209988f7948")
+		)
+		(pin "2"
+			(uuid "2169f90c-5e2f-499d-82f5-8f890f53d600")
+		)
+		(instances
+			(project "scsi-adapter"
+				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/858bce67-3a23-4d8c-baef-1b62aed1ef48"
+					(reference "R1")
 					(unit 1)
 				)
 			)
@@ -21797,6 +22397,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 210.82 142.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(uuid "d47a679d-3474-4dae-a687-c4bc0cb318e6")
+		(property "Reference" "#PWR04"
+			(at 210.82 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 210.82 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 210.82 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 210.82 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 210.82 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7e3edb9e-09ef-4371-9f41-3f45d52788b6")
+		)
+		(instances
+			(project "scsi-adapter"
+				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/858bce67-3a23-4d8c-baef-1b62aed1ef48"
+					(reference "#PWR04")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:D_TVS")
 		(at 309.88 64.77 270)
 		(unit 1)
@@ -22819,6 +23485,72 @@
 			(project "scsi-adapter"
 				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/858bce67-3a23-4d8c-baef-1b62aed1ef48"
 					(reference "#PWR347")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 170.18 142.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(uuid "ebe5d0e9-8e02-4fd4-8c62-ade8405669c2")
+		(property "Reference" "#PWR02"
+			(at 170.18 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 170.18 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 170.18 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 170.18 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 170.18 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "792738ae-363f-4672-a10e-1e3c018b9a23")
+		)
+		(instances
+			(project "scsi-adapter"
+				(path "/2c5b21a9-7d0d-4304-8bd9-0602cba3b7b5/858bce67-3a23-4d8c-baef-1b62aed1ef48"
+					(reference "#PWR02")
 					(unit 1)
 				)
 			)
