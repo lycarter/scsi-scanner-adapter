@@ -86,11 +86,7 @@ def build(out_path):
     s.note("PWR_FLAG is not a part. It tells KiCad's ERC that a net\nis powered from outside the drawn symbols (the terminal,\n"
            "USB VBUS), so it doesn't report 'power input not driven'.", 66.04, 48.26)
     s.pwr_flag("#FLG102", "GND", 83.82, 38.1)
-    TP = "TestPoint:TestPoint_Loop_D2.50mm_Drill1.0mm"
-    for ref, net, x in (("TP101", "BENCH_RAW", 96.52), ("TP102", "GND", 109.22)):
-        s.part("Connector:TestPoint", ref, "BENCH+" if net == "BENCH_RAW" else net, x, 38.1, {"1": net},
-               props=props(TP, "", note="Test loop, any 0.1 in loop", fit="Hand"),
-               fields=((x + 1.27, 33.02, "left"), (x + 1.27, 35.56, "left")))
+    # TP101 (BENCH+) and TP102 (GND) test loops were removed during layout: probe the bench voltage at J101.
 
     s.part("Device:D_TVS", "D101", "SMF15CA", 50.8, 71.12, {"1": "BENCH_RAW", "2": "GND"}, a=270,
            props=props("Diode_SMD:D_SOD-123F", "C19077510", True, "Bidirectional TVS, footprint only"), dnp=True,

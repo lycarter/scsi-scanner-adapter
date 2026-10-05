@@ -32,7 +32,7 @@ Source: `_src/scsi.py`.
   1G17 + 100 nF.              | 14 out + 18 in           |<-------+                   |
   Fallbacks: 4 x LVTH125,     | = 32 GPIO, one           |                            v
   3 x Nexperia LVC14A         | 32-pin PIO window        | markers +----------------------+
-                              |                          |-------->| LA header 2x16       |
+                              |                          |-------->| LA header 2x17       |
   ESD at the connector:       +--------------------------+         | (Digital Discovery)  |
   18 x H5VUD5BB (0.3 pF),                                          | 18 sig + 2 markers   |
   SMF6.0A on TERMPWR                                               +----------------------+
@@ -44,10 +44,10 @@ Source: `_src/scsi.py`.
 - SCSI (net) — Switchable active terminator
 - DRIVERS (14 x FDV301N) → SCSI (net)
 - SCSI (net) → RECEIVERS (18 x 74LVC1G17)
-- RP2350B PIO → DRIVERS (14 x FDV301N): 14 x gate
-- RECEIVERS (18 x 74LVC1G17) → RP2350B PIO: 18 in
-- RECEIVERS (18 x 74LVC1G17) → LA header 2x16: isolation: 20 x 100 ohm series R
-- RP2350B PIO → LA header 2x16: markers
+- RP2350B (PIO; CPU for the markers) → DRIVERS (14 x FDV301N): 14 x gate
+- RECEIVERS (18 x 74LVC1G17) → RP2350B (PIO; CPU for the markers): 18 in
+- RECEIVERS (18 x 74LVC1G17) → LA header 2x17: isolation: 20 x 100 ohm series R
+- RP2350B (PIO; CPU for the markers) → LA header 2x17: markers
 
 </details>
 <!-- END generated -->

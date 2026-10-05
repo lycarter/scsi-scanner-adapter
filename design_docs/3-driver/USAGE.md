@@ -25,6 +25,46 @@ physical end of the SCSI chain. The bus needs exactly two terminators, one at ea
 The firmware-controlled positions (DIP 2) need the I²C GPIO expander, which is fitted as
 standard. It is removed only in the FT1248/FIFO rework fallback; after that, DIP 2 does nothing.
 
+## Logic-analyzer header (J303)
+
+J303 is a 2×17 box header. Pins 1–32 copy the Digital Discovery's 2×16 DIN connector pin for
+pin, so a ribbon to the analyzer needs no rewiring; pins 33/34 are spare. Each signal is the
+3.3 V output of that line's receiver through 100 Ω. The receivers are non-inverting and the
+SCSI bus is active-low, so **a tap reads low while its line is asserted**. MARKER0/1 are
+driven by firmware (GPIO 33/32).
+
+The signals are not in bus order: they were arranged during layout to suit the routing. Name
+the channels in WaveForms from this table (source: `pcb/_gen/sheet_3_scsi.py`, `LA_PIN`).
+
+| Channel | J303 pin | Signal |
+|---|---|---|
+| DIN0 | 29 | CD |
+| DIN1 | 27 | IO |
+| DIN2 | 25 | MSG |
+| DIN3 | 23 | ATN |
+| DIN4 | 30 | REQ |
+| DIN5 | 28 | RST |
+| DIN6 | 26 | SEL |
+| DIN7 | 24 | BSY |
+| DIN8 | 19 | ACK |
+| DIN9 | 17 | DB7 |
+| DIN10 | 15 | DB3 |
+| DIN11 | 13 | DB5 |
+| DIN12 | 20 | DB6 |
+| DIN13 | 18 | DBP |
+| DIN14 | 16 | DB4 |
+| DIN15 | 14 | DB0 |
+| DIN16 | 9 | DB1 |
+| DIN17 | 7 | DB2 |
+| DIN18 | 5 | MARKER1 |
+| DIN19 | 3 | MARKER0 |
+| DIN20 | 10 | not connected |
+| DIN21 | 8 | not connected |
+| DIN22 | 6 | not connected |
+| DIN23 | 4 | not connected |
+
+Ground is on pins 1, 2, 11, 12, 21, 22, 31 and 32.
+
 ## Power
 
 - **USB-C is always connected**: it's the data link. On a port that offers ≥ 1.5 A (USB-C

@@ -3,24 +3,27 @@
 from canvas import Diagram
 D = Diagram()
 
-# Port 0 = inputs (status), port 1 = outputs, so each port has one direction.
+# Inputs and outputs are mixed across both ports: the map was reassigned during layout (2026-10) to suit the
+# routing, replacing "port 0 = inputs, port 1 = outputs". Every pin has its own direction bit, so firmware
+# must set direction per pin from this table. Do NOT drive P00, P01, P07, P10 or P11: they are inputs wired
+# to open-drain outputs or a switch to GND.
 # All P pins power up as inputs with ~100 k pull-ups: resets read high (run), LEDs are off
 # (they sink into the pin), and TERMINATOR_EN_INVERTED_FIRMWARE leaves the DIP default alone.
 pins = {
     1: ('INT', 'test point (firmware polls)'),
     2: ('A1', 'GND (addr 0x20)'),
     3: ('A2', 'GND'),
-    4: ('P00', 'in: SD_CARD_DETECT (socket switch)'),
+    4: ('P00', 'in: TERMPWR_EFUSE_FAULT_INVERTED (eFuse)'),
     5: ('P01', 'in: TERMPWR_EN_INVERTED (enable node)'),
-    6: ('P02', 'in: IS_BENCH_POWERED (TPS2116 ST, 1 = bench)'),
-    7: ('P03', 'in: BENCH_EFUSE_FAULT_INVERTED (eFuse)'),
-    8: ('P04', 'in: TERMPWR_EFUSE_FAULT_INVERTED (eFuse)'),
-    9: ('P05', 'out: LED_RED_INVERTED (spare LED)'),
-    10: ('P06', 'out: LED_YELLOW_INVERTED (spare LED)'),
-    11: ('P07', 'out: LED_GREEN_INVERTED (spare LED)'),
+    6: ('P02', 'out: LED_GREEN_INVERTED (spare LED)'),
+    7: ('P03', 'out: LED_YELLOW_INVERTED (spare LED)'),
+    8: ('P04', 'out: LED_RED_INVERTED (spare LED)'),
+    9: ('P05', 'out: LED_ACTIVITY_INVERTED (red)'),
+    10: ('P06', 'out: LED_STATUS_INVERTED (yellow)'),
+    11: ('P07', 'in: BENCH_EFUSE_FAULT_INVERTED (eFuse)'),
     12: ('GND', 'GND'),
-    13: ('P10', 'out: LED_STATUS_INVERTED (yellow)'),
-    14: ('P11', 'out: LED_ACTIVITY_INVERTED (red)'),
+    13: ('P10', 'in: SD_CARD_DETECT (socket switch)'),
+    14: ('P11', 'in: IS_BENCH_POWERED (TPS2116 ST, 1 = bench)'),
     15: ('P12', 'out/in: TERMINATOR_EN_INVERTED_FIRMWARE (DIP 2)'),
     16: ('P13', 'out: FT232H_RESET_INVERTED'),
     17: ('P14', 'out: HUB_RESET_INVERTED (Schottky)'),

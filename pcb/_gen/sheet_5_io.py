@@ -42,15 +42,16 @@ def build(path):
     # ================= I/O expander =================
     s.rect(12.7, 12.7, 254.0, 198.12)
     heading(s, "I/O expander (TCA9555, I2C0 address 0x20)", 20.32, 20.32,
-            "Slow signals: status in on port 0, controls out on port 1 (our convention; every pin has its own\n"
-            "direction bit). All pins power up as inputs with ~100k pull-ups, so the board is safe with no firmware.")
+            "Slow signals: inputs and outputs are mixed across both ports to suit the routing (every pin has\n"
+            "its own direction bit; see the table). All pins power up as inputs with ~100k pull-ups, so the board is safe with no firmware.")
     UX, UY = 139.7, 104.14
     nets = {"23": "I2C_SDA", "22": "I2C_SCL", "1": "EXPANDER_INTERRUPT_INVERTED", "3": None, "2": None, "21": None,
             "24": "+3V3", "12": "GND",
-            "4": "SD_CARD_DETECT", "5": "TERMPWR_EN_INVERTED", "6": "IS_BENCH_POWERED",
-            "7": "BENCH_EFUSE_FAULT_INVERTED", "8": "TERMPWR_EFUSE_FAULT_INVERTED", "9": None,
-            "10": "LED_YELLOW_INVERTED", "11": "LED_GREEN_INVERTED",
-            "13": "LED_STATUS_INVERTED", "14": "LED_ACTIVITY_INVERTED", "15": "TERMINATOR_EN_INVERTED_FIRMWARE",
+            # port 0 and P10/P11 were reassigned during layout (2026-10) to suit the routing
+            "4": "TERMPWR_EFUSE_FAULT_INVERTED", "5": "TERMPWR_EN_INVERTED", "6": "LED_GREEN_INVERTED",
+            "7": "LED_YELLOW_INVERTED", "8": "LED_RED_INVERTED", "9": None,
+            "10": "LED_STATUS_INVERTED", "11": "BENCH_EFUSE_FAULT_INVERTED",
+            "13": "SD_CARD_DETECT", "14": "IS_BENCH_POWERED", "15": "TERMINATOR_EN_INVERTED_FIRMWARE",
             "16": "FT232H_RESET_INVERTED", "17": "HUB_RESET_INVERTED", "18": None, "19": "EXPANDER_P16",
             "20": "EXPANDER_P17"}
     s.part("Interface_Expansion:TCA9555PWR", "U501", "TCA9555PWR", UX, UY, nets,
@@ -58,7 +59,7 @@ def build(path):
                        ds="https://www.ti.com/lit/ds/symlink/tca9555.pdf"),
            fields=((UX + 2.54, UY - 30.48, "left"), (UX + 2.54, UY + 30.48, "left")))
     # P05 and P15 sit under sheet-pin labels: longer stubs so their labels clear them
-    for pin, net, ln in (("9", "LED_RED_INVERTED", 38.1), ("18", "EXPANDER_P15", 25.4)):
+    for pin, net, ln in (("9", "LED_ACTIVITY_INVERTED", 38.1), ("18", "EXPANDER_P15", 25.4)):
         yy = UY - {"9": 7.62, "18": -15.24}[pin]
         s.wire(UX + 17.78, yy, UX + 17.78 + ln, yy)
         s.net_at(net, UX + 17.78 + ln, yy, 0)
@@ -82,12 +83,12 @@ def build(path):
                                                        "INT pull-up (open drain)"))):
         vpart("Device:R", ref, val, 38.1 + i * 20.32, 63.5, "+3V3", net, props(R0402, lcsc, note=note))
     s.table(20.32, 148.59, [["Pin", "Net", "Meaning"],
-                            ["P00 in", "SD_CARD_DETECT", "microSD card switch (Cd to shell/GND; polarity: check at bring-up)"],
+                            ["P00/P07 in", "*_EFUSE_FAULT_INVERTED", "low = TERMPWR (P00) / bench (P07) eFuse fault (or reverse block)"],
                             ["P01 in", "TERMPWR_EN_INVERTED", "low = we supply TERMPWR (CC >= 1.5 A or bench)"],
-                            ["P02 in", "IS_BENCH_POWERED", "high = running on the bench input (TPS2116 ST)"],
-                            ["P03/P04 in", "*_EFUSE_FAULT_INVERTED", "low = bench / TERMPWR eFuse fault (or reverse block)"],
-                            ["P05-P07 out", "LED_RED/YELLOW/GREEN_INVERTED", "spare LEDs (red, yellow, green); use to be decided in firmware"],
-                            ["P10/P11 out", "LED_STATUS/ACTIVITY_INVERTED", "drive low to light the status (yellow) / activity (red) LED"],
+                            ["P02-P04 out", "LED_GREEN/YELLOW/RED_INVERTED", "spare LEDs (green, yellow, red); use to be decided in firmware"],
+                            ["P05/P06 out", "LED_ACTIVITY/STATUS_INVERTED", "drive low to light the activity (red) / status (yellow) LED"],
+                            ["P10 in", "SD_CARD_DETECT", "microSD card switch (Cd to shell/GND; polarity: check at bring-up)"],
+                            ["P11 in", "IS_BENCH_POWERED", "high = running on the bench input (TPS2116 ST)"],
                             ["P12 out/in", "TERMINATOR_EN_INVERTED_FIRMWARE", "through DIP 2; reads the /OE node back"],
                             ["P13/P14 out", "FT232H / HUB_RESET_INVERTED", "low >= 4 us resets the chip; idle high or input"],
                             ["P15-P17", "EXPANDER_P15..P17", "spare, brought out to test pads"]],
@@ -95,7 +96,7 @@ def build(path):
 
     # ================= LEDs =================
     s.rect(12.7, 203.2, 195.58, 284.48)
-    heading(s, "LEDs", 20.32, 210.82, "Lit when the expander drives the pin low. P05-P07: spare, use decided in firmware.")
+    heading(s, "LEDs", 20.32, 210.82, "Lit when the expander drives the pin low. P02-P04: spare, use decided in firmware.")
     LEDS = [("R504", "D501", "LED_STATUS_INVERTED", "status", "KT-0805Y yellow", "C2296", "LED_0805", "1k", "C11702"),
             ("R505", "D502", "LED_ACTIVITY_INVERTED", "activity", "KT-0603R red", "C2286", "LED_0603", "1k", "C11702"),
             ("R511", "D503", "LED_RED_INVERTED", "spare red", "KT-0603R red", "C2286", "LED_0603", "1k", "C11702"),
@@ -135,8 +136,8 @@ def build(path):
     s.part("Device:C", "C503", "100nF", 386.08, 139.7, {"1": "+3V3", "2": "GND"},
            props=props(C0402, "C307331", note="microSD decoupling"), fields="left")
     s.note("Pull-ups 10k (SD spec: 10-100k) on CMD and D0-D3. D3 doubles as\ncard detect in SPI mode; "
-           "we use the socket's switch instead (DET -> P00).\nDET = the drawing's 'Cd' pad; it switches against the "
-           "shell (GND).\nP00's internal pull-up (TCA9555) is the only pull-up. Polarity\n"
+           "we use the socket's switch instead (DET -> P10).\nDET = the drawing's 'Cd' pad; it switches against the "
+           "shell (GND).\nP10's internal pull-up (TCA9555) is the only pull-up. Polarity\n"
            "(closed with or without a card) isn't on the drawing: check at bring-up.", 266.7, 160.02)
 
     # ================= Test points =================

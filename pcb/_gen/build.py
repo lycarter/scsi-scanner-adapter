@@ -7,6 +7,10 @@
 build.py records a content fingerprint of every sheet it writes (fingerprints.json). If a sheet on
 disk no longer matches its fingerprint, someone edited it in KiCad: build.py lists the differences and
 writes nothing. Fold the edits into the sheet script (texts can go anywhere nearby), then run again.
+
+A sheet whose content on disk already equals the script's output is never rewritten: its fingerprint is
+just recorded. So once the edits are folded in, the file KiCad saved stays as it is (same UUIDs, so the
+PCB's links to its symbols survive), and it is safe to run with the schematic open.
 """
 import importlib, json, os, subprocess, sys, tempfile
 
@@ -52,6 +56,10 @@ def main():
             if check_only:
                 state = "hand-edited since last build" if hand_edited else "matches last build"
                 print(f"{file}: {state}; {'script output differs' if changed else 'script output identical'}")
+            elif not changed:                   # disk already equals the script output: adopt, don't rewrite
+                last[file] = fingerprint(on_disk)
+                print(f"{file}: matches the script" + (" (hand edits folded in)" if hand_edited else ""))
+                continue
             elif hand_edited and not force:
                 print(f"{file} was edited in KiCad since the last build. Differences from the new script output")
                 print("(your edits, plus any script changes). Fold the edits into " + name + ".py, or use --force:")

@@ -18,7 +18,7 @@ Columns:
 |---|---|---|---|---|---|---|
 | 1 | Bench 5 V terminal | 2-pin 5.08 mm screw terminal (Kangnex WJ500V-5.08-2P) | C8465 | E | Hand | Plus a test loop per pole (any 0.1" loop, hand-soldered) |
 | 2 | Bench-input eFuse; TERMPWR switch | TI TPS259470ARPWR | C3662799 | E | JLC | Bench: OVLO 5.35 V, ILIM 2.22 A, UVLO 4.22 V, EN Zener. TERMPWR: OVLO (via 56 k/47 k) = active-low enable, ILIM 1.22 A, UVLO 4.32 V |
-| 1 | Power mux U1 (bench priority) | TI TPS2116DRLR | C3235557 | E | JLC | **Replaces the LM66200 (C3235556), 2026-09-26 (R068).** VIN1 = bench eFuse out, VIN2 = VBUS, MODE = VIN1, PR1 100 k/39 k, ST → expander P02 |
+| 1 | Power mux U1 (bench priority) | TI TPS2116DRLR | C3235557 | E | JLC | **Replaces the LM66200 (C3235556), 2026-09-26 (R068).** VIN1 = bench eFuse out, VIN2 = VBUS, MODE = VIN1, PR1 100 k/39 k, ST → expander P11 |
 | 2 | 3.3 V rail; terminator 2.83 V | TI TPS73701DCQR | C56848 | E | JLC | 3.3 V = 47 k / 27 k (+ DNP 0603 across R2). 2.83 V = (39 k + 5.6 k) / 33 k. EN = 100 k / 75 k from IN |
 | 1 | CC detection | onsemi LM393DR2G | C7955 | B | JLC | Supply from 5 V; thresholds 0.661 V rising / 0.651 V falling; outputs drive the TERMPWR enable node |
 | 1 | CC threshold reference | CJ431 (TL431-type) SOT-23 | C3113 | B | JLC | 2.500 V from 3.3 V through **470 Ω**. **No cap on the cathode.** Rank (0.5 % / 1 %) unknown: check the reel |
@@ -52,7 +52,7 @@ Columns:
 |---|---|---|---|---|---|---|
 | 1 | SCSI connector | 2×25 keyed box header, 2.54 mm (BOOMELE) | C30006 | E | Hand | LCSC MOQ 5. Footprint `IDC-Header_2x25_P2.54mm_Vertical`. Pin 25 unconnected |
 | 1 | Alt SCSI connector | Half-pitch 50-pin female, right angle | — | — | DNP | Not stocked anywhere; owner sources later. TERMPWR = pin 38; pin 13 unconnected |
-| 4 | RESERVED lines to GND | 0 Ω 0402 | C17168 | B | JLC | All four RESERVED lines (SCSI-2 §5.4.4): IDC50 23/24/27/28 = HD50 12/37/14/39. Remove if mid-chain. Was 2 (24/28 only) until 2026-09-26 |
+| 8 | RESERVED lines to GND | 0 Ω 0402 | C17168 | B | JLC | All four RESERVED lines (SCSI-2 §5.4.4), grounded at each connector: R337–R340 at IDC50 23/24/27/28, R1–R4 at HD50 12/37/14/39 (added during layout). Remove all eight if mid-chain. Was 2 (24/28 only) until 2026-09-26 |
 | 3 | Terminator switches | TI SN74LVTH245APWR | C2652121 | E | JLC | **Only 939 at JLC.** A1–A8 and DIR tied to the 2.83 V rail, `/OE` = enable. 100 nF each |
 | 36 | Terminator resistors | 220 Ω 1 % 0402 (UNI-ROYAL) | C25091 | B | JLC | **Two in parallel per line = 110 Ω** (R006), ≤ 35 mW each. Replaces 18 × 110 Ω C2909312 (extended, would run at 100–110 % of rating) |
 | 1 | Terminator on/off | 2-position DIP switch, SMD (SHOU HAN) | C6331180 | E | JLC | DIP 1 = default, DIP 2 = firmware may override (see `USAGE.md`) |
@@ -64,7 +64,7 @@ Columns:
 | 18 | SCSI receivers | **Nexperia** 74LVC1G17GW,125 SOT-353 | C426705 | E | JLC | Nexperia only (other vendors' limits differ). 3.3 V. Fallback: 3 × Nexperia 74LVC14APW (C6066 / -Q100 C548122) |
 | 18 | Receiver decoupling | 100 nF X7R 0402 | C307331 | B | JLC | One per 1G17 |
 | 20 | LA tap series R | 100 Ω 1 % 0402 | C25076 | B | JLC | At each 1G17 output (18) and marker GPIO (2); the receivers are the Schmitt buffers, so no second bank |
-| 1 | LA header | Liansheng BH-00169, 2×16 2.54 mm keyed box header | C2685073 | E | Hand | Pin-for-pin copy of the Digital Discovery DIN connector (ref. manual Fig. 8), so a straight 32-way IDC ribbon connects it. Replaces the bare header C124382 |
+| 1 | LA header | BOOMELE 2×17 2.54 mm keyed box header | C20920 | E | Hand | Pins 1–32 copy the Digital Discovery DIN connector (ref. manual Fig. 8); 33/34 spare. 34-way ribbon to a 2×16 adapter board. Signal order: `USAGE.md`. Replaces the 2×16 BH-00169 (C2685073), 2026-09-27 |
 
 ## 3. RP2350B and support (`blocks/3-mcu-support.md`)
 
@@ -82,12 +82,12 @@ Columns:
 | 1 | 12 MHz crystal | Abracon ABM8-272-T3 | C20625731 | E | JLC | Same part ×3 on the board (see USB) |
 | 2 | Crystal load caps | 15 pF C0G 0402 | C1548 | B | JLC | |
 | 3 | 1 kΩ | 1 kΩ 1 % 0402 | C11702 | B | JLC | Crystal series, BOOTSEL, RUN |
-| 2 | BOOTSEL, RUN buttons | Owner's through-hole tact switches | — | — | Hand | Size to check (6 × 6 mm?) |
+| 2 | BOOTSEL, RUN buttons | Through-hole 6 × 6 mm tact switches (footprint and C-number: HRO K2-1102DP) | C110153 | E | Hand | Owner's own switches; size to check against the footprint |
 | 1 | microSD socket | SHOU HAN TF PUSH | C393941 | E | JLC | Card detect → expander. 10 µF (C15850) + 100 nF at the socket |
 | 1 | I²C expander | TI TCA9555PWR | C465732 | E | JLC | INT to a test point only (firmware polls) |
 | 1 | TERMPWR sense divider | 100 kΩ + 100 kΩ 0402 + 100 nF | C25741 | B | JLC | TERMPWR → GPIO 46 (ADC6), R066. (Resistors counted in §6) |
 | — | SWD | Tag-Connect TC2030-IDC footprint (pads + clip holes, no part) | — | — | — | 1 VCC, 2 SWDIO, 3 RUN, 4 SWCLK, 5 GND, 6 NC. Owner buys a TC2030-IDC cable + ARM20-CTX adapter for the J-Link EDU |
-| 8 | LEDs | KENTO KT-0603R red (C2286) ×3, KT-0805Y yellow (C2296) ×3, KT-0805G green (C2297) ×2 | — | B | JLC | Red: TERMPWR enable (D201), activity (D502), spare (D503). Yellow: TERMPWR present (D202, 10 k on TERMPWR), status (D501), spare (D504). Green: spare (D505) and hub active (D607, on the CH334's PGANG) through **470 Ω**: at 1–2 mA it needs only ~2.4 V (owner's curve; the 2.6–3.1 V spec is at 5 mA). Expander LEDs on P05–P07, P10, P11 |
+| 8 | LEDs | KENTO KT-0603R red (C2286) ×3, KT-0805Y yellow (C2296) ×3, KT-0805G green (C2297) ×2 | — | B | JLC | Red: TERMPWR enable (D201), activity (D502), spare (D503). Yellow: TERMPWR present (D202, 10 k on TERMPWR), status (D501), spare (D504). Green: spare (D505) and hub active (D607, on the CH334's PGANG) through **470 Ω**: at 1–2 mA it needs only ~2.4 V (owner's curve; the 2.6–3.1 V spec is at 5 mA). Expander LEDs on P02–P06 |
 
 ## 4. USB path (`blocks/4-usb.md`)
 
@@ -146,7 +146,7 @@ LA 100 Ω, 220 Ω terminators, 33 Ω, 12 k, 2.2 k, 3.3 k CS1, …) aren't repeat
 | 1 | 1 MΩ | C26083 | B | CC hysteresis |
 | 3 | 470 Ω | C25117 | B | CJ431 bias (was 510 Ω, R087); green LEDs ×2 |
 | 6 | 1 kΩ | C11702 | B | 3.3 V LEDs ×5 (TERMPWR enable, status, activity, spare red, spare yellow); terminator DIP 1 pull-down |
-| 10 | 0 Ω | C17168 | B | FT1248 rework links: 5 fitted (GPIO 42–45, 34 → I²C/SD); RESERVED ×4 (§2); USB-C shell ×1 |
+| 15 | 0 Ω | C17168 | B | FT1248 rework links: 5 fitted (GPIO 42–45, 34 → I²C/SD); RESERVED ×8 (§2); USB-C shell ×1; HD50 shell ×1 |
 | 5 | 0 Ω 0805 | C17477 | B | FT1248 rework links, DNP (FT232H pins 17–20, 27). 0805 so they're easy to hand-solder at rework (owner, 2026-09-27) |
 
 Dropped on 2026-09-26: 110 Ω C2909312 (→ 2 × 220 Ω), 20 kΩ and 15 kΩ of the old 2.80 V divider,
@@ -170,4 +170,5 @@ rate). Parts that appear several times on the board cost one fee.
 4. ~~Resistor values~~: decided 2026-09-25, revised 2026-09-26 after the design review.
 5. The owner's button size and USB-C part, to confirm the footprints.
 6. ~~TPS2116 datasheet~~: in `reference/datasheets/tps2116.pdf` (2026-09-26).
-7. Test points: +5V_SYS, 3.3 V, 2.83 V, TERMPWR, FT232H_3V3, GND, TCA9555 INT, TERMPWR_EN_INVERTED.
+7. Test points: +5V_SYS, 3.3 V, 2.83 V, TERMPWR, FT232H_3V3, GND, TCA9555 INT, TERMPWR_EN_INVERTED,
+   expander P15–P17. The bench-input test loops (TP101/TP102) were dropped during layout.

@@ -371,8 +371,8 @@ The section below is kept for the reasoning.
   present above 3.56 V nominal (3.24–3.90 V worst). The bench eFuse output is either 0 V or
   ≥ 4.05 V (its UVLO minimum), so whenever the bench is live, PR1 > V_REF and **VIN1 powers the
   board whatever VIN2 is**. With the bench absent, MODE = PR1 = 0 and the mux runs from VIN2.
-- **ST** (open-drain, pulled up 10 kΩ to 3.3 V) is high while VIN1 is in use → expander P02
-  PWR_SRC (1 = bench).
+- **ST** (open-drain, pulled up 10 kΩ to 3.3 V) is high while VIN1 is in use → expander P11
+  IS_BENCH_POWERED (1 = bench; was P02 until the layout-time remap, 2026-10-04).
 - **TERMPWR enable is unchanged:** the bench-present 2N7002 (gate from the bench eFuse output)
   now means "bench is powering the board", because priority mode makes the two the same.
 - **Caps:** VIN1 1 µF (shared with the bench eFuse OUT); VIN2 1 µF + the VBUS snubber below;
@@ -552,8 +552,10 @@ and vent the printed case.
   Tentative pins: in = card detect, TERMPWR_OK (moved to the ADC 2026-09-26), CC detector ×2 (if used), bench present,
   USB present; out = 2 status LEDs, TERM_EN (pencilled in), SD power enable (optional),
   FT232H reset, hub reset. The rest are spare. **Pin-by-pin assignment accepted 2026-09-25:
-  `blocks/5-rp2350-pinout.md`, "I²C expander pinout"** (port 0 = inputs, port 1 = outputs,
-  address 0x20; P01 = TERMPWR_EN_N instead of a CC_OK copy).
+  `blocks/5-rp2350-pinout.md`, "I²C expander pinout"** (address 0x20; P01 = TERMPWR_EN_N
+  instead of a CC_OK copy). **Pins reassigned during layout (2026-10-04):** inputs and outputs
+  are now mixed across both ports, so the "port 0 = inputs, port 1 = outputs" convention is
+  gone. That page is the current map.
   - **Unpowered behavior (datasheet, not measured):** the TCA9535/9555/6416A and the MCP23017
     all spec an I/O clamp for VO > VCC, so an unpowered expander pin clamps toward 0 V. None of
     them fixes the TERM_EN weak spot, so the accepted "documented limitation, no extra parts"
@@ -824,7 +826,7 @@ and the datasheet threshold spreads. Rows marked **(R0xx)** changed in the desig
 | Bench eFuse EN clamp **(R057)** | **BZT52C5V6** (C19077402), EN to GND | EN ≤ 5.9 V | EN would reach 6.83 V (abs max 6.5 V) at 24 V in. At 5 V, EN = 1.42 V, far below the knee |
 | Bench eFuse current limit (R_ILM = 3334/I) **(R095)** | **1.5 k** | 2.22 A | 2.0–2.45 A (±10 %). Above the 1.55 A ceiling and under the TPS2116's 2.5 A. Only a TERMPWR overload at its own limit plus maximum logic (≈ 2.05 A) can reach it: accepted |
 | TPS2116 PR1 divider (from VIN1 = bench) | 100 k / 39 k | 0.281 × VIN1 | Bench counts as present above 3.56 V (3.24–3.90 V); the eFuse output is 0 or ≥ 4.05 V |
-| TPS2116 ST pull-up | 10 k to 3.3 V | → expander P02 | 1 = bench in use |
+| TPS2116 ST pull-up | 10 k to 3.3 V | → expander P11 | 1 = bench in use |
 | VBUS snubber **(R074)** | **1 Ω 0603** (C22936) + **4.7 µF 25 V 0805** (C1779) | ≈ critically damped with 1 µF on VIN2 | 5.7 µF on VBUS in total (≤ 10 µF USB limit) |
 | TERMPWR eFuse EN/UVLO | 39 k / 15 k | 4.32 V | 4.20–4.47 V (kept, R069) |
 | TERMPWR eFuse current limit | 2.4 k + 330 Ω series | 1.22 A | 1.02–1.41 A (datasheet rows; was quoted 1.06–1.39) |
@@ -833,7 +835,7 @@ and the datasheet threshold spreads. Rows marked **(R0xx)** changed in the desig
 | CC input filter ×2 | 10 k + 1 µF (C52923) | τ 10 ms | Bias error ≤ 4 mV |
 | CC reference **(R087)** | CJ431 (C3113) + **470 Ω** bias; 10 k + 3.3 k over 4.7 k; 1 M hysteresis; **no cap on the cathode** | 0.661 / 0.651 V | +6 to +11 mV margin each side (depends on the CJ431 rank) |
 | TERMPWR sense → GPIO 46 (ADC6) **(R066)** | **100 k / 100 k + 100 nF** at the pin | 0.5 × TERMPWR | 0–5.6 V → 0–2.8 V. Draws 26 µA from TERMPWR. Replaces the 22 k/33 k TERMPWR_OK divider into the expander |
-| TERMPWR "present" LED (on TERMPWR itself) **(R065)** | **10 k** (C25744) + red LED | ≈ 0.35 mA | Non-terminator TERMPWR draw ≤ 0.35 + 0.03 (ADC divider) + 0.44 (eFuse leakage when disabled) ≈ 0.82 mA, under SCSI-2's 1.0 mA |
+| TERMPWR "present" LED (on TERMPWR itself) **(R065)** | **10 k** (C25744) + yellow LED (D202) | ≈ 0.35 mA | Non-terminator TERMPWR draw ≤ 0.35 + 0.03 (ADC divider) + 0.44 (eFuse leakage when disabled) ≈ 0.82 mA, under SCSI-2's 1.0 mA |
 | Bench-present 2N7002 gate, fed from the **bench eFuse output** | 10 k series, 100 k to GND | 4.5 V at 5 V | Keeps the ±20 V gate away from a 24 V mistake on the raw terminal |
 | FDV301N gate ×14 | 100 Ω series, **4.7 k** pull-down, 22 pF DNP | | E9 |
 | Terminator resistors ×18 **(R006)** | **2 × 220 Ω 0402 in parallel** (C25091, basic) | 110 Ω | ≤ 35 mW per resistor (55 % of 62.5 mW) at 2.94 V into an asserted line. Replaces the extended 110 Ω C2909312 |
@@ -848,7 +850,7 @@ and the datasheet threshold spreads. Rows marked **(R0xx)** changed in the desig
 | I²C SDA/SCL | 4.7 k to 3.3 V | | |
 | SDIO CMD, D0–D3 pull-ups | 10 k ×5 | | SD spec 10–100 kΩ; D1–D3 aren't wired to the MCU |
 | TCA9555 INT | 10 k pull-up to 3.3 V | | Test point only; firmware polls |
-| SCSI RESERVED lines **(R002)** | 2 × 0 Ω (C17168) to GND, fitted | | IDC50 24/28 = HD50 37/39; remove if the board ever sits mid-chain. IDC50 25 / HD50 13 stay unconnected |
+| SCSI RESERVED lines **(R002)** | 8 × 0 Ω (C17168) to GND, fitted | | All four RESERVED lines, grounded separately at each connector: R337–R340 at the IDC50 (23/24/27/28), R1–R4 at the HD50 (12/37/14/39). Remove all eight if the board ever sits mid-chain. IDC50 25 / HD50 13 stay unconnected |
 
 ### eFuse startup (dVdt) and fault-timer (ITIMER) capacitors (decided 2026-09-26)
 
@@ -1064,7 +1066,7 @@ turned up) and pass only ~4.5–5.5 V on to U1 (LM66200 then, TPS2116 since 2026
   bench supply better); **L** (latch-off: needs a power cycle).
 - **Settings (revised 2026-09-26, design review R057–R061, R095):** OVLO **5.35 V** (5.14–5.59 V
   worst case), UVLO 4.22 V (4.05–4.41 V), current limit **2.22 A** (2.0–2.45 A). Values in
-  "Resistor and small-part values". FLT goes to expander P03 ("bench supply fault"). **Set the
+  "Resistor and small-part values". FLT goes to expander P07 ("bench supply fault"). **Set the
   bench supply to 5.0 V** (5.1 V at most).
   - The old 5.73 V OVLO (5.56–5.93 V) let more than 5.5 V through to the parts downstream
     (mux, both LDOs, FT232H VREGIN; recommended maximum 5.5 V) and onto TERMPWR. The threshold
@@ -1670,7 +1672,7 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
   - **Channel references (owner):** page × 100 + n. DB0 (page 9) is Q901/R901–R903/C901–C902/U901, and I/O (page 26) is U2601…
   - **LA header, decided (owner):** J303 copies the Digital Discovery's 2×16 DIN connector pin for pin (Digilent reference manual Fig. 8, in `reference/datasheets/`).
     - GND on 1, 2, 11, 12, 21, 22, 31, 32. Odd 3–9 = DIN19–16, 13–19 = DIN11–8, 23–29 = DIN3–0. Even 4–10 = DIN23–20, 14–20 = DIN15–12, 24–30 = DIN7–4.
-    - We map DIN0–17 = the 18 lines in GPIO order (DB0…IO), DIN18/19 = LA_MARK0/1, DIN20–23 unused (no-connect).
+    - We map DIN0–17 = the 18 lines in GPIO order (DB0…IO), DIN18/19 = LA_MARK0/1, DIN20–23 unused (no-connect). **Superseded 2026-10-04:** the signals were reshuffled during layout; the current table is in `USAGE.md`.
     - **Cable:** a straight 32-way 0.1" IDC ribbon, female both ends, links pin n to pin n (one cable instead of 20+ flying leads). If the Digital Discovery's case won't take an IDC socket, a 2×16 Dupont-to-Dupont lead does the same. Unverified: whether an IDC socket physically fits the Digital Discovery's connector opening.
     - Digilent's flying-lead drawing (250-096) confirms 2.54 mm Dupont housings with a keying bump. The header was the keyed box header C2685073. **Superseded 2026-09-27:** J303 is a 2×17 box header (C20920), pins 33/34 NC, linked by a 34-way ribbon to an adapter board (open question 16).
 - 2026-09-26: SCSI sheet relaid out at the owner's request.
@@ -1692,7 +1694,7 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
   - **Status and activity LEDs:** red KT-0603R through 1k, lit when the expander pin is low.
   - **microSD J501 (TF PUSH):** 10k pull-ups on CMD and D0–D3, 10 µF + 100 nF.
   - **Test pads** for +5V_SYS, +3V3, VTERMINATOR, TERMPWR, TERMPWR_EN_INVERTED and GND.
-  - **Net names:** SD_CARD_DETECT, LED_STATUS_INVERTED, LED_ACTIVITY_INVERTED, EXPANDER_INTERRUPT_INVERTED, SD_D1–D3. Spare pins P05–P07 and P15–P17 are no-connect.
+  - **Net names:** SD_CARD_DETECT, LED_STATUS_INVERTED, LED_ACTIVITY_INVERTED, EXPANDER_INTERRUPT_INVERTED, SD_D1–D3. Spare pins P05–P07 and P15–P17 are no-connect. (Expander pins moved on 2026-10-04; see that entry.)
   - **Open:** the socket's card-detect pin number and switch polarity. LCSC's datasheet isn't downloadable by script, and the footprint is to do.
   - **Generator fix:** the netlist check caught SD_CMD shorted to +3V3 and SD_D0 to GND. The rail symbols' dogleg on adjacent socket pins landed on the neighbouring stubs. Dense connectors now use inline power symbols.
   - Owner review (io):
@@ -1856,3 +1858,19 @@ output. Two more 100 Ω resistors go on the firmware marker pins. That's 20 in t
   - **B.Cu rule area "Hub crystal: no B.Cu tracks"**, same rectangle; vias allowed. L2 under the crystal is the solid GND plane.
   - DRC after a full zone refill: no new violations; the XI/XO and crystal GND ratsnest lines are gone. The refill also cleared stale L2/L3 fill errors at J201.
   - **Open (hub block):** U601's EP has no GND vias yet, so the oscillator's return path to the chip isn't complete; C601–C603, D606, R604/D607 are unplaced. Keep x 110–113.4, y 74.5–76.5 (west of the hub, north of the guard) for the pin 15/16 decoupling.
+- 2026-10-04: **Pre-order review, and the schematic changes made during layout written back into the docs and generator.**
+  - **Review:** four parallel reviewers (schematic and pinouts, footprints and BOM, layout electrical, JLCPCB manufacturability). No blockers. The copper findings were fixed the same day (below); what stays open is listed at the end.
+  - **Schematic changes made in KiCad during layout** (all checked: ERC clean, PCB parity clean, netlist check 0 problems):
+    - **Expander U501 pins reassigned to suit the routing.** P00 TERMPWR_EFUSE_FAULT_INVERTED, P01 TERMPWR_EN_INVERTED (unchanged), P02/P03/P04 LED_GREEN/YELLOW/RED, P05 LED_ACTIVITY, P06 LED_STATUS, P07 BENCH_EFUSE_FAULT_INVERTED, P10 SD_CARD_DETECT, P11 IS_BENCH_POWERED, P12–P17 unchanged. Inputs and outputs are now mixed across the ports. Power-up is still safe (every pin starts as an input). **Firmware must never drive P00, P01, P07, P10 or P11**: they sit on open-drain outputs or a switch to GND.
+    - **J303 logic-analyzer signals reshuffled** (grounds and unused pins did not move; every line and both markers are still there once). Channel table: `USAGE.md`.
+    - **Terminator channels permuted inside each SN74LVTH245A.** B1–B6: U301 = DB3, DB4, DB5, DB0, DB1, DB2; U302 = ATN, BSY, ACK, DB6, DB7, DBP; U303 = CD, REQ, IO, RST, MSG, SEL. All A inputs and DIR are tied to VTERMINATOR, so the channels are interchangeable.
+    - **HD50 RESERVED pins got their own 0 Ω links R1–R4** (nets `SCSI_RESERVED_xx_hd50`), so each connector's reserved pins are grounded beside it. Eight links in all with R337–R340. The references R1–R4 break the 3xx pattern; renumbering would need a PCB update, so they stay.
+    - **TP101 (BENCH+) and TP102 (GND) test loops removed.** Probe the bench voltage at J101; TP507 is the GND pad.
+    - R419/R421/R423/R425/R427 (DNP rework links) are 0805 (C17477), and the RP2350 GPIO 32–45 remap, were already logged on 2026-09-27.
+  - **Generator:** the edits are folded into `sheet_1_power.py`, `sheet_3_scsi.py` (explicit `LA_PIN` map, terminator groups, R1–R4, `_hd50` nets) and `sheet_5_io.py`; two cosmetic wire differences fixed in `sheet_2_termpwr.py` and `sheet_4_rp2350.py`. `schgen.py` now writes the first instance's reference into a shared channel sheet, as KiCad does on save. `build.py` no longer rewrites a sheet whose content already equals the script's output; it just records the fingerprint, so KiCad's file (and its symbol UUIDs, which the PCB links to) stays as saved. All nine sheet files now match their scripts.
+  - **PCB fixes from the review:**
+    - **L2 cut-out under L401 / VREG_LX** (RP2350 datasheet §6.3.8.1, Fig. 24: "cut away any copper immediately underneath LX/VREG_LX" on boards of 4 or more layers). A rule area on In1.Cu (no copper pour), shaped as the F.Cu VREG_LX zone grown by 0.2 mm plus a 2.5 × 1.9 mm rectangle under the inductor body. The two PGND vias at (146.86, 62.39) and (146.44, 62.82) stay outside it and connected to the plane; the two DVDD_1V1 vias fall inside, which doesn't matter. L3 (+3V3) is not cut: the figure shows layer 2 only.
+    - **LDO heat spreading (U103, U104):** 8 more 0.6/0.3 GND vias in a ring around each SOT-223 tab (11 with the earlier three), at least 0.2 mm off the tab pad so the tab keeps its solder, at 1.3 mm pitch or more so L3 keeps copper between them. GND pours on F.Cu around the tab and on B.Cu underneath, solid connections; the owner enlarged them afterwards. Not simulated. The earlier "≥ 2–3 in² of copper" target is not met on the outer layers alone; the vias into the full L2 plane do most of the spreading.
+    - Fixed by the owner: upstream USB pair rerouted at the `USB_HS` width (it was 0.15 mm for ~14 mm, ≈ 125 Ω differential); +5V_SYS at the mux and the TERMPWR feed widened with more vias; BENCH_5V widened; SCSI tracks moved out from under mounting hole H3's screw head; the cluster GND via that overlapped a pad moved in all 18 clusters.
+  - **Still open before ordering:** JLC BOM/CPL export (hand-fit parts must be excluded; no rotation table yet, and many parts sit at 45°/135°, so check every polarised part in JLC's placement preview, L401's dot on pad 1 first); silkscreen (references hidden, no board name/revision, no "+ / −" at J101, no `JLCJLCJLCJLC` marker); paste on the hand-fit USB-C pads; whether U102's bench input gets its own bypass cap; a 100 nF at pin 20 of each terminator IC and bulk capacitance on TERMPWR near the connectors (both suggested, undecided).
+  - **Two notes on the scsi sheet are now out of date** and need an edit in KiCad or a regenerate: the J303 note ("DIN0-17 = the 18 bus lines in GPIO order") and the reserved-line note ("Remove R337-R340", which should include R1–R4). The scripts reproduce the sheet as saved, stale text included.

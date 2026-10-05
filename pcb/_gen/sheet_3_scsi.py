@@ -38,15 +38,25 @@ def idc_net(pin):
 
 
 def hd_net(pin):
-    """HD50 (set 2): pin k (1-25) = IDC 2k-1; pin 25+k = IDC 2k."""
-    return idc_net(2 * pin - 1) if pin <= 25 else idc_net(2 * (pin - 25))
+    """HD50 (set 2): pin k (1-25) = IDC 2k-1; pin 25+k = IDC 2k.
+    Its four RESERVED pins are separate nets (suffix _hd50) with their own 0R links R1-R4, added during layout
+    so each connector's reserved pins are grounded next to it instead of being bussed across the board."""
+    net = idc_net(2 * pin - 1) if pin <= 25 else idc_net(2 * (pin - 25))
+    return net + "_hd50" if net in RES.values() else net
 
 
 # Digital Discovery DIN connector (reference manual Figure 8): pin -> DIN channel; GND on 1,2,11,12,21,22,31,32.
 DD_PIN_TO_DIN = {3: 19, 5: 18, 7: 17, 9: 16, 13: 11, 15: 10, 17: 9, 19: 8, 23: 3, 25: 2, 27: 1, 29: 0,
                  4: 23, 6: 22, 8: 21, 10: 20, 14: 15, 16: 14, 18: 13, 20: 12, 24: 7, 26: 6, 28: 5, 30: 4}
-DIN_NET = {i: n + "_LOGIC_ANALYZER" for i, (n, _) in enumerate(LINES)}   # DIN0-17 = the 18 lines in GPIO order
-DIN_NET[18], DIN_NET[19] = "LOGIC_ANALYZER_MARKER0", "LOGIC_ANALYZER_MARKER1"             # DIN20-23 unused
+# Header pin -> net. Originally DIN0-17 = the 18 lines in GPIO order and DIN18/19 = the markers; the signals
+# were reshuffled during layout (2026-10) to suit the routing, so the map is now explicit. Every line and both
+# markers are still present once; ground and unused pins did not move.
+LA_PIN = {3: "LOGIC_ANALYZER_MARKER0", 5: "LOGIC_ANALYZER_MARKER1",
+          7: "DB2", 9: "DB1", 13: "DB5", 15: "DB3", 17: "DB7", 19: "ACK", 23: "ATN", 25: "MSG", 27: "IO", 29: "CD",
+          14: "DB0", 16: "DB4", 18: "DBP", 20: "DB6", 24: "BSY", 26: "SEL", 28: "RST", 30: "REQ"}
+assert sorted(n for n in LA_PIN.values() if "MARKER" not in n) == sorted(n for n, _ in LINES)
+# DIN channel -> net, for naming channels in the analyzer software (see USAGE.md)
+DIN_NET = {DD_PIN_TO_DIN[p]: (n if "MARKER" in n else n + "_LOGIC_ANALYZER") for p, n in LA_PIN.items()}
 
 
 def la_net(pin):
@@ -54,7 +64,7 @@ def la_net(pin):
         return "NC"
     if pin in (1, 2, 11, 12, 21, 22, 31, 32):
         return "GND"
-    return DIN_NET.get(DD_PIN_TO_DIN[pin], "NC")
+    return DIN_NET.get(DD_PIN_TO_DIN[pin], "NC")           # DIN20-23 (pins 4, 6, 8, 10) unused
 
 
 R0402, C0402 = "Resistor_SMD:R_0402_1005Metric", "Capacitor_SMD:C_0402_1005Metric"
@@ -246,6 +256,10 @@ def build(paths):
         s.part("Device:R", f"R{337 + i}", "0R", x, 135.89, {"1": net, "2": "GND"},
                props=props(R0402, "C17168", note="RESERVED line to ground (SCSI-2 5.4.4); remove if mid-chain"),
                fields="left")
+    for i, (pin, net) in enumerate(sorted(RES.items())):     # the HD50's own four (added during layout)
+        s.part("Device:R", f"R{1 + i}", "0R", 149.86 + i * 20.32, 135.89, {"1": net + "_hd50", "2": "GND"},
+               props=props(R0402, "C17168", note="RESERVED line to ground (SCSI-2 5.4.4); remove if mid-chain"),
+               fields="left")
     s.note("SCSI-2 5.4.4: RESERVED lines 'shall be connected to ground' in end devices, 'should be open'\n"
            "otherwise. We are an end device: all four fitted. Remove R337-R340 if the board ever sits mid-chain.",
            20.32, 151.13)
@@ -264,7 +278,11 @@ def build(paths):
     heading(s, "Active terminator", 20.32, 180.34,
             "VTERMINATOR (2.83 V) -> SN74LVTH245A, A tied high -> TERMINATOR_OUT_<line> -> 2 x 220R per line (next to each line,\n"
             "right) -> bus. /OE high or unpowered: outputs high-Z. 6 lines per package, in connector order.")
-    groups = [[n for n, _ in LINES][k * 6:(k + 1) * 6] for k in range(3)]
+    # Six lines per package. Which line sits on which B output was permuted during layout to suit the routing
+    # (all A inputs are tied to the rail, so the channels are interchangeable). B1 first.
+    groups = [["DB3", "DB4", "DB5", "DB0", "DB1", "DB2"], ["ATN", "BSY", "ACK", "DB6", "DB7", "DBP"],
+              ["CD", "REQ", "IO", "RST", "MSG", "SEL"]]
+    assert sorted(n for g in groups for n in g) == sorted(n for n, _ in LINES)
     TERM = props("Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm", "C2652121", note="Terminator driver",
                  ds="https://www.ti.com/lit/ds/symlink/sn74lvth245a.pdf")
     for k, grp in enumerate(groups):

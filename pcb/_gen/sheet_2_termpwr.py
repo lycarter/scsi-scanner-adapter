@@ -138,8 +138,7 @@ def build(out_path):
                fields=((rx, yin - 3.81, ""), (rx, yin + 3.81, "")))
         jx, lx = 111.76, 114.3
         s.wire(rx + 3.81, yin, jx, yin)
-        s.wire(jx, yin, lx, yin)
-        s.wire(lx, yin, ux - 7.62, yin)
+        s.wire(jx, yin, ux - 7.62, yin)             # one segment: KiCad merges collinear wires on save
         s.junction(jx, yin)
         s.net_at(f"{cc}_FILTERED", lx, yin, 0)
         s.wire(jx, yin, jx, yin + 3.81)

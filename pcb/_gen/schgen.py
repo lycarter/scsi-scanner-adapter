@@ -212,10 +212,12 @@ class Sheet:
         hr = " (hide yes)" if hide_ref else ""
         FF = FONT.replace("1.27 1.27", f"{fsize} {fsize}")
         fa = a if a in (90, 270) else 0
+        # A sheet file shared by several instances: KiCad saves the first instance's reference here
+        shown = self.instances[0][1](ref) if self.instances else ref
         s = [f'\t(symbol (lib_id {q(lib_id)}) (at {f(x)} {f(y)} {a}) (unit {unit}) (exclude_from_sim no) '
              f'(in_bom {"yes" if in_bom else "no"}) (on_board {"yes" if on_board else "no"}) '
              f'(dnp {"yes" if dnp else "no"}) (uuid {q(U())})\n',
-             f'\t\t(property "Reference" {q(ref)} (at {f(rx)} {f(ry)} {fa}) '
+             f'\t\t(property "Reference" {q(shown)} (at {f(rx)} {f(ry)} {fa}) '
              f'{FF.format(extra=(f" (justify {rj})" if rj else "") + hr)})\n',
              f'\t\t(property "Value" {q(value)} (at {f(vx)} {f(vy)} {fa}) '
              f'{FF.format(extra=(f" (justify {vj})" if vj else "") + (" (hide yes)" if hide_value else ""))})\n']

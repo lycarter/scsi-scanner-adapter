@@ -38,5 +38,12 @@ it, and lists what differs. Copy those changes into the script (a note's exact
 position doesn't matter; near the same spot is fine), then run it again. Running `--check` after an
 edit tells you whether the file on disk still matches its script.
 
+Once a script reproduces the sheet on disk exactly, `build.py` does not rewrite that sheet. It only
+records the new fingerprint ("matches the script (hand edits folded in)"). KiCad's own file stays as
+saved, with the symbol UUIDs the PCB links to, so this is safe to run with the schematic open. A sheet
+is rewritten only when the script's output really differs from it, and that changes the UUIDs of
+symbols added by hand in KiCad: close the schematic first, and afterwards run *Update PCB from
+Schematic* with "re-link footprints by reference".
+
 Needs KiCad 9's `kicad-cli` (`KICAD_CLI` overrides the default macOS path) and the KiCad symbol
 libraries (`KICAD_SYMBOL_DIR`).

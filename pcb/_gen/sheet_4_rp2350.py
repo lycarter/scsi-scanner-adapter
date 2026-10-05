@@ -271,7 +271,6 @@ def build(path):
            fields=((449.58, YY + 6.35, "left"), (449.58, YY + 8.89, "left")))
     s.part("Device:R", "R402", "1k", 455.93, YY, {"1": None, "2": "XOUT"}, a=90,
            props=props(R0402, "C11702", note="XOUT series R (guide 4)"), fields=((455.93, YY - 2.54, ""), (455.93, YY + 2.54, "")))
-    s.wire(452.12, YY, 455.93 - 3.81, YY)
     for k in (("Y401", "1"), ("C419", "1")):
         s.intended[k] = "XIN"
     for k in (("Y401", "3"), ("C420", "1"), ("R402", "1")):

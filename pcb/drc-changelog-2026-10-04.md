@@ -1,5 +1,11 @@
 # Via standardization and DRC cleanup, 2026-10-04
 
+> **Superseded later the same day.** This records the state after the via and DRC cleanup only.
+> The board has changed since: the D607 / C602 courtyard overlap is resolved, silkscreen
+> warnings dropped from 311 to 7 (connector outlines over the board edge), four 0.8/0.4 vias
+> are back on VBUS and +5V_SYS, and the pre-order review fixes are in. See the 2026-10-04
+> entries in `design_docs/3-driver/NOTES.md`. Re-run DRC for current numbers.
+
 Only `scsi-adapter.kicad_pcb` changed. Nothing is committed; `git diff` shows it all and
 `git checkout pcb/scsi-adapter.kicad_pcb` undoes it. Most of the diff's line count is zone refill.
 
