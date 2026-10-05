@@ -3253,6 +3253,16 @@
 		)
 		(uuid "0b22b271-0103-5b11-8478-0f537a5dec1d")
 	)
+	(label "LED_GREEN_INVERTED"
+		(at 160.02 88.9 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "0d145928-d514-5abd-aeac-99c878adf72b")
+	)
 	(label "SD_D1"
 		(at 309.88 146.05 0)
 		(effects
@@ -3273,27 +3283,15 @@
 		)
 		(uuid "0f83229e-ae13-5205-8540-dd66a1baeed6")
 	)
-	(hierarchical_label "IS_BENCH_POWERED"
-		(shape input)
-		(at 160.02 109.22 0)
+	(label "LED_RED_INVERTED"
+		(at 160.02 93.98 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify left bottom)
 		)
-		(uuid "175f4b73-f1fb-5955-a5d6-3d89389b705c")
-	)
-	(hierarchical_label "TERMPWR_EFUSE_FAULT_INVERTED"
-		(shape input)
-		(at 160.02 83.82 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "280f5621-01cd-5131-b448-fa3418da5bb8")
+		(uuid "0fc0115e-6568-53cd-9ac7-5319e5bcbd14")
 	)
 	(label "LED_STATUS_INVERTED"
 		(at 160.02 99.06 0)
@@ -3324,6 +3322,16 @@
 			(justify left bottom)
 		)
 		(uuid "51b0e193-0fb7-5d3a-98fe-79e503c1103f")
+	)
+	(label "LED_YELLOW_INVERTED"
+		(at 160.02 91.44 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "555eae70-ba1a-5974-94c9-c011f5dd45a6")
 	)
 	(label "SD_CARD_DETECT"
 		(at 327.66 96.52 180)
@@ -3374,17 +3382,6 @@
 			(justify left bottom)
 		)
 		(uuid "94240d42-9489-5696-a535-7151f8776a9f")
-	)
-	(hierarchical_label "BENCH_EFUSE_FAULT_INVERTED"
-		(shape input)
-		(at 160.02 101.6 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "982b8716-a3dd-5cb1-bdd6-14a791055065")
 	)
 	(label "EXPANDER_P16"
 		(at 160.02 121.92 0)
@@ -3517,16 +3514,6 @@
 		)
 		(uuid "0b6e7099-fe09-54cd-bdfd-315ad0041bba")
 	)
-	(label "LED_GREEN_INVERTED"
-		(at 160.02 88.9 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "0d145928-d514-5abd-aeac-99c878adf72b")
-	)
 	(hierarchical_label "I2C_SDA"
 		(shape bidirectional)
 		(at 38.1 69.85 0)
@@ -3538,16 +3525,6 @@
 		)
 		(uuid "0ea12af2-ce7b-5fe9-a4f4-7e36e6e5bce9")
 	)
-	(label "LED_RED_INVERTED"
-		(at 160.02 93.98 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "0fc0115e-6568-53cd-9ac7-5319e5bcbd14")
-	)
 	(hierarchical_label "FT232H_RESET_INVERTED"
 		(shape output)
 		(at 160.02 114.3 0)
@@ -3558,6 +3535,28 @@
 			(justify left)
 		)
 		(uuid "0fd75abf-0a8a-5ca2-9ab6-1344cfebfe32")
+	)
+	(hierarchical_label "IS_BENCH_POWERED"
+		(shape input)
+		(at 160.02 109.22 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "175f4b73-f1fb-5955-a5d6-3d89389b705c")
+	)
+	(hierarchical_label "TERMPWR_EFUSE_FAULT_INVERTED"
+		(shape input)
+		(at 160.02 83.82 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "280f5621-01cd-5131-b448-fa3418da5bb8")
 	)
 	(hierarchical_label "I2C_SCL"
 		(shape input)
@@ -3603,16 +3602,6 @@
 		)
 		(uuid "4d56a25d-7ce3-5d21-9483-6b7693d0f1d3")
 	)
-	(label "LED_YELLOW_INVERTED"
-		(at 160.02 91.44 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "555eae70-ba1a-5974-94c9-c011f5dd45a6")
-	)
 	(hierarchical_label "SD_CMD"
 		(shape bidirectional)
 		(at 327.66 78.74 180)
@@ -3634,6 +3623,17 @@
 			(justify left)
 		)
 		(uuid "727cb457-e675-5e75-9f9d-1a2ce4343e5d")
+	)
+	(hierarchical_label "BENCH_EFUSE_FAULT_INVERTED"
+		(shape input)
+		(at 160.02 101.6 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "982b8716-a3dd-5cb1-bdd6-14a791055065")
 	)
 	(hierarchical_label "TERMPWR_EN_INVERTED"
 		(shape input)

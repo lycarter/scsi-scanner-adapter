@@ -261,7 +261,7 @@ def build(paths):
                props=props(R0402, "C17168", note="RESERVED line to ground (SCSI-2 5.4.4); remove if mid-chain"),
                fields="left")
     s.note("SCSI-2 5.4.4: RESERVED lines 'shall be connected to ground' in end devices, 'should be open'\n"
-           "otherwise. We are an end device: all four fitted. Remove R337-R340 if the board ever sits mid-chain.",
+           "otherwise. We are an end device: all four fitted. Remove R337-R340 and R1-R4 if the board ever sits mid-chain.",
            20.32, 151.13)
     s.text("J303 logic-analyzer header (Digital Discovery DIN)", 177.8, 36.83, 1.27)
     connector(s, "Connector_Generic:Conn_02x17_Odd_Even", "J303", "2x17 box header", 200.66, 66.04, la_net,
@@ -269,15 +269,15 @@ def build(paths):
                     note="BOOMELE 2x17 keyed box header (same family as J301)"),
               fields=((195.58, 43.18, "left"), (195.58, 92.2, "left")))
     s.note("Pins 1-32 copy the Digital Discovery's 2x16 DIN\nconnector (reference manual Fig. 8); 33/34 spare.\n"
-           "A standard 34-way ribbon runs to a 2x16-to-34 adapter\nboard (pin n to pin n).\nDIN0-17 = the 18 bus lines in GPIO order (DB0..IO),\n"
-           "DIN18/19 = the two markers, DIN20-23 unused.\nGND on 1, 2, 11, 12, 21, 22, 31, 32.\n"
+           "A standard 34-way ribbon runs to a 2x16-to-34 adapter\nboard (pin n to pin n).\nAvailable signals:\n"
+           "- the 18 bus lines (DB0..IO)\n- two MCU-connected markers\nGND on 1, 2, 11, 12, 21, 22, 31, 32.\n"
            "Each tap has 100R at its receiver (channel sheets).", 177.8, 100.33)
 
     # ================= Active terminator =================
     s.rect(12.7, 172.72, 254.0, 292.1)
     heading(s, "Active terminator", 20.32, 180.34,
             "VTERMINATOR (2.83 V) -> SN74LVTH245A, A tied high -> TERMINATOR_OUT_<line> -> 2 x 220R per line (next to each line,\n"
-            "right) -> bus. /OE high or unpowered: outputs high-Z. 6 lines per package, in connector order.")
+            "right) -> bus. /OE high or unpowered: outputs high-Z. 6 lines per package.")
     # Six lines per package. Which line sits on which B output was permuted during layout to suit the routing
     # (all A inputs are tied to the rail, so the channels are interchangeable). B1 first.
     groups = [["DB3", "DB4", "DB5", "DB0", "DB1", "DB2"], ["ATN", "BSY", "ACK", "DB6", "DB7", "DBP"],

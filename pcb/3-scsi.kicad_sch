@@ -5583,7 +5583,7 @@
 		)
 		(uuid b27942ca-4d16-542c-b61c-022c748f7fb2)
 	)
-	(text "Pins 1-32 copy the Digital Discovery's 2x16 DIN\nconnector (reference manual Fig. 8); 33/34 spare.\nA standard 34-way ribbon runs to a 2x16-to-34 adapter\nboard (pin n to pin n).\nDIN0-17 = the 18 bus lines in GPIO order (DB0..IO),\nDIN18/19 = the two markers, DIN20-23 unused.\nGND on 1, 2, 11, 12, 21, 22, 31, 32.\nEach tap has 100R at its receiver (channel sheets)."
+	(text "Pins 1-32 copy the Digital Discovery's 2x16 DIN\nconnector (reference manual Fig. 8); 33/34 spare.\nA standard 34-way ribbon runs to a 2x16-to-34 adapter\nboard (pin n to pin n).\nAvailable signals:\n- the 18 bus lines (DB0..IO)\n- two MCU-connected markers\nGND on 1, 2, 11, 12, 21, 22, 31, 32.\nEach tap has 100R at its receiver (channel sheets)."
 		(exclude_from_sim no)
 		(at 177.8 100.33 0)
 		(effects
@@ -5666,7 +5666,7 @@
 		)
 		(uuid "78081344-8ad6-5d77-b1af-644dce9e7bd0")
 	)
-	(text "SCSI-2 5.4.4: RESERVED lines 'shall be connected to ground' in end devices, 'should be open'\notherwise. We are an end device: all four fitted. Remove R337-R340 if the board ever sits mid-chain."
+	(text "SCSI-2 5.4.4: RESERVED lines 'shall be connected to ground' in end devices, 'should be open'\notherwise. We are an end device: all four fitted. Remove R337-R340 and R1-R4 if the board ever sits mid-chain."
 		(exclude_from_sim no)
 		(at 20.32 151.13 0)
 		(effects
@@ -5769,7 +5769,7 @@
 		)
 		(uuid "e50459e3-3547-586e-a0ca-98fcbb6135aa")
 	)
-	(text "VTERMINATOR (2.83 V) -> SN74LVTH245A, A tied high -> TERMINATOR_OUT_<line> -> 2 x 220R per line (next to each line,\nright) -> bus. /OE high or unpowered: outputs high-Z. 6 lines per package, in connector order."
+	(text "VTERMINATOR (2.83 V) -> SN74LVTH245A, A tied high -> TERMINATOR_OUT_<line> -> 2 x 220R per line (next to each line,\nright) -> bus. /OE high or unpowered: outputs high-Z. 6 lines per package."
 		(exclude_from_sim no)
 		(at 20.32 184.84 0)
 		(effects
