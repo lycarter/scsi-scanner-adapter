@@ -147,6 +147,7 @@
     <button role="tab" data-page="select">Select &amp; edit</button>
     <button role="tab" data-page="layers">Layers &amp; view</button>
     <button role="tab" data-page="place">Place &amp; zones</button>
+    <button role="tab" data-page="silk">Silkscreen</button>
     <button role="tab" data-page="bind">Worth binding</button>
     <span class="spacer"></span>
     <input id="q" type="search" placeholder="Filter… (e.g. via)" aria-label="Filter shortcuts">
@@ -385,6 +386,92 @@
           <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>C</kbd></td><td class="d">Circle</td></tr>
           <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>P</kbd></td><td class="d">Polygon</td></tr>
           <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>H</kbd></td><td class="d">Orthogonal dimension</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SILKSCREEN -->
+  <section class="page" id="silk">
+    <p class="page-intro">Silkscreen has almost no keys of its own. You use the ordinary move and edit keys, with the Selection Filter narrowed to text, and the bulk tools in the Edit menu. This board's defaults are 1.0 mm text with 0.15 mm stroke, and DRC warns below those same values.</p>
+    <div class="flow">
+      <h2>Tidying designators</h2>
+      <ol>
+        <li>Selection Filter: <em>Text</em> only</li>
+        <li><kbd>N</kbd> finer grid</li>
+        <li>select several</li>
+        <li><kbd>⌘</kbd><span class="plus">+</span><kbd>M</kbd> place each</li>
+        <li><kbd>R</kbd> rotate</li>
+        <li>run DRC</li>
+      </ol>
+    </div>
+
+    <div class="grid">
+      <div class="card hero">
+        <h3>Move a designator</h3>
+        <table>
+          <tr><td class="k">click text</td><td class="d">Select the reference or value on its own, not the footprint<small>Selection Filter (bottom right): untick <em>Footprints</em> so a box-select only grabs text</small></td></tr>
+          <tr><td class="k"><kbd>M</kbd></td><td class="d">Move the text; the footprint stays put</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>M</kbd></td><td class="d">Move the selected texts one at a time<small><kbd>Tab</kbd> skips to the next one</small></td></tr>
+          <tr><td class="k"><kbd>R</kbd> <kbd>⇧</kbd><span class="plus">+</span><kbd>R</kbd></td><td class="d">Rotate counter-clockwise or clockwise</td></tr>
+          <tr><td class="k"><kbd>⇧</kbd><span class="plus">+</span><kbd>M</kbd></td><td class="d">Move by an exact offset</td></tr>
+          <tr><td class="k"><kbd>N</kbd> <kbd>⇧</kbd><span class="plus">+</span><kbd>N</kbd></td><td class="d">Next or previous grid size<small>Text snaps to the grid, so drop to a fine one for tight spots</small></td></tr>
+          <tr><td class="k"><kbd>E</kbd></td><td class="d">Text properties: size, thickness, layer, visible, keep upright, knockout</td></tr>
+          <tr><td class="k"><kbd>L</kbd></td><td class="d">Lock the text in place</td></tr>
+        </table>
+      </div>
+
+      <div class="card hero">
+        <h3>Bulk changes <span class="tag">menus</span></h3>
+        <table>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Edit → Edit Text &amp; Graphics Properties<small>Set size, thickness or layer for every reference, value or graphic at once. Filter by layer or footprint, or tick "set to layer default values". <code>editTextAndGraphics</code></small></td></tr>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Right-click a footprint → Update Footprint<small>Its options can reset text size, style and position to the library's. <code>updateFootprint</code></small></td></tr>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Edit → Global Deletions<small>Delete all board text or graphics, limited to chosen layers. <code>globalDeletions</code></small></td></tr>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Tools → Cleanup Graphics<small>Merges duplicate lines and removes zero-length ones. <code>cleanupGraphics</code></small></td></tr>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Edit → Swap Layers<small>Move everything on one layer to another, such as F.Fab to F.Silkscreen. <code>swapLayers</code></small></td></tr>
+          <tr><td class="k"><kbd>E</kbd> on footprint</td><td class="d">Footprint properties: the fields table has a Show column for hiding a value or reference</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Add text &amp; art</h3>
+        <table>
+          <tr><td class="k">Appearance panel</td><td class="d">Make F.Silkscreen or B.Silkscreen the active layer first<small>Drawing tools draw on the active layer, and no key jumps to a silk layer</small></td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>T</kbd></td><td class="d">Text<small>Variables work, such as <code>${REVISION}</code> and <code>${ISSUE_DATE}</code> from Page Settings</small></td></tr>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Text box (wraps, optional border) <small><code>textbox</code></small></td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>L</kbd></td><td class="d">Line</td></tr>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Rectangle <small><code>rectangle</code></small></td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>C</kbd></td><td class="d">Circle</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>P</kbd></td><td class="d">Polygon (filled shapes, arrows, pin-1 marks)</td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>+</kbd> <kbd>⌘</kbd><span class="plus">+</span><kbd>-</kbd></td><td class="d">Thicker or thinner line <span class="tag">while drawing</span></td></tr>
+          <tr><td class="k"><kbd>⌘</kbd><span class="plus">+</span><kbd>⇧</kbd><span class="plus">+</span><kbd>F</kbd></td><td class="d">Place imported graphics (SVG or DXF)<small>For a bitmap logo, use Image Converter in the project window to make a silkscreen footprint</small></td></tr>
+          <tr><td class="k"><kbd>F</kbd></td><td class="d">Flip to the other side's silkscreen, mirrored<small>Back-side text must be mirrored, and flipping does it for you</small></td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>See it clearly</h3>
+        <table>
+          <tr><td class="k"><kbd>H</kbd></td><td class="d">Dim or hide every layer but the active one<small>With a silk layer active, this shows only the silkscreen</small></td></tr>
+          <tr><td class="k">Appearance panel</td><td class="d">Layers tab: hide F.Fab and F.Courtyard to cut clutter<small>Objects tab: toggle References, Values and Footprint Text</small></td></tr>
+          <tr><td class="k">Presets</td><td class="d">Front or Back Assembly View, at the bottom of the Appearance panel</td></tr>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">View → Flip Board View, to read the back silkscreen unmirrored <small><code>flipBoard</code></small></td></tr>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Show text as outlines <small><code>textOutlines</code></small></td></tr>
+          <tr><td class="k"><kbd>⌥</kbd><span class="plus">+</span><kbd>3</kbd></td><td class="d">3D viewer, the closest preview of the printed result</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Check before fab</h3>
+        <table>
+          <tr><td class="k"><span class="unbound">—</span></td><td class="d">Run DRC <small><code>runDRC</code>, suggested key <kbd>I</kbd></small></td></tr>
+          <tr><td class="k">warning</td><td class="d">Silkscreen overlap: two silk items collide</td></tr>
+          <tr><td class="k">warning</td><td class="d">Silkscreen clipped by solder mask: silk runs over a pad or mask opening</td></tr>
+          <tr><td class="k">warning</td><td class="d">Text height under 1.0 mm or thickness under 0.15 mm</td></tr>
+          <tr><td class="k">warning</td><td class="d">Mirrored text on the front, or unmirrored text on the back</td></tr>
+          <tr><td class="k">ignored</td><td class="d">Silkscreen clipped by the board edge<small>Turned off on this board, so look at the edges yourself</small></td></tr>
+          <tr><td class="k">Board Setup</td><td class="d">Text &amp; Graphics → Defaults sets new-item sizes per layer<small>Design Rules → Constraints sets the minimum text height and thickness; Violation Severity sets warning, error or ignore</small></td></tr>
+          <tr><td class="k">Plot</td><td class="d">"Subtract soldermask from silkscreen" trims silk off the pads in the Gerbers</td></tr>
         </table>
       </div>
     </div>

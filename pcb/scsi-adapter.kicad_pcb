@@ -3405,8 +3405,8 @@
 		(at 180.2 53.9)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP510"
-			(at -4.15 -1 0)
+		(property "Reference" "TEST-3"
+			(at -4.7 0 0)
 			(layer "F.SilkS")
 			(uuid "846e5a80-3c32-414b-a462-3969745a8417")
 			(effects
@@ -4898,6 +4898,7 @@
 		(property "Reference" "SW402"
 			(at 9.075 2.25 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "6ff8507e-1ef5-42a8-a725-cd5a6134f9b5")
 			(effects
 				(font
@@ -5414,8 +5415,8 @@
 		(at 115 44 90)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP701"
-			(at 2.325 0 0)
+		(property "Reference" "FT232H_3V3"
+			(at 0 -6.55 0)
 			(layer "F.SilkS")
 			(uuid "cf84931d-5f7a-45df-bd83-310c2ecc9a41")
 			(effects
@@ -6555,8 +6556,8 @@
 		(at 136.5 88.3)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP503"
-			(at 0 -2.325 0)
+		(property "Reference" "+3V3"
+			(at 1 -2.5 0)
 			(layer "F.SilkS")
 			(uuid "2eedc6f3-d722-4036-970f-23d9e9e078b6")
 			(effects
@@ -9771,6 +9772,7 @@
 		(property "Reference" "J303"
 			(at 7.295 20.32 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "f8ef9349-64c8-4815-a0ba-c185cebe8489")
 			(effects
 				(font
@@ -10857,8 +10859,8 @@
 		(at 180.2 56.4)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP505"
-			(at -2.325 0 90)
+		(property "Reference" "TERMPWR"
+			(at -5.35 0 0)
 			(layer "F.SilkS")
 			(uuid "fd0073df-f00d-44e7-9b7c-350d70f1db0a")
 			(effects
@@ -19949,8 +19951,8 @@
 		(at 193.95 62.25)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP501"
-			(at 0 2.325 0)
+		(property "Reference" "INTERRUPT_N"
+			(at 5 -2.1 45)
 			(layer "F.SilkS")
 			(uuid "5c265e1d-04c5-4ff5-8ceb-0a363f255606")
 			(effects
@@ -20079,6 +20081,7 @@
 		(property "Reference" "C304"
 			(at 0 -1.16 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "25a8fd12-0e09-491c-a6dc-d815e67dd412")
 			(effects
 				(font
@@ -21889,6 +21892,7 @@
 			(at -4.115001 0.75 0)
 			(unlocked yes)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "d2d0f23a-3d31-4e9e-8798-24f139136d90")
 			(effects
 				(font
@@ -27725,8 +27729,8 @@
 		(at 133.9 88.3)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP507"
-			(at -2.325001 -1 90)
+		(property "Reference" "GND"
+			(at -1 -2.5 0)
 			(layer "F.SilkS")
 			(uuid "5fc2b660-ca7b-4841-80d2-50d0845172e7")
 			(effects
@@ -28885,6 +28889,7 @@
 		(property "Reference" "C306"
 			(at 0 -1.16 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "b2edfa43-3c52-4b0e-b18f-22a87c62772b")
 			(effects
 				(font
@@ -36084,8 +36089,8 @@
 		(at 180.2 51.4)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP509"
-			(at 2.325 0 90)
+		(property "Reference" "TEST-2"
+			(at -4.55 0 0)
 			(layer "F.SilkS")
 			(uuid "27a3de55-aee8-44bd-be5c-a775f5f36623")
 			(effects
@@ -38721,6 +38726,7 @@
 		(property "Reference" "C308"
 			(at 0 -1.68 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "61adc1a8-1a77-4b0e-9bca-214ee72ca7f0")
 			(effects
 				(font
@@ -44797,6 +44803,7 @@
 			(at 43.041 -5.9128 0)
 			(unlocked yes)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "9c373648-2018-4379-a012-6e0590da6003")
 			(effects
 				(font
@@ -45587,6 +45594,7 @@
 		(property "Reference" "J401"
 			(at -5.325 0 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "a06cf658-321e-4420-a611-91a3386309ee")
 			(effects
 				(font
@@ -51757,6 +51765,7 @@
 		(property "Reference" "J201"
 			(at 2.845001 -1.725 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "2093fb16-1d44-4249-a058-ffd31365bb96")
 			(effects
 				(font
@@ -52006,6 +52015,7 @@
 			(at 9.675001 -4.0375 90)
 			(unlocked yes)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "402d8e4a-9682-4a81-b33a-ec4f0ff64e1a")
 			(effects
 				(font
@@ -53962,6 +53972,7 @@
 		(property "Reference" "C307"
 			(at 0 -1.68 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "441937d5-9524-4445-9e5a-427deb4fdeae")
 			(effects
 				(font
@@ -54565,11 +54576,11 @@
 	(footprint "TestPoint:TestPoint_Pad_D1.5mm"
 		(layer "F.Cu")
 		(uuid "ac4829c1-30cf-4881-976b-48ce0f713ad9")
-		(at 194.1 45.4)
+		(at 201.05 43.8)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP506"
-			(at 0 -2.325 0)
+		(property "Reference" "TERMPWR_EN_N"
+			(at 7.25 0 0)
 			(layer "F.SilkS")
 			(uuid "78d922f5-d21f-48f5-829a-d1b3079d2a4a")
 			(effects
@@ -54695,8 +54706,8 @@
 		(at 133.9 91)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP502"
-			(at 4.15 0 0)
+		(property "Reference" "5V_SYS"
+			(at 4.4 0 0)
 			(layer "F.SilkS")
 			(uuid "609f15bb-bc23-4739-8c44-3a5fcb0d97e1")
 			(effects
@@ -54825,6 +54836,7 @@
 		(property "Reference" "J301"
 			(at 8.645 22.48 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "64d9c299-33ea-49e7-8e38-01b634eeccb7")
 			(effects
 				(font
@@ -56326,6 +56338,7 @@
 		(property "Reference" "C305"
 			(at 0 -1.16 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "065d0c38-8549-4e5f-b996-025ed1596805")
 			(effects
 				(font
@@ -59096,8 +59109,8 @@
 		(at 180.2 48.9)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP508"
-			(at -2.325 0 90)
+		(property "Reference" "TEST-1"
+			(at -4.4 0 0)
 			(layer "F.SilkS")
 			(uuid "a914b3e8-39cf-4698-afd7-de75e0c613ce")
 			(effects
@@ -60531,8 +60544,8 @@
 		(at 170.7 75.5)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP504"
-			(at 0 2.325 0)
+		(property "Reference" "VTERMINATOR"
+			(at 0 -7 90)
 			(layer "F.SilkS")
 			(uuid "59c0d6ed-f79d-43b8-becd-069096d98b50")
 			(effects
@@ -63321,6 +63334,7 @@
 		(property "Reference" "SW401"
 			(at 3.249999 -2.575 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "846808cb-c5c4-4d15-9d4d-0231b6bb2c15")
 			(effects
 				(font
@@ -64704,6 +64718,7 @@
 		(property "Reference" "C114"
 			(at 0 -1.16 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "1a809f81-2f0c-49a4-bbf0-0f2a3398fb43")
 			(effects
 				(font
@@ -70886,6 +70901,7 @@
 			(at 4.125 0 0)
 			(unlocked yes)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "42746a2a-3bce-4958-aab4-3a108a7f29b4")
 			(effects
 				(font
@@ -75788,6 +75804,7 @@
 		(property "Reference" "J601"
 			(at -7.745 1.44 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "df49089e-b5f2-406f-831a-fed1acd9f7cc")
 			(effects
 				(font
@@ -79407,6 +79424,66 @@
 		(fill no)
 		(layer "Edge.Cuts")
 		(uuid "65e8f345-20e9-484a-806c-eb3054472afe")
+	)
+	(gr_text "BOOTSEL"
+		(at 134.1 104.35 0)
+		(layer "F.SilkS")
+		(uuid "c896a7e2-23b1-42fc-809b-e7be323ffed8")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "TERMINATOR BEHAVIOR (ON = LEFT)\nTOP BOT\n 0   0   | OFF\n 1   0   | Default OFF, firmware enable\n 0   1   | ON\n 1   1   | Default ON, firmware disable\n"
+		(at 178.35 42.15 0)
+		(layer "F.SilkS")
+		(uuid "d63b9678-1050-4b0f-8749-5b7890553159")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "TERMPWR DISABLED\n"
+		(at 186.55 47 0)
+		(layer "F.SilkS")
+		(uuid "9e982d37-7dab-442f-a72b-7dd22b7aaa8a")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "ACTIVITY"
+		(at 195.1 50.7 0)
+		(layer "F.SilkS")
+		(uuid "01cea1e9-279b-4944-94e8-e453dccc7fcf")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "STATUS"
+		(at 195.9 48.85 0)
+		(layer "F.SilkS")
+		(uuid "7b80beea-17bf-416d-8000-cccc53885afa")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
 	)
 	(segment
 		(start 202.543934 87.975736)
@@ -87761,14 +87838,6 @@
 		(uuid "607f8f11-c9ce-40f4-9f6e-9ba0c5f2aac3")
 	)
 	(segment
-		(start 194.1 45.4)
-		(end 195.35 45.4)
-		(width 0.15)
-		(layer "F.Cu")
-		(net 63)
-		(uuid "7442c123-a7c9-47ae-81a1-8ab141c1e7ef")
-	)
-	(segment
 		(start 202.675 46.4)
 		(end 196.35 46.4)
 		(width 0.15)
@@ -87777,20 +87846,20 @@
 		(uuid "7de59077-7951-447c-a023-00acb1718cb1")
 	)
 	(segment
-		(start 195.35 45.4)
-		(end 196.35 46.4)
-		(width 0.15)
-		(layer "F.Cu")
-		(net 63)
-		(uuid "7e46e8b7-b5db-4008-b0f3-eeca119fc20d")
-	)
-	(segment
 		(start 115.165 88.630001)
 		(end 115.775 88.630001)
 		(width 0.3)
 		(layer "F.Cu")
 		(net 63)
 		(uuid "8b0b87ae-6e7b-4a8a-a1c6-2b8d405985d3")
+	)
+	(segment
+		(start 201.05 43.8)
+		(end 198.45 46.4)
+		(width 0.15)
+		(layer "F.Cu")
+		(net 63)
+		(uuid "8b488bd6-b584-4d9c-b064-354ca973051a")
 	)
 	(segment
 		(start 197.857537 65.6)
@@ -87831,6 +87900,14 @@
 		(layer "F.Cu")
 		(net 63)
 		(uuid "e211c603-e9e3-4bfd-b278-763b51456757")
+	)
+	(segment
+		(start 198.45 46.4)
+		(end 196.35 46.4)
+		(width 0.15)
+		(layer "F.Cu")
+		(net 63)
+		(uuid "e64eacb7-5947-4949-839c-fb35395a52bb")
 	)
 	(via
 		(at 113.8 87.265001)
