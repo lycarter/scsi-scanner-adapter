@@ -5412,7 +5412,7 @@
 	(footprint "TestPoint:TestPoint_Pad_D1.5mm"
 		(layer "F.Cu")
 		(uuid "168865fc-8f8b-4cdc-b67d-847f77438d6d")
-		(at 115 44 90)
+		(at 115.85 47.3 90)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
 		(property "Reference" "FT232H_3V3"
@@ -79425,6 +79425,18 @@
 		(layer "Edge.Cuts")
 		(uuid "65e8f345-20e9-484a-806c-eb3054472afe")
 	)
+	(gr_text "SCSI to USB-C\nrev 1\nLandon Carter\nMIT License\n"
+		(at 105.65 44 0)
+		(layer "F.SilkS")
+		(uuid "9dfe888a-2e68-4829-adeb-7b70c8ec8a19")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
 	(gr_text "BOOTSEL"
 		(at 134.1 104.35 0)
 		(layer "F.SilkS")
@@ -99406,14 +99418,6 @@
 		(uuid "1bf05657-9ab1-462d-9186-97c014a25a66")
 	)
 	(segment
-		(start 116.8 45.8)
-		(end 115 44)
-		(width 0.3)
-		(layer "F.Cu")
-		(net 194)
-		(uuid "3dd5a7e6-1f5a-4ae0-9225-9023cbfa1a27")
-	)
-	(segment
 		(start 107.8 59.2875)
 		(end 107.85 59.2375)
 		(width 0.3)
@@ -99444,6 +99448,14 @@
 		(layer "F.Cu")
 		(net 194)
 		(uuid "5020c605-2c98-4c7d-87ec-b23cdbe9388d")
+	)
+	(segment
+		(start 116.8 48.25)
+		(end 115.85 47.3)
+		(width 0.3)
+		(layer "F.Cu")
+		(net 194)
+		(uuid "5e5d3c96-a485-4334-87bb-5016b3b3f998")
 	)
 	(segment
 		(start 108.9 53.9)
@@ -99492,6 +99504,14 @@
 		(layer "F.Cu")
 		(net 194)
 		(uuid "8920adad-f563-4f3a-8733-9e72394ed2c0")
+	)
+	(segment
+		(start 116.8 48.9)
+		(end 116.8 48.25)
+		(width 0.3)
+		(layer "F.Cu")
+		(net 194)
+		(uuid "89361ce0-3869-4097-bbf1-e3736a96ebba")
 	)
 	(segment
 		(start 110.88 55)
@@ -99660,14 +99680,6 @@
 		(layer "F.Cu")
 		(net 194)
 		(uuid "f75521f3-a116-4640-89c1-5af513e427a3")
-	)
-	(segment
-		(start 116.8 48.9)
-		(end 116.8 45.8)
-		(width 0.3)
-		(layer "F.Cu")
-		(net 194)
-		(uuid "f9fb5d34-5524-4307-b489-74ec3f36de13")
 	)
 	(via
 		(at 109 59.3)
