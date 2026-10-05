@@ -166,6 +166,8 @@ def build(out_path):
                         ("R", "R108", "39k", "C25783", {"note": "PR1 divider"})],
           "BENCH_5V", "GND", taps={0: "MUX_BENCH_DETECT"})
     C("C106", "1uF 25V", "C52923", 279.4, 95.25, "VBUS", "GND", note="VIN2")
+    # VIN1's own bypass, added after the 2026-10-04 layout review: C105 sits at the eFuse, ~19 mm of track away
+    C("C114", "1uF 25V", "C52923", 264.16, 121.92, "BENCH_5V", "GND", note="VIN1: place at U102 pin 3")
     chain(297.18, 88.9, [("R", "R110", "1R", "C22936", {"fp": R0603, "note": "VBUS snubber"}),
                          ("C", "C107", "4.7uF 25V", "C1779", {"fp": C0805, "note": "VBUS snubber"})],
           "VBUS", "GND")

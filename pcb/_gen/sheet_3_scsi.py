@@ -260,6 +260,13 @@ def build(paths):
         s.part("Device:R", f"R{1 + i}", "0R", 149.86 + i * 20.32, 135.89, {"1": net + "_hd50", "2": "GND"},
                props=props(R0402, "C17168", note="RESERVED line to ground (SCSI-2 5.4.4); remove if mid-chain"),
                fields="left")
+    # TERMPWR bulk, one beside each connector's TERMPWR pin (2026-10-04 layout review: the rail had 2 x 1 uF,
+    # both 38-51 mm from the connectors).
+    for ref, x, where in (("C307", 228.6, "J301 pin 26"), ("C308", 246.38, "J302 pin 38")):
+        s.part("Device:C", ref, "4.7uF 25V", x, 135.89, {"1": "TERMPWR", "2": "GND"},
+               props=props("Capacitor_SMD:C_0805_2012Metric", "C1779", note=f"TERMPWR bulk: place at {where}"),
+               fields="left")
+    s.note("C307/C308: TERMPWR bulk, one beside each\nconnector's TERMPWR pin (J301.26, J302.38).", 205.74, 151.13)
     s.note("SCSI-2 5.4.4: RESERVED lines 'shall be connected to ground' in end devices, 'should be open'\n"
            "otherwise. We are an end device: all four fitted. Remove R337-R340 and R1-R4 if the board ever sits mid-chain.",
            20.32, 151.13)
@@ -309,6 +316,10 @@ def build(paths):
         s.part("Device:C", f"C{301 + k}", "100nF 50V", IX + 25.4, IY + 15.24, {"1": "VTERMINATOR", "2": "GND"},
                props=props(C0402, "C307331", note=f"{ref} decoupling"),
                fields=((IX + 27.94, IY + 13.97, "left"), (IX + 27.94, IY + 16.51, "left")))
+        # second cap right at VCC (2026-10-04 layout review: the first one landed at the pin-1 end, 6-7 mm away)
+        s.part("Device:C", f"C{304 + k}", "100nF 50V", IX + 25.4, IY + 38.1, {"1": "VTERMINATOR", "2": "GND"},
+               props=props(C0402, "C307331", note=f"{ref} decoupling: place at VCC pin 20"),
+               fields=((IX + 27.94, IY + 36.83, "left"), (IX + 27.94, IY + 39.37, "left")))
     s.note("A1-A8 and DIR tie straight to the rail: DIR high = A->B, and bus-hold inputs mustn't get pull resistors.\n"
            "B7/B8 unused.", 20.32, 281.94)
 

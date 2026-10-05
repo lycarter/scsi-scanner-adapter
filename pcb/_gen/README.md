@@ -41,9 +41,15 @@ edit tells you whether the file on disk still matches its script.
 Once a script reproduces the sheet on disk exactly, `build.py` does not rewrite that sheet. It only
 records the new fingerprint ("matches the script (hand edits folded in)"). KiCad's own file stays as
 saved, with the symbol UUIDs the PCB links to, so this is safe to run with the schematic open. A sheet
-is rewritten only when the script's output really differs from it, and that changes the UUIDs of
-symbols added by hand in KiCad: close the schematic first, and afterwards run *Update PCB from
-Schematic* with "re-link footprints by reference".
+is rewritten only when the script's output really differs from it.
+
+**Do not let a rewrite happen once the PCB is linked to the sheet.** The scripts number UUIDs with a
+counter, so adding or removing one item shifts the UUID of every later item in that sheet, and the PCB
+finds each footprint's symbol by UUID. *Update PCB from Schematic* then adds duplicate footprints (this
+happened on 2026-10-04). To add a part after layout has started: add it in KiCad and fold it into the
+script, or add it to the script and insert only the new items into the saved sheet with fresh UUIDs, so
+that `build.py` reports "matches the script" and writes nothing. Run `build.py --check` first; if it
+says "script output differs" for a sheet, a plain run would rewrite that sheet.
 
 Needs KiCad 9's `kicad-cli` (`KICAD_CLI` overrides the default macOS path) and the KiCad symbol
 libraries (`KICAD_SYMBOL_DIR`).

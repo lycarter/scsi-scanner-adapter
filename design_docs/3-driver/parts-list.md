@@ -36,8 +36,8 @@ Columns:
 | Qty | Value | Part | LCSC | Tier | Where |
 |---|---|---|---|---|---|
 | 1 | 1 µF 50 V X7R 0805 | Samsung CL21B105KBFNNNE | C28323 | B | Bench eFuse IN (rated ≥ 2 × V_IN) |
-| 7 | 1 µF 25 V X5R 0402 | | C52923 | B | Bench eFuse OUT / TPS2116 VIN1, TPS2116 VIN2, TERMPWR eFuse OUT, LDO C_IN ×2, CC filters ×2 (PSRAM 1 µF listed in §3) |
-| 1 | 4.7 µF 25 V X5R 0805 | Samsung CL21A475KAQNNNE | C1779 | B | VBUS snubber, in series with the 1 Ω below |
+| 8 | 1 µF 25 V X5R 0402 | | C52923 | B | Bench eFuse OUT (C105), TPS2116 VIN1 at the mux (C114, added 2026-10-04), TPS2116 VIN2, TERMPWR eFuse OUT, LDO C_IN ×2, CC filters ×2 (PSRAM 1 µF listed in §3) |
+| 3 | 4.7 µF 25 V X5R 0805 | Samsung CL21A475KAQNNNE | C1779 | B | VBUS snubber, in series with the 1 Ω below; TERMPWR bulk ×2, one at each SCSI connector's TERMPWR pin (C307 at J301.26, C308 at J302.38, added 2026-10-04) |
 | 1 | 1 Ω 1 % 0603 | | C22936 | B | VBUS snubber |
 | 1 | 22 µF 25 V X5R 0805 | Samsung CL21A226MAQNNNE | C45783 | B | +5V_SYS bulk (TPS2116 VOUT) |
 | 2 | 10 µF 25 V X5R 0805 | | C15850 | B | LDO outputs (3.3 V, 2.83 V) |
@@ -53,7 +53,7 @@ Columns:
 | 1 | SCSI connector | 2×25 keyed box header, 2.54 mm (BOOMELE) | C30006 | E | Hand | LCSC MOQ 5. Footprint `IDC-Header_2x25_P2.54mm_Vertical`. Pin 25 unconnected |
 | 1 | Alt SCSI connector | Half-pitch 50-pin female, right angle | — | — | DNP | Not stocked anywhere; owner sources later. TERMPWR = pin 38; pin 13 unconnected |
 | 8 | RESERVED lines to GND | 0 Ω 0402 | C17168 | B | JLC | All four RESERVED lines (SCSI-2 §5.4.4), grounded at each connector: R337–R340 at IDC50 23/24/27/28, R1–R4 at HD50 12/37/14/39 (added during layout). Remove all eight if mid-chain. Was 2 (24/28 only) until 2026-09-26 |
-| 3 | Terminator switches | TI SN74LVTH245APWR | C2652121 | E | JLC | **Only 939 at JLC.** A1–A8 and DIR tied to the 2.83 V rail, `/OE` = enable. 100 nF each |
+| 3 | Terminator switches | TI SN74LVTH245APWR | C2652121 | E | JLC | **Only 939 at JLC.** A1–A8 and DIR tied to the 2.83 V rail, `/OE` = enable. 2 × 100 nF each: C301–C303, plus C304–C306 at VCC pin 20 (added 2026-10-04) |
 | 36 | Terminator resistors | 220 Ω 1 % 0402 (UNI-ROYAL) | C25091 | B | JLC | **Two in parallel per line = 110 Ω** (R006), ≤ 35 mW each. Replaces 18 × 110 Ω C2909312 (extended, would run at 100–110 % of rating) |
 | 1 | Terminator on/off | 2-position DIP switch, SMD (SHOU HAN) | C6331180 | E | JLC | DIP 1 = default, DIP 2 = firmware may override (see `USAGE.md`) |
 | 18 | SCSI ESD | H5VUD5BB SOD-523, 0.3 pF | C20615820 | P | JLC | At the connector |
@@ -113,9 +113,9 @@ Columns:
 
 ## 5. Decoupling totals (100 nF X7R 50 V 0402, C307331)
 
-14 (RP2350B ×13: IOVDD ×8, DVDD ×3, ADC_AVDD, USB_OTP+QSPI_IOVDD shared; + flash ×1; was miscounted as 13 until 2026-09-26) + 18 (1G17) + 10 (FT232H) + 3 ('245) + 2 (CH334)
+14 (RP2350B ×13: IOVDD ×8, DVDD ×3, ADC_AVDD, USB_OTP+QSPI_IOVDD shared; + flash ×1; was miscounted as 13 until 2026-09-26) + 18 (1G17) + 10 (FT232H) + 6 ('245, two each) + 2 (CH334)
 + 1 (TCA9555) + 1 (PSRAM) + 1 (microSD) + 1 (LM393) + 3 (bench IN, TERMPWR IN, TPS2116 VOUT)
-+ 1 (TERMPWR ADC pin) = **55**.
++ 1 (TERMPWR ADC pin) = **58**.
 
 ## 6. Resistors and small parts (values and reasoning: NOTES "Resistor and small-part values")
 
