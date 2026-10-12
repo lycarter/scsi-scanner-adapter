@@ -91,10 +91,39 @@ def cmd_info(args):
     eeprom.close()
 
 
+def cmd_probe(args):
+    """Blank EEPROM only: write two test words, read them back, then erase them again."""
+    eeprom = open_eeprom(args.url)
+    ftdi = eeprom._ftdi
+    if not eeprom.is_empty:
+        sys.exit("EEPROM is not blank; probe would overwrite real contents")
+    tests = {0x70: b"\x34\x12", 0xF0: b"\x5a\xa5"}
+    for addr, word in tests.items():
+        ftdi._write_eeprom_raw(addr, word, dry_run=False)
+    time.sleep(0.05)
+    got = {addr: bytes(ftdi.read_eeprom(addr, 2, 256)) for addr in tests}
+    for addr in tests:
+        ftdi._write_eeprom_raw(addr, b"\xff\xff", dry_run=False)
+    time.sleep(0.05)
+    blank_again = all(b == 0xFF for b in ftdi.read_eeprom(0, 256, 256))
+    for addr, word in tests.items():
+        print(f"  0x{addr:02x}: wrote {word.hex()}, read {got[addr].hex()}")
+    if all(got[a] == w for a, w in tests.items()):
+        print("both words held: a 256-byte (93x56/66) EEPROM is fitted and writable")
+    elif got[0x70] == got[0xF0] != b"\xff\xff":
+        print("the two addresses alias: 128-byte (93x46) EEPROM")
+    else:
+        print("writes did not stick: no EEPROM, or it is not responding")
+    print(f"erased back to blank: {blank_again}")
+    eeprom.close()
+
+
 def commit(eeprom, old, write):
     new = eeprom.data  # regenerates the checksum
+    if len(set(old)) == 1:
+        hexdump(new)
     for off, (a, b) in enumerate(zip(old, new)):
-        if a != b:
+        if a != b and len(set(old)) > 1:
             print(f"  0x{off:02x}: 0x{a:02x} -> 0x{b:02x}")
     if new == old:
         print("nothing to change")
@@ -106,6 +135,25 @@ def commit(eeprom, old, write):
         return
     eeprom.commit(dry_run=False)  # writes, reads back and compares
     print("written and verified. Unplug and replug the FT232H: it reads the EEPROM at reset.")
+
+
+def fresh_image(eeprom, serial):
+    """Build a complete FT232H image in memory for a blank 93x56 (pyftdi's initialize() leaves
+    0xFF in the config bytes). Layout per libftdi's ftdi_eeprom_build(TYPE_232H), recalled from
+    memory and cross-checked against pyftdi's decoder offsets."""
+    image = bytearray(256)
+    image[0x00] = 0x10              # port type UART for now, VCP driver bit (Windows only)
+    image[0x02:0x08] = bytes.fromhex("0304" "1460" "0009")  # VID 0403, PID 6014, release 0900
+    image[0x08] = 0x80              # bus powered, no remote wakeup
+    image[0x09] = 100 // 2          # max power 100 mA
+    image[0x0A] = 0x08              # use the serial number string
+    # 0x0C/0x0D: ADBUS/ACBUS drive 4 mA, fast slew, no Schmitt. 0x18-0x1C: ACBUS functions, all
+    # 0 = tristate (input with pull-up). FT1248 takes ACBUS0-2 over regardless of these.
+    image[0x1E] = 0x56              # EEPROM type 93x56
+    eeprom._eeprom = image
+    eeprom._config.update(manufacturer="FTDI", product="FT232H bench", serial=serial)
+    eeprom._generate_var_strings()
+    eeprom._dirty.add("eeprom")
 
 
 def poke(eeprom, offset, clear, set_):
@@ -120,11 +168,15 @@ def poke(eeprom, offset, clear, set_):
 def cmd_set(args):
     eeprom = open_eeprom(args.url)
     old, ok = read_state(eeprom)
-    if not ok:
-        sys.exit(1)
-    print("before:")
-    describe(old)
-    backup(eeprom, old)
+    if ok:
+        print("before:")
+        describe(old)
+        backup(eeprom, old)
+    elif args.init_serial and eeprom.is_empty:
+        print(f"building a fresh image, serial {args.init_serial!r} (run probe first)")
+        fresh_image(eeprom, args.init_serial)
+    else:
+        sys.exit("refusing to edit; for a blank 256-byte EEPROM pass --init-serial NAME")
     if args.cmd == "set-uart":
         poke(eeprom, 0x00, 0x0F, 0x00)
     else:
@@ -163,13 +215,17 @@ def main():
     sub = parser.add_subparsers(dest="cmd", required=True)
     sub.add_parser("list").set_defaults(func=cmd_list)
     sub.add_parser("info").set_defaults(func=cmd_info)
+    sub.add_parser("probe").set_defaults(func=cmd_probe)
     p = sub.add_parser("set-ft1248")
     p.add_argument("--cpol", choices=("low", "high"), default="low")
     p.add_argument("--lsb-first", action="store_true")
     p.add_argument("--no-flow-control", action="store_true")
+    p.add_argument("--init-serial", metavar="NAME",
+                   help="blank EEPROM: build a full image with this serial number")
     p.add_argument("--write", action="store_true")
     p.set_defaults(func=cmd_set)
     p = sub.add_parser("set-uart")
+    p.set_defaults(init_serial=None)
     p.add_argument("--write", action="store_true")
     p.set_defaults(func=cmd_set)
     p = sub.add_parser("restore")

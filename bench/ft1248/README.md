@@ -71,14 +71,21 @@ Chosen options: clock idles low, MSB first, flow control on. Reasons: idle-low w
 the plain "SPI mode 1" shape and matches the planned side-set; flow control on gives the idle
 status lines, which are our no-firmware check.
 
+The clone's EEPROM turned out to be **blank** (all 0xFF, enumerating as "Single RS232-HS" with no
+serial), so there was nothing to edit in place. `probe` showed a writable 256-byte part, and
+`set-ft1248 --init-serial BENCH1` built a whole image (layout in `fresh_image()`).
+`backups/BENCH1-ft1248.bin` is the image now in the chip. To go back to blank, write 0xFF
+everywhere with `restore` (make a 256-byte 0xFF file).
+
 Unverified:
 - That bit 0x04 of byte 0x01 *set* means flow control *on* (libftdi/pyftdi name the bit; D2XX's
   header comment says "enable"). The idle check settles it.
-- Whether macOS lets libusb talk to the FT232H while Apple's AppleUSBFTDI driver is attached.
-  The Adafruit guide's fixes are for macOS ≤ 10.13. If `info` fails with "Access denied", try
-  `sudo`, and make sure nothing has `/dev/cu.usbserial-*` open.
-- Which EEPROM the clone carries. NOTES on main says a 93LC46B is unusable with the FT232H.
-  `info` reports "mirrored" if it sees a 128-byte part.
+- The byte layout in `fresh_image()` is libftdi's, from memory. The chip accepted it (checksum
+  valid, new serial enumerates), but drive strength and ACBUS function bytes are untested.
+
+Verified on macOS 26.6 (2026-10-12): pyftdi/libusb reads and writes the EEPROM **without sudo**
+while Apple's AppleUSBFTDI driver is attached and `/dev/cu.usbserial-*` exists. A USB reset from
+pyftdi (`FtdiEeprom.reset_device()`) reloads the EEPROM; no replug needed.
 
 ## Idle check (after programming, no Pico firmware)
 
@@ -92,4 +99,12 @@ is still a UART.
 - 2026-10-12: branch created; pin map chosen; breadboard wired by the owner; `ft232h_eeprom.py`
   written and its edit + checksum path tested offline against pyftdi (no hardware attached yet).
   **Next:** plug in the FT232H alone, run `info`, review the dry run, write, do the idle check.
+- 2026-10-12: FT232H plugged in alone. EEPROM blank; probed as 256-byte; programmed for FT1248
+  (clock idle low, MSB first, flow-control bit set, serial BENCH1). It now enumerates as
+  `0403:6014 'FT232H bench' BENCH1` and macOS makes `/dev/cu.usbserial-BENCH1`.
+  Host-side pin read (`Ftdi.read_pins()`, no bit-mode change) gives ADBUS = `11111110`: D0 low,
+  D1–D7 pulled high. D0 low is what TXE# with flow control on should look like (UART TXD would
+  idle high), so FT1248 mode and the flow-control polarity look right. Caveat: pyftdi's open()
+  resets the bit mode first. **Still to do on the scope:** MISO (C2) high, then low after
+  `printf x > /dev/cu.usbserial-BENCH1`.
   After that: Pico firmware (pico-sdk, PIO 1-bit master), loopback to the Mac, then 4-bit.
