@@ -111,6 +111,74 @@ def make_write4(H, L):
     return prog
 
 
+def make_flush4(H, L):
+    IDLE, LOW, HIGH = 1, 0, 2
+    @rp2.asm_pio(sideset_init=(rp2.PIO.OUT_HIGH, rp2.PIO.OUT_LOW), set_init=(rp2.PIO.IN_HIGH,) * 4)
+    def prog():
+        wrap_target()
+        pull()                  .side(IDLE)            # any word: send one flush command (0x4)
+        set(pins, 8)            .side(LOW)    [3]      # SS_n low; preload CMD2 = 1 on MIOSIO3
+        set(pindirs, 15)        .side(HIGH)   [H - 1]  # clock 1: CMD3 = 0, 0, 0, CMD2 = 1
+        nop()                   .side(LOW)    [L - 1]
+        nop()                   .side(HIGH)   [H - 1]  # clock 2: 0, CMD1 = 0, CMD0 = 0, x
+        nop()                   .side(LOW)    [L - 1]
+        set(pindirs, 0)         .side(HIGH)   [H - 1]  # clock 3: turnaround
+        nop()                   .side(LOW)    [L - 1]
+        push()                  .side(IDLE)
+        wrap()
+    return prog
+
+
+IO_BANK0 = 0x40028000
+
+
+def _select(funcsel):
+    """Hand the six FT1248 pins to one PIO block (funcsel 6 = PIO0, 7 = PIO1, 8 = PIO2)."""
+    for g in (14, 15, 16, 17, 18, 19):
+        machine.mem32[IO_BANK0 + 4 + 8 * g] = funcsel
+
+
+def echo(count, size=10, flush=True, H=3, L=2):
+    """Latency test: read `size` bytes from the Mac, write them straight back, `count` times.
+    Read, write and flush programs live in PIO0, PIO1 and PIO2 (they do not fit in one block)
+    and the pins are switched between them. Prints 'READY' then
+    'ECHO count mean_turnaround_us' (time from last byte read to reply + flush finished)."""
+    import gc
+    gc.collect()
+    freq = machine.freq()
+    for i in range(3):
+        rp2.PIO(i).remove_program()
+        machine.mem32[PIO0_BASE + 0x100000 * i + 0x38] = (1 << 13 | 0xF << 16)
+    kw = dict(freq=freq, sideset_base=Pin(14), set_base=Pin(16), out_base=Pin(16), in_base=Pin(16), jmp_pin=Pin(13))
+    sm_r = rp2.StateMachine(0, make_read4(H, L), **kw)
+    sm_w = rp2.StateMachine(4, make_write4(H, L), **kw)
+    sm_f = rp2.StateMachine(8, make_flush4(H, L), **kw)
+    for sm in (sm_r, sm_w, sm_f):
+        sm.active(1)
+    _select(6)
+    print("READY")
+    total = 0
+    for _ in range(count):
+        sm_r.put(size - 1)
+        buf = [sm_r.get() >> 24 for _ in range(size)]
+        t = time.ticks_us()
+        _select(7)
+        sm_w.put(size - 1)
+        for b in buf:
+            sm_w.put(b)
+        sm_w.get()
+        if flush:
+            _select(8)
+            sm_f.put(0)
+            sm_f.get()
+        _select(6)
+        total += time.ticks_diff(time.ticks_us(), t)
+    for sm in (sm_r, sm_w, sm_f):
+        sm.active(0)
+    _release()
+    print("ECHO", count, total // count)
+
+
 @micropython.viper
 def fill_random(buf, nwords: int, start: int):
     """buf = MurmurHash3-finaliser(start), (start + 1), ... as little-endian 32-bit words."""
@@ -191,6 +259,8 @@ def tx_sustained(n, freq=150_000_000, H=3, L=2, stall_ms=5000):
     pass p uses buffer p & 1 with its first 4 bytes replaced by p (little-endian), written
     while the other buffer is on the wire. The DMA sniffer keeps the running CRC-32.
     Prints 'TXS n_sent elapsed_us crc32 max_gap_us'."""
+    import gc
+    gc.collect()
     bufs = (bytearray(BLOCK), bytearray(BLOCK))
     fill_random(bufs[0], BLOCK // 4, 0)
     fill_random(bufs[1], BLOCK // 4, BLOCK // 4)
@@ -245,6 +315,8 @@ def rx_sustained(n, freq=150_000_000, H=3, L=2, stall_ms=5000):
     the first 4 bytes. DMA drops pass p into buffer p & 1; while the next pass arrives, the CPU
     checks the stamp and compares the whole block (one memcmp). The sniffer CRCs everything.
     Prints 'READY stale' then 'RXS n_got elapsed_us crc32 bad_blocks first_bad_block max_gap_us'."""
+    import gc
+    gc.collect()
     want = bytearray(RXBLOCK)
     fill_random(want, RXBLOCK // 4, 0)
     keeps = (bytearray(RXBLOCK), bytearray(RXBLOCK))

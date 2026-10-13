@@ -37,9 +37,33 @@ def rx_reference(n):
     return out.astype("<u4").tobytes()
 
 
+CLK_MHZ = 150      # --clk=N overclocks the Pico's system clock, so SCLK = N / (H + L)
+BYPASS = True      # --nobypass leaves the input synchroniser in
+
+
 def pico(code):
-    return subprocess.Popen([MPREMOTE, "connect", PICO, "exec", "import pio4_ft1248 as p; " + code],
+    code = ("import machine, pio4_ft1248 as p; machine.freq(%d); p.SYNC_BYPASS = %s; "
+            "\ntry:\n    %s\nfinally:\n    machine.freq(150000000)" % (CLK_MHZ * 1000000, BYPASS, code))
+    return subprocess.Popen([MPREMOTE, "connect", PICO, "exec", code],
                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+
+
+def recover():
+    """After a failed run the Mac's driver and the FT232H can still hold megabytes of the old
+    stream, which makes every later run look corrupt. Throw it all away: flush the tty, reset
+    the FT232H over USB, then drain what is left from the Pico side."""
+    try:
+        port = serial.Serial(FTDI, 3000000, timeout=0.2, write_timeout=1)
+        port.reset_output_buffer(); port.reset_input_buffer(); port.close()
+    except Exception:
+        pass
+    from pyftdi.eeprom import FtdiEeprom
+    eeprom = FtdiEeprom(); eeprom.open("ftdi://ftdi:232h/1"); eeprom.reset_device()
+    time.sleep(3)
+    out = subprocess.run([MPREMOTE, "connect", PICO, "exec",
+                          "import machine, pio4_ft1248 as p; machine.freq(150000000); print(p.drain(), p.drain())"],
+                         capture_output=True, text=True, timeout=60)
+    return out.stdout.strip()
 
 
 def run(direction, mb, sclk_mhz=30.0, H=3, L=2, quiet=False):
@@ -128,7 +152,15 @@ def run(direction, mb, sclk_mhz=30.0, H=3, L=2, quiet=False):
 
 
 if __name__ == "__main__":
+    for arg in [a for a in sys.argv if a.startswith("--")]:
+        sys.argv.remove(arg)
+        if arg.startswith("--clk="):
+            CLK_MHZ = int(arg[6:])
+        if arg == "--nobypass":
+            BYPASS = False
     direction, mb = sys.argv[1], float(sys.argv[2])
     extra = sys.argv[3:6]
     r = run(direction, mb, *( [float(extra[0]), int(extra[1]), int(extra[2])] if len(extra) == 3 else []))
+    if not r["ok"]:
+        r["recovered_drained"] = recover()
     print(r)

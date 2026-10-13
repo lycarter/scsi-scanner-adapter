@@ -272,4 +272,42 @@ is still a UART.
   flipped for the LSB-first EEPROM.
   Also planned on this bench: a 10 GB+ soak each way, and small-packet round-trip latency with
   and without the flush command.
-  **Next:** owner fits the resistors (step 1) and says so.
+- 2026-10-12: owner fitted **47 Ω** in all 7 signal lines (no 33 Ω to hand; 47 is the slightly
+  harder case for edge speed). Step 2 (ADC pad) skipped by the owner. All below is 4-bit,
+  LSB-first EEPROM, 47 Ω, breadboard.
+
+  **Small-packet round trip** (`latency_test.py`, `results-latency.txt`; Mac → Pico → Mac via
+  Apple's serial node, 300 trips each, 0 wrong replies):
+
+  | Message | No flush, median | With flush command (0x4), median |
+  |---|---|---|
+  | 10 bytes | 15.95 ms | **0.69 ms** |
+  | 64 bytes | 15.94 ms | 1.75 ms |
+  | 600 bytes | 26.06 ms | 10.88 ms |
+
+  Without flush a short reply waits out the FT232H's 16 ms latency timer; the flush command
+  removes that. The flush figures include MicroPython overhead on the Pico (0.4 ms turnaround
+  for 10 bytes, ~3 ms for 600, plus a per-byte Python read loop), so real firmware will be
+  faster. The echo keeps read, write and flush programs in PIO0/1/2 and switches the pins'
+  function select between them (`echo()` in `pio4_ft1248.py`).
+
+  **Margin sweep** (`results-margin-47ohm.txt`; 20 MB per point; SCLK above 30 MHz made by
+  overclocking the Pico's clk_sys, so the RP2350 is out of spec there too):
+
+  | | Clean up to | First failure |
+  |---|---|---|
+  | Pico → Mac (write), H 3 L 2 | 40 MHz (highest tried) | none seen |
+  | Mac → Pico (read), H 3 L 2, sync bypass | 38 MHz | 40 MHz |
+  | Mac → Pico (read), H 3 L 3, sync bypass | 40 MHz | 44 MHz |
+  | Mac → Pico (read), no sync bypass | 25 MHz | 30 MHz |
+
+  So with the bypass there is ~25–30 % clock margin over FTDI's 30 MHz limit and ~60 % over the
+  planned 25 MHz, on a breadboard with 47 Ω. Ignore the first two blocks of results in that
+  file above "CLEAN RERUN": after the deliberate no-bypass failure, megabytes of the old stream
+  stayed queued on the Mac side and made every later read look corrupt. `sustained4_test.py`
+  now calls `recover()` (tty flush, FT232H USB reset, drain) after any failed run.
+
+  **10 h soak started 22:36** (`soak.py 10 30 3 2 256` under `caffeinate`): cycles 256 MB
+  Pico → Mac (Apple node), Pico → Mac (libusb), Mac → Pico (Apple node), every byte verified.
+  Progress in `soak-summary.txt`, per-transfer records in `soak-log.jsonl`.
+  **Next:** read the soak result; then fold findings into main's notes.

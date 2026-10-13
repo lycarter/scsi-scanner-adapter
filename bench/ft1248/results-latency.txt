@@ -1,0 +1,6 @@
+  10 bytes, flush False: median  15.95 ms, p10  15.09, p90  16.74, min   7.50, max  24.29; wrong replies 0/300; pico turnaround 314 us
+  10 bytes, flush True : median   0.69 ms, p10   0.63, p90   0.92, min   0.60, max   6.51; wrong replies 0/300; pico turnaround 442 us
+  64 bytes, flush False: median  15.94 ms, p10  14.44, p90  17.42, min   7.31, max  24.47; wrong replies 0/300; pico turnaround 547 us
+  64 bytes, flush True : median   1.75 ms, p10   1.62, p90   2.06, min   1.48, max  10.86; wrong replies 0/300; pico turnaround 713 us
+ 600 bytes, flush False: median  26.06 ms, p10  25.72, p90  31.07, min  24.96, max  36.11; wrong replies 0/300; pico turnaround 2850 us
+ 600 bytes, flush True : median  10.88 ms, p10  10.65, p90  14.41, min  10.39, max  21.32; wrong replies 0/300; pico turnaround 2998 us

@@ -1,0 +1,78 @@
+== 47 ohm series, clk_sys 150 MHz
+{'dir': 'tx', 'sclk_MHz': 25.0, 'ok': True, 'MB_per_s': 5.624, 'bytewise_identical': True, 'crc_match': True, 'bad_blocks': None, 'wrong_bytes': None, 'mac_write': None} TXS 20971520 3728774 33dd048d 57
+{'dir': 'rx', 'sclk_MHz': 25.0, 'ok': True, 'MB_per_s': 9.182, 'bytewise_identical': None, 'crc_match': True, 'bad_blocks': 0, 'wrong_bytes': None, 'mac_write': None} RXS 20971520 2283992 2c15ad7b 0 -1 63
+{'dir': 'tx', 'sclk_MHz': 30.0, 'ok': True, 'MB_per_s': 5.637, 'bytewise_identical': True, 'crc_match': True, 'bad_blocks': None, 'wrong_bytes': None, 'mac_write': None} TXS 20971520 3720492 33dd048d 57
+{'dir': 'rx', 'sclk_MHz': 30.0, 'ok': True, 'MB_per_s': 9.465, 'bytewise_identical': None, 'crc_match': True, 'bad_blocks': 0, 'wrong_bytes': None, 'mac_write': None} RXS 20971520 2215756 2c15ad7b 0 -1 65
+== no input-sync bypass (reads)
+{'dir': 'rx', 'sclk_MHz': 25.0, 'ok': True, 'MB_per_s': 9.489, 'bytewise_identical': None, 'crc_match': True, 'bad_blocks': 0, 'wrong_bytes': None, 'mac_write': None} RXS 20971520 2210003 2c15ad7b 0 -1 66
+{'dir': 'rx', 'sclk_MHz': 30.0, 'ok': False, 'MB_per_s': 9.653, 'bytewise_identical': None, 'crc_match': False, 'bad_blocks': 320, 'wrong_bytes': None, 'mac_write': None}  2172548 50db2d91 320 0 65 | first bad block: offset 0 want 00000000b7284e51 got 00000000f7abee55 stamp_ok False
+== overclocked, H 3 L 2
+{'dir': 'tx', 'sclk_MHz': 32.0, 'ok': True, 'MB_per_s': 5.616, 'bytewise_identical': True, 'crc_match': True, 'bad_blocks': None, 'wrong_bytes': None, 'mac_write': None} TXS 20971520 3734082 33dd048d 69
+{'dir': 'rx', 'sclk_MHz': 32.0, 'ok': False, 'MB_per_s': 10.409, 'bytewise_identical': None, 'crc_match': False, 'bad_blocks': 320, 'wrong_bytes': None, 'mac_write': None}  2014686 f6b37612 320 0 83 | first bad block: offset 0 want 00000000b7284e51 got 0000000000000000 stamp_ok False
+{'dir': 'tx', 'sclk_MHz': 34.0, 'ok': True, 'MB_per_s': 5.641, 'bytewise_identical': True, 'crc_match': True, 'bad_blocks': None, 'wrong_bytes': None, 'mac_write': None} TXS 20971520 3717737 33dd048d 58
+{'dir': 'rx', 'sclk_MHz': 34.0, 'ok': False, 'MB_per_s': 10.093, 'bytewise_identical': None, 'crc_match': False, 'bad_blocks': 320, 'wrong_bytes': None, 'mac_write': None}  2077930 543d4432 320 0 73 | first bad block: offset 0 want 00000000b7284e51 got 0000000000000000 stamp_ok False
+{'dir': 'tx', 'sclk_MHz': 36.0, 'ok': True, 'MB_per_s': 5.632, 'bytewise_identical': True, 'crc_match': True, 'bad_blocks': None, 'wrong_bytes': None, 'mac_write': None} TXS 20971520 3723620 33dd048d 63
+{'dir': 'rx', 'sclk_MHz': 36.0, 'ok': False, 'MB_per_s': 10.655, 'bytewise_identical': None, 'crc_match': False, 'bad_blocks': 320, 'wrong_bytes': None, 'mac_write': None}  1968204 df43c270 320 0 65 | first bad block: offset 0 want 00000000b7284e51 got 0000000000000000 stamp_ok False
+{'dir': 'tx', 'sclk_MHz': 38.0, 'ok': True, 'MB_per_s': 5.584, 'bytewise_identical': True, 'crc_match': True, 'bad_blocks': None, 'wrong_bytes': None, 'mac_write': None} TXS 20971520 3755440 33dd048d 55
+{'dir': 'rx', 'sclk_MHz': 38.0, 'ok': False, 'MB_per_s': None, 'bytewise_identical': None, 'crc_match': False, 'bad_blocks': 319, 'wrong_bytes': None, 'mac_write': None}  6999883 a45a4ced 319 0 68 | first bad block: offset 0 want 00000000b7284e51 got 00000000da714d9c stamp_ok False
+{'dir': 'tx', 'sclk_MHz': 40.0, 'ok': True, 'MB_per_s': 5.641, 'bytewise_identical': True, 'crc_match': True, 'bad_blocks': None, 'wrong_bytes': None, 'mac_write': None} TXS 20971520 3717824 33dd048d 52
+{'dir': 'rx', 'sclk_MHz': 40.0, 'ok': False, 'MB_per_s': 10.439, 'bytewise_identical': None, 'crc_match': False, 'bad_blocks': 320, 'wrong_bytes': None, 'mac_write': None} 009019 9be965f8 320 0 68 | first bad block: offset 5633 want 55dd789b45c49798 got 8f55dd789b45c497 stamp_ok True
+== reads, same SCLK with different high/low split (clk_sys in MHz)
+clk_sys 180:
+{'sclk_MHz': 30.0, 'H': 3, 'L': 3, 'ok': False, 'MB_per_s': None, 'bad_blocks': 319} S 20971299 7140993 1125acb0 319 0 69 | first bad block: offset 0 want 00000000b7284e51 got 000000001f6b1375 stamp_ok False
+clk_sys 180:
+{'sclk_MHz': 30.0, 'H': 4, 'L': 2, 'ok': True, 'MB_per_s': 10.027, 'bad_blocks': 0} RXS 20971520 2091494 2c15ad7b 0 -1 73
+clk_sys 192:
+{'sclk_MHz': 32.0, 'H': 3, 'L': 3, 'ok': True, 'MB_per_s': 9.919, 'bad_blocks': 0} RXS 20971520 2114342 2c15ad7b 0 -1 68
+clk_sys 192:
+{'sclk_MHz': 32.0, 'H': 4, 'L': 2, 'ok': True, 'MB_per_s': 9.899, 'bad_blocks': 0} RXS 20971520 2118484 2c15ad7b 0 -1 63
+clk_sys 204:
+{'sclk_MHz': 34.0, 'H': 3, 'L': 3, 'ok': True, 'MB_per_s': 10.094, 'bad_blocks': 0} RXS 20971520 2077604 2c15ad7b 0 -1 63
+clk_sys 216:
+{'sclk_MHz': 36.0, 'H': 3, 'L': 3, 'ok': True, 'MB_per_s': 10.088, 'bad_blocks': 0} RXS 20971520 2078775 2c15ad7b 0 -1 55
+clk_sys 240:
+{'sclk_MHz': 40.0, 'H': 3, 'L': 3, 'ok': True, 'MB_per_s': 10.448, 'bad_blocks': 0} RXS 20971520 2007256 2c15ad7b 0 -1 68
+clk_sys 200:
+{'sclk_MHz': 33.333, 'H': 4, 'L': 2, 'ok': True, 'MB_per_s': 10.384, 'bad_blocks': 0} RXS 20971520 2019510 2c15ad7b 0 -1 61
+== repeats
+clk_sys 180:
+{'sclk_MHz': 30.0, 'H': 3, 'L': 3, 'ok': True, 'MB_per_s': 10.201, 'bad_blocks': 0} RXS 20971520 2055822 2c15ad7b 0 -1 69
+clk_sys 180:
+{'sclk_MHz': 30.0, 'H': 3, 'L': 3, 'ok': True, 'MB_per_s': 9.683, 'bad_blocks': 0} RXS 20971520 2165881 2c15ad7b 0 -1 67
+clk_sys 180:
+{'sclk_MHz': 30.0, 'H': 3, 'L': 3, 'ok': True, 'MB_per_s': 9.625, 'bad_blocks': 0} RXS 20971520 2178901 2c15ad7b 0 -1 69
+clk_sys 160:
+{'sclk_MHz': 32.0, 'H': 3, 'L': 2, 'ok': True, 'MB_per_s': 10.012, 'bad_blocks': 0} RXS 20971520 2094598 2c15ad7b 0 -1 82
+clk_sys 156:
+{'sclk_MHz': 31.2, 'H': 3, 'L': 2, 'ok': True, 'MB_per_s': 9.596, 'bad_blocks': 0} RXS 20971520 2185433 2c15ad7b 0 -1 78
+clk_sys 152:
+{'sclk_MHz': 30.4, 'H': 3, 'L': 2, 'ok': True, 'MB_per_s': 9.767, 'bad_blocks': 0} RXS 20971520 2147112 2c15ad7b 0 -1 82
+clk_sys 150:
+{'sclk_MHz': 30.0, 'H': 3, 'L': 2, 'ok': True, 'MB_per_s': 9.563, 'bad_blocks': 0} RXS 20971520 2193056 2c15ad7b 0 -1 65
+clk_sys 168:
+{'sclk_MHz': 28.0, 'H': 3, 'L': 3, 'ok': True, 'MB_per_s': 9.414, 'bad_blocks': 0} RXS 20971520 2227693 2c15ad7b 0 -1 77
+clk_sys 150:
+{'sclk_MHz': 25.0, 'H': 3, 'L': 3, 'ok': True, 'MB_per_s': 9.583, 'bad_blocks': 0} RXS 20971520 2188519 2c15ad7b 0 -1 69
+== CLEAN RERUN (harness now recovers after a failed run): reads, 47 ohm
+clk_sys 150 --nobypass:
+{'dir': 'rx', 'sclk_MHz': 30.0, 'H': 3, 'L': 2, 'ok': False, 'MB_per_s': 9.731, 'bad_blocks': 320, 'bytewise_identical': None, 'recovered_drained': '4 0'} 0 0 67 | first bad block: offset 0 want 00000000b7284e51 got 00000000f7abee55 stamp_ok False
+clk_sys 150 :
+{'dir': 'rx', 'sclk_MHz': 30.0, 'H': 3, 'L': 2, 'ok': True, 'MB_per_s': 10.017, 'bad_blocks': 0, 'bytewise_identical': None, 'recovered_drained': None} RXS 20971520 2093676 2c15ad7b 0 -1 69
+clk_sys 170 :
+{'dir': 'rx', 'sclk_MHz': 34.0, 'H': 3, 'L': 2, 'ok': True, 'MB_per_s': 10.093, 'bad_blocks': 0, 'bytewise_identical': None, 'recovered_drained': None} RXS 20971520 2077915 2c15ad7b 0 -1 76
+clk_sys 180 :
+{'dir': 'rx', 'sclk_MHz': 36.0, 'H': 3, 'L': 2, 'ok': True, 'MB_per_s': 10.227, 'bad_blocks': 0, 'bytewise_identical': None, 'recovered_drained': None} RXS 20971520 2050519 2c15ad7b 0 -1 67
+clk_sys 190 :
+{'dir': 'rx', 'sclk_MHz': 38.0, 'H': 3, 'L': 2, 'ok': True, 'MB_per_s': 10.418, 'bad_blocks': 0, 'bytewise_identical': None, 'recovered_drained': None} RXS 20971520 2012914 2c15ad7b 0 -1 68
+clk_sys 200 :
+{'dir': 'rx', 'sclk_MHz': 40.0, 'H': 3, 'L': 2, 'ok': False, 'MB_per_s': 10.609, 'bad_blocks': 320, 'bytewise_identical': None, 'recovered_drained': '4 0'} 0 61 | first bad block: offset 5633 want 55dd789b45c49798 got 8f55dd789b45c497 stamp_ok True
+clk_sys 220 :
+{'dir': 'rx', 'sclk_MHz': 44.0, 'H': 3, 'L': 2, 'ok': False, 'MB_per_s': 11.575, 'bad_blocks': 320, 'bytewise_identical': None, 'recovered_drained': '4 0'}  0 58 | first bad block: offset 513 want 6a8a88d96b85385e got 776a8a88d96b8538 stamp_ok True
+clk_sys 240 :
+{'dir': 'rx', 'sclk_MHz': 48.0, 'H': 3, 'L': 2, 'ok': False, 'MB_per_s': 11.487, 'bad_blocks': 320, 'bytewise_identical': None, 'recovered_drained': '4 0'} 0 0 58 | first bad block: offset 20 want cd530dcc084deb5c got cf530dcc084deb5c stamp_ok True
+clk_sys 240 :
+{'dir': 'rx', 'sclk_MHz': 40.0, 'H': 3, 'L': 3, 'ok': True, 'MB_per_s': 10.578, 'bad_blocks': 0, 'bytewise_identical': None, 'recovered_drained': None} RXS 20971520 1982642 2c15ad7b 0 -1 65
+clk_sys 264 :
+{'dir': 'rx', 'sclk_MHz': 44.0, 'H': 3, 'L': 3, 'ok': False, 'MB_per_s': 10.783, 'bad_blocks': 319, 'bytewise_identical': None, 'recovered_drained': '4 0'} 1 57 | first bad block: offset 5633 want 55dd789b45c49798 got 8f55dd789b45c497 stamp_ok True
+clk_sys 288 :
+{'dir': 'rx', 'sclk_MHz': 48.0, 'H': 3, 'L': 3, 'ok': False, 'MB_per_s': 11.237, 'bad_blocks': 320, 'bytewise_identical': None, 'recovered_drained': '4 0'}  0 52 | first bad block: offset 513 want 6a8a88d96b85385e got 776a8a88d96b8538 stamp_ok True
