@@ -1,0 +1,5 @@
+pico: TXS 104857600 9322646 b0056c5d 60
+received 104857600 of 104857600, bytewise identical: True
+9.323 s = 11.248 MB/s; crc match: True
+pico: RXS 104857600 12744908 42e44190 0 -1 66
+got 104857600 of 104857600, bad blocks 0, crc match True, 12.745 s = 8.227 MB/s

@@ -197,5 +197,70 @@ is still a UART.
      the first 128 KB kept for a bytewise check.
   Open risk: the Mac-side reader (pyserial through Apple's driver) may itself top out; if the
   sweep plateaus, repeat one point reading through pyftdi/libusb to tell the two apart.
-  **Next:** owner adds the three jumpers; then a slow bit-banged 4-bit trace (command encoding,
-  ACK timing), then the 4-bit PIO programs, then the test above.
+- 2026-10-12: **4-bit FT1248 works; 100 MB perfect in both directions at SCLK 30 MHz.**
+  Owner added D1–D3. Files: `dbg_trace4.py` (bit-bang trace), `pio4_ft1248.py` (PIO + tests, on
+  the Pico), `sustained4_test.py` (Mac, Apple serial node), `libusb_rx_test.py` /
+  `libusb_tx_test.py` (Mac, libusb), results in `results-100MB-4bit-30MHz*.txt`.
+
+  **EEPROM is now LSB-first** (`set-ft1248 --lsb-first`, byte 0x01 = 0x06). Reason, measured with
+  `dbg_trace4.py`: MSB-first puts B7 on MIOSIO0 (high nibble first, each nibble bit-reversed
+  against GPIO order). LSB-first gives MIOSIO[i] = bit i, low nibble first, which is exactly
+  PIO's `in pins, 4` / `out pins, 4` with right shifts. The command encoding is the same in both
+  settings. **Recommend LSB-first for the real board** (changes `USAGE.md`'s FT_PROG step).
+  The 1-bit programs (`pio_ft1248.py`, `ft1248_bitbang.py`) assume MSB-first and now see
+  bit-reversed bytes.
+
+  4-bit wire format, confirmed: clock 1 = CMD3, 0, 0, CMD2 on MIOSIO0..3; clock 2 = 0, CMD1,
+  CMD0, x; clock 3 = turnaround; then 2 clocks per byte. ACK = MISO low on the first clock of a
+  byte only, as in 1-bit; NAK'd reads/writes retried by raising SS_n, no loss.
+
+  100 MB runs, SCLK 30 MHz (H 3, L 2), input-sync bypass on, every byte verified + CRC-32:
+
+  | Direction | Mac path | Time | Rate |
+  |---|---|---|---|
+  | Pico → Mac | Apple `/dev/cu.usbserial-BENCH1` | 18.40 s | 5.70 MB/s |
+  | Pico → Mac | libusb (pyusb bulk read) | 9.32 s | **11.25 MB/s** |
+  | Mac → Pico | Apple serial node | 11.27 s | 9.31 MB/s |
+  | Mac → Pico | libusb (pyusb bulk write) | 12.74 s | 8.23 MB/s |
+
+  20 MB sweeps (all verified clean), MB/s:
+
+  | SCLK | Pico → Mac, Apple | Pico → Mac, libusb | Mac → Pico, Apple |
+  |---|---|---|---|
+  | 5 MHz | 2.50 | | 2.45 |
+  | 10 MHz | 4.99 | | 4.48 |
+  | 18.75 MHz | 5.5–5.8 | 7.86 | 7.59 |
+  | 25 MHz | 5.50 | 9.47 | |
+  | 30 MHz | 5.6–5.8 | 11.11 | 9.16 |
+
+  How the test avoids the CPU: Pico → Mac replays two pre-generated 128 KB pseudorandom blocks
+  by DMA, each pass stamped with its number; the RP2350 **DMA sniffer** computes CRC-32 in
+  hardware (matches zlib with CALC = 1, OUT_REV, OUT_INV, seed 0xFFFFFFFF; SNIFF_CTRL at DMA
+  base + 0x454). Mac → Pico sends one stamped 64 KB block repeatedly; the Pico memcmp's each
+  block while the next arrives. Python's gap between DMA passes is ~65 µs.
+
+  Findings:
+  - **Apple's serial driver caps device → host at about 5.8 MB/s.** The same hardware delivers
+    11.25 MB/s through libusb. libusb bulk I/O works without sudo while Apple's driver is
+    attached, as long as the tty is not open. This bears on phase 4's macOS data-path choice.
+  - Pico → Mac via libusb still rises with SCLK at 30 MHz, so the link (plus NAK retries), not
+    USB, is the limit there. The write program costs 11 cycles per byte at H 3, L 2 (ceiling
+    13.6 MB/s); the read program 10 (15 MB/s). Mac → Pico at 8–9 MB/s is below its link
+    ceiling, so that direction is host/USB/FT232H limited; not investigated further.
+  - **PIO trap:** an `in` with autopush that stalls on a full RX FIFO applies its side-set
+    immediately but samples when the stall ends. Combined with a clock edge it corrupted one
+    byte per stall. Fixed with plain `in` + separate blocking `push` (comment in the source).
+  - Read and write programs are 20 + 28 instructions: they do not fit PIO1's 32 slots together.
+    The real firmware must swap them or shrink them.
+  - Harness bugs that looked like link problems, for the record: stale bytes left in the
+    FT232H after a failed run; pyserial copying the whole remaining buffer on each partial
+    write (made a 100 MB write crawl and capped Mac → Pico at ~3 MB/s). One early 20 MB
+    Mac → Pico run had a CRC mismatch under an older test that only checked the first block
+    bytewise; never reproduced once every block was checked. Treat as unexplained.
+  - Once, after a writer was killed mid-transfer, small writes to the serial node stopped
+    reaching the FT232H until a USB reset (`FtdiEeprom.reset_device()`).
+  Still open: series resistors are not fitted on the breadboard; SS_n setup/hold margins and
+  H/L splits other than (3, 2) at 30 MHz untested in 4-bit; no bit-error-rate figure, only
+  "0 errors in N bytes"; flush command latency; Windows.
+  **Next (owner to choose):** fold the durable findings into `design_docs/3-driver/NOTES.md`,
+  `docs/decisions.md` and `USAGE.md` on main; or continue to pico-sdk firmware.
