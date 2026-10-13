@@ -1,0 +1,150 @@
+<title>FT1248 Bench Rig</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600&display=swap">
+<style>
+/* Layout: bench sheet. Diagram pinned in the left column, wiring table and checks in the right; one column on a phone. */
+:root{
+  --bg:#eef0ee; --panel:#f8f9f7; --fg:#1b2422; --muted:#5d6966; --line:#cfd5d1; --accent:#0d6b5f;
+  --bb:#fbfbf8; --bb-edge:#c9cec9; --chan:#e3e6e1; --hole:#a9b0ab;
+  --pico:#1f7a4a; --ft:#5b3a9a; --board-fg:#eef5ef; --board-dim:#b9d2c2; --pad:#d9b64a; --usb:#9aa19d;
+  --sclk:#d98a00; --ss:#c2337a; --miso:#1f6fd1; --d0:#12995a; --d1:#0b8fa6; --d2:#7a4fd6; --d3:#b5532a; --gnd:#22282a; --plus:#c0392b; --minus:#2b62b5;
+  --warn-bg:#fff4d6; --warn-fg:#5c4300; --warn-line:#e2c36a;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#121716; --panel:#1a211f; --fg:#e4ebe8; --muted:#97a5a1; --line:#2f3936; --accent:#5fd0bd;
+  --bb:#262d2b; --bb-edge:#3b4643; --chan:#1b211f; --hole:#0f1312;
+  --pico:#1c6a41; --ft:#523590; --board-fg:#eef5ef; --board-dim:#b4cbbd; --pad:#d9b64a; --usb:#7d8582;
+  --sclk:#f2a81d; --ss:#ef5fa4; --miso:#5aa2ff; --d0:#3fd08a; --d1:#3fc6dd; --d2:#a98bff; --d3:#e58a5c; --gnd:#d5dcd9; --plus:#e0685c; --minus:#6d9be6;
+  --warn-bg:#2e2710; --warn-fg:#f0dc9a; --warn-line:#6b5a1f; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#121716; --panel:#1a211f; --fg:#e4ebe8; --muted:#97a5a1; --line:#2f3936; --accent:#5fd0bd;
+  --bb:#262d2b; --bb-edge:#3b4643; --chan:#1b211f; --hole:#0f1312;
+  --pico:#1c6a41; --ft:#523590; --board-fg:#eef5ef; --board-dim:#b4cbbd; --pad:#d9b64a; --usb:#7d8582;
+  --sclk:#f2a81d; --ss:#ef5fa4; --miso:#5aa2ff; --d0:#3fd08a; --d1:#3fc6dd; --d2:#a98bff; --d3:#e58a5c; --gnd:#d5dcd9; --plus:#e0685c; --minus:#6d9be6;
+  --warn-bg:#2e2710; --warn-fg:#f0dc9a; --warn-line:#6b5a1f; color-scheme:dark }
+
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--sans)}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px;padding-block:28px 56px}
+header{display:flex;flex-direction:column;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--line);padding-bottom:18px}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font:600 34px/1.1 var(--cond);margin:0;text-wrap:balance}
+header p{margin:0;max-width:65ch;color:var(--muted)}
+.grid{display:grid;grid-template-columns:minmax(0,500px) minmax(0,1fr);gap:36px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.diagram{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+@media (max-width:860px){.diagram{position:static}}
+.diagram svg{display:block;width:100%;height:auto}
+.diagram figcaption{font-size:13px;color:var(--muted);margin-top:8px}
+figure{margin:0}
+.col{display:flex;flex-direction:column;gap:28px;min-width:0}
+section{display:flex;flex-direction:column;gap:10px;min-width:0}
+h2{font:600 19px/1.2 var(--cond);margin:0;text-wrap:balance}
+p{margin:0;max-width:65ch}
+code,.m{font-family:var(--mono);font-size:.92em}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th{font:500 11.5px/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 10px 6px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:8px 10px 8px 0;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+td small{display:block;color:var(--muted);font-size:12px}
+.sw{display:inline-block;width:18px;height:5px;border-radius:3px;margin-right:8px;vertical-align:middle}
+tr.later td{color:var(--muted)}
+ol,ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;max-width:65ch}
+.warn{background:var(--warn-bg);color:var(--warn-fg);border:1px solid var(--warn-line);border-radius:6px;padding:12px 14px}
+.warn p+p{margin-top:8px}
+.unv{font:500 11px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:2px 5px;white-space:nowrap}
+
+/* diagram */
+svg text{font-family:var(--mono)}
+.bb{fill:var(--bb);stroke:var(--bb-edge)}
+.chan{fill:var(--chan)}
+.hole{fill:var(--hole)}
+.rail{stroke-width:1.5;opacity:.55}.rail.plus{stroke:var(--plus)}.rail.minus{stroke:var(--minus)}
+.railt{font-size:12px;font-weight:600}.railt.plus{fill:var(--plus)}.railt.minus{fill:var(--minus)}
+.colt{font-size:10px;fill:var(--muted)}
+.pico{fill:var(--pico)}.ft{fill:var(--ft)}.usb{fill:var(--usb)}
+.pad{fill:var(--pad);opacity:.55}.pad.on{opacity:1;stroke:var(--board-fg);stroke-width:1.5}
+.pin{font-size:9.5px;fill:var(--board-dim);opacity:.8}
+.pin.on{font-size:11px;font-weight:600;fill:var(--board-fg);opacity:1}
+.pin .fn{font-weight:400}
+.bname{font:600 13px var(--cond);fill:var(--board-fg);letter-spacing:.04em}
+.bsub{font-size:9px;fill:var(--board-dim)}
+.w{fill:none;stroke-width:4.5;stroke-linecap:round}
+.wu{fill:none;stroke:var(--bb);stroke-width:8;stroke-linecap:round}
+.w.sclk{stroke:var(--sclk)}.w.ss{stroke:var(--ss)}.w.miso{stroke:var(--miso)}.w.d0{stroke:var(--d0)}.w.d1{stroke:var(--d1)}.w.d2{stroke:var(--d2)}.w.d3{stroke:var(--d3)}.w.gnd{stroke:var(--gnd)}
+.we{stroke:var(--bb);stroke-width:1.5}
+.we.sclk{fill:var(--sclk)}.we.ss{fill:var(--ss)}.we.miso{fill:var(--miso)}.we.d0{fill:var(--d0)}.we.d1{fill:var(--d1)}.we.d2{fill:var(--d2)}.we.d3{fill:var(--d3)}.we.gnd{fill:var(--gnd)}
+.note{font-size:9px;fill:var(--muted)}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">Phase 3 · bench test R111 · 4-bit wiring</span>
+  <h1>FT1248 Bench Rig</h1>
+  <p>Eight jumpers between the FT232H breakout and the Pico 2 W for the 4-bit FT1248 test: the five already fitted for 1-bit, plus three new data lines. Each board keeps its own USB cable to the Mac; only signals and ground cross between them.</p>
+</header>
+
+<div class="grid">
+<figure class="diagram">
+{{SVG}}
+<figcaption>Top view. The three new jumpers are D1, D2 and D3 on the right; everything else is as already wired. The FT232H is turned 180°, so its silkscreen reads upside down. MIO0–3 on the breakout are the pads marked D0–D3.</figcaption>
+</figure>
+
+<div class="col">
+
+<section>
+<h2>Add these three</h2>
+<div class="tw"><table>
+<thead><tr><th>Signal</th><th>FT232H pad</th><th>Pico 2 W</th><th>Final board</th></tr></thead>
+<tbody>
+<tr><td><span class="sw" style="background:var(--d1)"></span><span class="m">MIOSIO1</span></td><td><span class="m">D1</span><small>ADBUS1, chip pin 14</small></td><td><span class="m">GP17</span><small>pin 22</small></td><td class="m">GPIO 39</td></tr>
+<tr><td><span class="sw" style="background:var(--d2)"></span><span class="m">MIOSIO2</span></td><td><span class="m">D2</span><small>ADBUS2, chip pin 15</small></td><td><span class="m">GP18</span><small>pin 24</small></td><td class="m">GPIO 40</td></tr>
+<tr><td><span class="sw" style="background:var(--d3)"></span><span class="m">MIOSIO3</span></td><td><span class="m">D3</span><small>ADBUS3, chip pin 16</small></td><td><span class="m">GP19</span><small>pin 25</small></td><td class="m">GPIO 41</td></tr>
+</tbody></table></div>
+<p>Unplug both USB cables first. GP17 and GP18 sit either side of the Pico's ground pin 23, so count pins from the bottom corner: pin 21 is GP16, then 22, the ground, 24, 25.</p>
+<p>Check the "I2C Mode" switch is still off. It shorts D1 to D2, which did not matter for 1-bit and would now tie two data lines together.</p>
+</section>
+
+<section>
+<h2>Already fitted</h2>
+<div class="tw"><table>
+<thead><tr><th>Signal</th><th>FT232H pad</th><th>Pico 2 W</th><th>Driven by</th><th>Final board</th></tr></thead>
+<tbody>
+<tr><td><span class="sw" style="background:var(--sclk)"></span><span class="m">SCLK</span></td><td><span class="m">C0</span><small>ACBUS0, chip pin 21</small></td><td><span class="m">GP15</span><small>pin 20</small></td><td>Pico</td><td class="m">GPIO 37</td></tr>
+<tr><td><span class="sw" style="background:var(--ss)"></span><span class="m">SS_n</span></td><td><span class="m">C1</span><small>ACBUS1, chip pin 25</small></td><td><span class="m">GP14</span><small>pin 19</small></td><td>Pico</td><td class="m">GPIO 36</td></tr>
+<tr><td><span class="sw" style="background:var(--miso)"></span><span class="m">MISO</span></td><td><span class="m">C2</span><small>ACBUS2, chip pin 26</small></td><td><span class="m">GP13</span><small>pin 17</small></td><td>FT232H</td><td class="m">GPIO 35</td></tr>
+<tr><td><span class="sw" style="background:var(--d0)"></span><span class="m">MIOSIO0</span></td><td><span class="m">D0</span><small>ADBUS0, chip pin 13</small></td><td><span class="m">GP16</span><small>pin 21</small></td><td>both, in turn</td><td class="m">GPIO 38</td></tr>
+<tr><td><span class="sw" style="background:var(--gnd)"></span><span class="m">GND</span></td><td><span class="m">Gnd</span><small>the one next to D0</small></td><td><span class="m">GND</span><small>pin 23</small></td><td></td><td></td></tr>
+</tbody></table></div>
+<p>D4–D7, C3–C9, 3V and 5V stay unconnected. The boards' power pins are never joined.</p>
+</section>
+
+<section>
+<h2>Why the four data wires cross</h2>
+<p>MIOSIO0–3 must land on consecutive Pico GPIOs in the same order, because a PIO program moves a nibble with one instruction. The breakout numbers D0–D3 toward its USB end and the Pico numbers GP16–GP19 away from its bottom corner, so with the boards facing each other the four wires interleave. On the breadboard they simply pass over one another.</p>
+<p>The PCB has the same geometry: the phase 3 notes record six unavoidable MIOSIO crossings between the RP2350B and the FT232H, routed with vias. Reversing the bit order would remove them, and was rejected to keep the firmware simple.</p>
+</section>
+
+<section>
+<h2>What changes on the wires</h2>
+<ul>
+<li>A byte takes 2 clocks, a nibble each, where 1-bit took 8. At the same clock the link should carry roughly four times the data.</li>
+<li>The chip chooses the width per transaction from which data lines are low on the first clock, so the EEPROM needs no change (AN_167 §4).</li>
+<li>All four lines turn around together. With no series resistors, a firmware mistake can now put two outputs against each other on four pins, so the first 4-bit runs start slow, as the 1-bit ones did.</li>
+<li>Unknown until measured: whether ACK on MISO is still valid only on the first clock of a byte, now that a byte is only two clocks long.</li>
+</ul>
+</section>
+
+<section>
+<h2>Where the bench stands</h2>
+<ul>
+<li>EEPROM programmed for FT1248: clock idles low, MSB first, flow control on, serial <span class="m">BENCH1</span>.</li>
+<li>1-bit link clean at 30 MHz in both directions; reads need the RP2350 input synchroniser bypassed at that speed.</li>
+<li>100 MB sustained from Pico to Mac at 3.25 MB/s, every byte verified.</li>
+</ul>
+</section>
+
+</div>
+</div>
+</div>

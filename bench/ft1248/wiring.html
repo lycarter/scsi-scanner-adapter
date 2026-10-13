@@ -6,7 +6,7 @@
   --bg:#eef0ee; --panel:#f8f9f7; --fg:#1b2422; --muted:#5d6966; --line:#cfd5d1; --accent:#0d6b5f;
   --bb:#fbfbf8; --bb-edge:#c9cec9; --chan:#e3e6e1; --hole:#a9b0ab;
   --pico:#1f7a4a; --ft:#5b3a9a; --board-fg:#eef5ef; --board-dim:#b9d2c2; --pad:#d9b64a; --usb:#9aa19d;
-  --sclk:#d98a00; --ss:#c2337a; --miso:#1f6fd1; --d0:#12995a; --gnd:#22282a; --plus:#c0392b; --minus:#2b62b5;
+  --sclk:#d98a00; --ss:#c2337a; --miso:#1f6fd1; --d0:#12995a; --d1:#0b8fa6; --d2:#7a4fd6; --d3:#b5532a; --gnd:#22282a; --plus:#c0392b; --minus:#2b62b5;
   --warn-bg:#fff4d6; --warn-fg:#5c4300; --warn-line:#e2c36a;
   --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --cond:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
@@ -16,13 +16,13 @@
   --bg:#121716; --panel:#1a211f; --fg:#e4ebe8; --muted:#97a5a1; --line:#2f3936; --accent:#5fd0bd;
   --bb:#262d2b; --bb-edge:#3b4643; --chan:#1b211f; --hole:#0f1312;
   --pico:#1c6a41; --ft:#523590; --board-fg:#eef5ef; --board-dim:#b4cbbd; --pad:#d9b64a; --usb:#7d8582;
-  --sclk:#f2a81d; --ss:#ef5fa4; --miso:#5aa2ff; --d0:#3fd08a; --gnd:#d5dcd9; --plus:#e0685c; --minus:#6d9be6;
+  --sclk:#f2a81d; --ss:#ef5fa4; --miso:#5aa2ff; --d0:#3fd08a; --d1:#3fc6dd; --d2:#a98bff; --d3:#e58a5c; --gnd:#d5dcd9; --plus:#e0685c; --minus:#6d9be6;
   --warn-bg:#2e2710; --warn-fg:#f0dc9a; --warn-line:#6b5a1f; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#121716; --panel:#1a211f; --fg:#e4ebe8; --muted:#97a5a1; --line:#2f3936; --accent:#5fd0bd;
   --bb:#262d2b; --bb-edge:#3b4643; --chan:#1b211f; --hole:#0f1312;
   --pico:#1c6a41; --ft:#523590; --board-fg:#eef5ef; --board-dim:#b4cbbd; --pad:#d9b64a; --usb:#7d8582;
-  --sclk:#f2a81d; --ss:#ef5fa4; --miso:#5aa2ff; --d0:#3fd08a; --gnd:#d5dcd9; --plus:#e0685c; --minus:#6d9be6;
+  --sclk:#f2a81d; --ss:#ef5fa4; --miso:#5aa2ff; --d0:#3fd08a; --d1:#3fc6dd; --d2:#a98bff; --d3:#e58a5c; --gnd:#d5dcd9; --plus:#e0685c; --minus:#6d9be6;
   --warn-bg:#2e2710; --warn-fg:#f0dc9a; --warn-line:#6b5a1f; color-scheme:dark }
 
 body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--sans)}
@@ -72,24 +72,24 @@ svg text{font-family:var(--mono)}
 .bsub{font-size:9px;fill:var(--board-dim)}
 .w{fill:none;stroke-width:4.5;stroke-linecap:round}
 .wu{fill:none;stroke:var(--bb);stroke-width:8;stroke-linecap:round}
-.w.sclk{stroke:var(--sclk)}.w.ss{stroke:var(--ss)}.w.miso{stroke:var(--miso)}.w.d0{stroke:var(--d0)}.w.gnd{stroke:var(--gnd)}
+.w.sclk{stroke:var(--sclk)}.w.ss{stroke:var(--ss)}.w.miso{stroke:var(--miso)}.w.d0{stroke:var(--d0)}.w.d1{stroke:var(--d1)}.w.d2{stroke:var(--d2)}.w.d3{stroke:var(--d3)}.w.gnd{stroke:var(--gnd)}
 .we{stroke:var(--bb);stroke-width:1.5}
-.we.sclk{fill:var(--sclk)}.we.ss{fill:var(--ss)}.we.miso{fill:var(--miso)}.we.d0{fill:var(--d0)}.we.gnd{fill:var(--gnd)}
+.we.sclk{fill:var(--sclk)}.we.ss{fill:var(--ss)}.we.miso{fill:var(--miso)}.we.d0{fill:var(--d0)}.we.d1{fill:var(--d1)}.we.d2{fill:var(--d2)}.we.d3{fill:var(--d3)}.we.gnd{fill:var(--gnd)}
 .note{font-size:9px;fill:var(--muted)}
 </style>
 
 <div class="wrap">
 <header>
-  <span class="eyebrow">Phase 3 · bench test R111</span>
+  <span class="eyebrow">Phase 3 · bench test R111 · 4-bit wiring</span>
   <h1>FT1248 Bench Rig</h1>
-  <p>Five jumpers between the FT232H breakout and the Pico 2 W for the 1-bit FT1248 test. Each board keeps its own USB cable to the Mac; only signals and ground cross between them.</p>
+  <p>Eight jumpers between the FT232H breakout and the Pico 2 W for the 4-bit FT1248 test: the five already fitted for 1-bit, plus three new data lines. Each board keeps its own USB cable to the Mac; only signals and ground cross between them.</p>
 </header>
 
 <div class="grid">
 <figure class="diagram">
 <svg viewBox="0 0 482 876" role="img" aria-labelledby="dt dd">
 <title id="dt">Breadboard wiring, Pico 2 W above an FT232H breakout</title>
-<desc id="dd">Four signal jumpers and one ground link. C0 to GP15, C1 to GP14, C2 to GP13, D0 to GP16, and both grounds to the right-hand ground rail.</desc>
+<desc id="dd">Seven signal jumpers and one ground link. C0 to GP15, C1 to GP14, C2 to GP13, D0 to GP16, D1 to GP17, D2 to GP18, D3 to GP19, and both grounds to the right-hand ground rail.</desc>
 <rect class="bb" x="6" y="30" width="470" height="840" rx="10"/>
 <rect class="chan" x="222" y="56" width="38" height="798" rx="4"/>
 <line class="rail plus" x1="28" y1="60" x2="28" y2="850"/>
@@ -654,20 +654,20 @@ svg text{font-family:var(--mono)}
 <text class="pin" x="308" y="381.6" text-anchor="end">GP20</text>
 <rect class="pad" x="159.5" y="395.5" width="9" height="9" rx="1.5"/>
 <text class="pin" x="174" y="403.6" text-anchor="start">GP12</text>
-<rect class="pad" x="313.5" y="395.5" width="9" height="9" rx="1.5"/>
-<text class="pin" x="308" y="403.6" text-anchor="end">GP19</text>
+<rect class="pad on" x="313.5" y="395.5" width="9" height="9" rx="1.5"/>
+<text class="pin on" x="308" y="403.6" text-anchor="end">GP19</text>
 <rect class="pad on" x="159.5" y="417.5" width="9" height="9" rx="1.5"/>
 <text class="pin on" x="174" y="425.6" text-anchor="start">GP13</text>
-<rect class="pad" x="313.5" y="417.5" width="9" height="9" rx="1.5"/>
-<text class="pin" x="308" y="425.6" text-anchor="end">GP18</text>
+<rect class="pad on" x="313.5" y="417.5" width="9" height="9" rx="1.5"/>
+<text class="pin on" x="308" y="425.6" text-anchor="end">GP18</text>
 <rect class="pad" x="159.5" y="439.5" width="9" height="9" rx="1.5"/>
 <text class="pin" x="174" y="447.6" text-anchor="start">GND</text>
 <rect class="pad" x="313.5" y="439.5" width="9" height="9" rx="1.5"/>
 <text class="pin" x="308" y="447.6" text-anchor="end">GND</text>
 <rect class="pad on" x="159.5" y="461.5" width="9" height="9" rx="1.5"/>
 <text class="pin on" x="174" y="469.6" text-anchor="start">GP14</text>
-<rect class="pad" x="313.5" y="461.5" width="9" height="9" rx="1.5"/>
-<text class="pin" x="308" y="469.6" text-anchor="end">GP17</text>
+<rect class="pad on" x="313.5" y="461.5" width="9" height="9" rx="1.5"/>
+<text class="pin on" x="308" y="469.6" text-anchor="end">GP17</text>
 <rect class="pad on" x="159.5" y="483.5" width="9" height="9" rx="1.5"/>
 <text class="pin on" x="174" y="491.6" text-anchor="start">GP15</text>
 <rect class="pad on" x="313.5" y="483.5" width="9" height="9" rx="1.5"/>
@@ -695,20 +695,20 @@ svg text{font-family:var(--mono)}
 <text class="pin" x="308" y="645.6" text-anchor="end">D4</text>
 <rect class="pad" x="159.5" y="659.5" width="9" height="9" rx="1.5"/>
 <text class="pin" x="174" y="667.6" text-anchor="start">C4</text>
-<rect class="pad" x="313.5" y="659.5" width="9" height="9" rx="1.5"/>
-<text class="pin" x="308" y="667.6" text-anchor="end">D3</text>
+<rect class="pad on" x="313.5" y="659.5" width="9" height="9" rx="1.5"/>
+<text class="pin on" x="308" y="667.6" text-anchor="end"><tspan class="fn">MIO3</tspan> D3</text>
 <rect class="pad" x="159.5" y="681.5" width="9" height="9" rx="1.5"/>
 <text class="pin" x="174" y="689.6" text-anchor="start">C5</text>
-<rect class="pad" x="313.5" y="681.5" width="9" height="9" rx="1.5"/>
-<text class="pin" x="308" y="689.6" text-anchor="end">D2</text>
+<rect class="pad on" x="313.5" y="681.5" width="9" height="9" rx="1.5"/>
+<text class="pin on" x="308" y="689.6" text-anchor="end"><tspan class="fn">MIO2</tspan> D2</text>
 <rect class="pad" x="159.5" y="703.5" width="9" height="9" rx="1.5"/>
 <text class="pin" x="174" y="711.6" text-anchor="start">C6</text>
-<rect class="pad" x="313.5" y="703.5" width="9" height="9" rx="1.5"/>
-<text class="pin" x="308" y="711.6" text-anchor="end">D1</text>
+<rect class="pad on" x="313.5" y="703.5" width="9" height="9" rx="1.5"/>
+<text class="pin on" x="308" y="711.6" text-anchor="end"><tspan class="fn">MIO1</tspan> D1</text>
 <rect class="pad" x="159.5" y="725.5" width="9" height="9" rx="1.5"/>
 <text class="pin" x="174" y="733.6" text-anchor="start">C7</text>
 <rect class="pad on" x="313.5" y="725.5" width="9" height="9" rx="1.5"/>
-<text class="pin on" x="308" y="733.6" text-anchor="end"><tspan class="fn">MIOSIO0</tspan> D0</text>
+<text class="pin on" x="308" y="733.6" text-anchor="end"><tspan class="fn">MIO0</tspan> D0</text>
 <rect class="pad" x="159.5" y="747.5" width="9" height="9" rx="1.5"/>
 <text class="pin" x="174" y="755.6" text-anchor="start">C8</text>
 <rect class="pad" x="313.5" y="747.5" width="9" height="9" rx="1.5"/>
@@ -733,24 +733,46 @@ svg text{font-family:var(--mono)}
 <path class="wu" d="M120,488 C92,488 92,576 120,576"/><path class="w sclk" d="M120,488 C92,488 92,576 120,576"/>
 <circle class="we sclk" cx="120" cy="488" r="4.2"/>
 <circle class="we sclk" cx="120" cy="576" r="4.2"/>
-<path class="wu" d="M362,488 C424,488 424,730 362,730"/><path class="w d0" d="M362,488 C424,488 424,730 362,730"/>
-<circle class="we d0" cx="362" cy="488" r="4.2"/>
-<circle class="we d0" cx="362" cy="730" r="4.2"/>
 <path class="wu" d="M362,444 H432"/><path class="w gnd" d="M362,444 H432"/>
 <circle class="we gnd" cx="362" cy="444" r="4.2"/>
 <circle class="we gnd" cx="432" cy="444" r="4.2"/>
 <path class="wu" d="M362,752 H432"/><path class="w gnd" d="M362,752 H432"/>
 <circle class="we gnd" cx="362" cy="752" r="4.2"/>
 <circle class="we gnd" cx="432" cy="752" r="4.2"/>
-<text class="note" x="443" y="598" transform="rotate(90 443 598)" text-anchor="middle">ground rail joins the two GND jumpers</text>
+<path class="wu" d="M362,400 C446,400 446,664 362,664"/><path class="w d3" d="M362,400 C446,400 446,664 362,664"/>
+<circle class="we d3" cx="362" cy="400" r="4.2"/>
+<circle class="we d3" cx="362" cy="664" r="4.2"/>
+<path class="wu" d="M362,422 C428,422 428,686 362,686"/><path class="w d2" d="M362,422 C428,422 428,686 362,686"/>
+<circle class="we d2" cx="362" cy="422" r="4.2"/>
+<circle class="we d2" cx="362" cy="686" r="4.2"/>
+<path class="wu" d="M362,466 C410,466 410,708 362,708"/><path class="w d1" d="M362,466 C410,466 410,708 362,708"/>
+<circle class="we d1" cx="362" cy="466" r="4.2"/>
+<circle class="we d1" cx="362" cy="708" r="4.2"/>
+<path class="wu" d="M362,488 C392,488 392,730 362,730"/><path class="w d0" d="M362,488 C392,488 392,730 362,730"/>
+<circle class="we d0" cx="362" cy="488" r="4.2"/>
+<circle class="we d0" cx="362" cy="730" r="4.2"/>
+<text class="note" x="467" y="598" transform="rotate(90 467 598)" text-anchor="middle">ground rail joins the two GND jumpers</text>
 </svg>
-<figcaption>Top view of a full-size breadboard (the two boards need 31 rows, one more than a half-size board has). The FT232H is turned 180° so its USB-C faces away from the Pico and its silkscreen reads upside down. Only the rows matter; if the breakout is wider than the Pico it just leaves fewer free holes beside it.</figcaption>
+<figcaption>Top view. The three new jumpers are D1, D2 and D3 on the right; everything else is as already wired. The FT232H is turned 180°, so its silkscreen reads upside down. MIO0–3 on the breakout are the pads marked D0–D3.</figcaption>
 </figure>
 
 <div class="col">
 
 <section>
-<h2>Connections</h2>
+<h2>Add these three</h2>
+<div class="tw"><table>
+<thead><tr><th>Signal</th><th>FT232H pad</th><th>Pico 2 W</th><th>Final board</th></tr></thead>
+<tbody>
+<tr><td><span class="sw" style="background:var(--d1)"></span><span class="m">MIOSIO1</span></td><td><span class="m">D1</span><small>ADBUS1, chip pin 14</small></td><td><span class="m">GP17</span><small>pin 22</small></td><td class="m">GPIO 39</td></tr>
+<tr><td><span class="sw" style="background:var(--d2)"></span><span class="m">MIOSIO2</span></td><td><span class="m">D2</span><small>ADBUS2, chip pin 15</small></td><td><span class="m">GP18</span><small>pin 24</small></td><td class="m">GPIO 40</td></tr>
+<tr><td><span class="sw" style="background:var(--d3)"></span><span class="m">MIOSIO3</span></td><td><span class="m">D3</span><small>ADBUS3, chip pin 16</small></td><td><span class="m">GP19</span><small>pin 25</small></td><td class="m">GPIO 41</td></tr>
+</tbody></table></div>
+<p>Unplug both USB cables first. GP17 and GP18 sit either side of the Pico's ground pin 23, so count pins from the bottom corner: pin 21 is GP16, then 22, the ground, 24, 25.</p>
+<p>Check the "I2C Mode" switch is still off. It shorts D1 to D2, which did not matter for 1-bit and would now tie two data lines together.</p>
+</section>
+
+<section>
+<h2>Already fitted</h2>
 <div class="tw"><table>
 <thead><tr><th>Signal</th><th>FT232H pad</th><th>Pico 2 W</th><th>Driven by</th><th>Final board</th></tr></thead>
 <tbody>
@@ -759,58 +781,32 @@ svg text{font-family:var(--mono)}
 <tr><td><span class="sw" style="background:var(--miso)"></span><span class="m">MISO</span></td><td><span class="m">C2</span><small>ACBUS2, chip pin 26</small></td><td><span class="m">GP13</span><small>pin 17</small></td><td>FT232H</td><td class="m">GPIO 35</td></tr>
 <tr><td><span class="sw" style="background:var(--d0)"></span><span class="m">MIOSIO0</span></td><td><span class="m">D0</span><small>ADBUS0, chip pin 13</small></td><td><span class="m">GP16</span><small>pin 21</small></td><td>both, in turn</td><td class="m">GPIO 38</td></tr>
 <tr><td><span class="sw" style="background:var(--gnd)"></span><span class="m">GND</span></td><td><span class="m">Gnd</span><small>the one next to D0</small></td><td><span class="m">GND</span><small>pin 23</small></td><td></td><td></td></tr>
-<tr class="later"><td class="m">MIOSIO1–3</td><td><span class="m">D1, D2, D3</span><small>leave open for now</small></td><td><span class="m">GP17, GP18, GP19</span><small>pins 22, 24, 25</small></td><td>later, 4-bit</td><td class="m">GPIO 39–41</td></tr>
 </tbody></table></div>
-<p>Leave D1–D7, C3–C9, 3V and 5V unconnected. Do not join the boards' 3.3 V or 5 V pins: two regulators on one rail fight each other.</p>
+<p>D4–D7, C3–C9, 3V and 5V stay unconnected. The boards' power pins are never joined.</p>
 </section>
 
 <section>
-<h2>Why these Pico pins</h2>
-<p>Every Pico pin is the final board's GPIO number minus 22. The PIO program cares about the pins' relative positions (SS_n and SCLK adjacent for the 2-pin side-set, MISO as the jump pin, MIOSIO0–3 consecutive), so the program you debug here moves to the RP2350B by changing base pins and nothing else.</p>
-<p>GP13–GP19 also happens to split across the Pico's two sides exactly where the breakout splits its C and D pads, so no jumper crosses another, and the three extra wires for the 4-bit test drop in beside the green one. GP23–25 and GP29 are taken by the Pico 2 W's radio and aren't on the header.</p>
-<p>I rejected GP2–GP8 (all on one side, so three wires would cross the centre channel) and GP0/GP1 (worth keeping free as a debug UART).</p>
+<h2>Why the four data wires cross</h2>
+<p>MIOSIO0–3 must land on consecutive Pico GPIOs in the same order, because a PIO program moves a nibble with one instruction. The breakout numbers D0–D3 toward its USB end and the Pico numbers GP16–GP19 away from its bottom corner, so with the boards facing each other the four wires interleave. On the breadboard they simply pass over one another.</p>
+<p>The PCB has the same geometry: the phase 3 notes record six unavoidable MIOSIO crossings between the RP2350B and the FT232H, routed with vias. Reversing the bit order would remove them, and was rejected to keep the firmware simple.</p>
 </section>
 
 <section>
-<h2>Before you plug in</h2>
-<div class="warn">
-<p><strong>The FT232H only speaks FT1248 once its EEPROM says so.</strong> With a blank or missing EEPROM it comes up as a UART and drives D0 as TXD. The Pico must keep all four pins as inputs until you have seen the idle check below pass.</p>
-</div>
-<ol>
-<li><strong>Slide the "I2C Mode" switch off</strong> and leave the small 4-pin socket empty. On Adafruit's board that switch shorts D1 to D2; I am assuming this clone copies it. <span class="unv">unverified</span></li>
-<li><strong>Find the EEPROM on the breakout.</strong> The small 6-pin part near the switch is probably it. Our notes say a 93LC46B is not usable and the final board uses a 93LC56B, so read the marking before trusting it. <span class="unv">unverified from the photo</span></li>
-<li><strong>Program it with FT_PROG</strong> as in <code>USAGE.md</code>: port type FT1248, flow control on, "Suspend on ACBus7 Low" off. Save the 256-byte image for the real board.</li>
-<li><strong>Confirm C0–C2 really are ACBUS0–2.</strong> The silkscreen follows Adafruit's naming, but a 30-second continuity check from pad C0 to chip pin 21 is cheaper than a confusing evening. <span class="unv">unverified</span></li>
-<li><strong>Power off both USB cables while wiring.</strong> Both boards are 3.3 V logic, so no level shifting.</li>
-</ol>
-</section>
-
-<section>
-<h2>First check, no firmware needed</h2>
-<p>With the Pico pins still inputs, the FT232H's internal pull-up holds SS_n high, and the chip shows its buffer status on two of the wires (AN_167 §3):</p>
+<h2>What changes on the wires</h2>
 <ul>
-<li><span class="m">MISO</span> (C2) follows RXF#: high while the Mac has sent nothing, low once a byte is waiting. Open <code>/dev/cu.usbserial-*</code>, type a character, and it should drop.</li>
-<li><span class="m">MIOSIO0</span> (D0) follows TXE#: low while there is room in the write buffer.</li>
+<li>A byte takes 2 clocks, a nibble each, where 1-bit took 8. At the same clock the link should carry roughly four times the data.</li>
+<li>The chip chooses the width per transaction from which data lines are low on the first clock, so the EEPROM needs no change (AN_167 §4).</li>
+<li>All four lines turn around together. With no series resistors, a firmware mistake can now put two outputs against each other on four pins, so the first 4-bit runs start slow, as the 1-bit ones did.</li>
+<li>Unknown until measured: whether ACK on MISO is still valid only on the first clock of a byte, now that a byte is only two clocks long.</li>
 </ul>
-<p>If D0 instead idles high and twitches when you type, the chip is still in UART mode. The polarity above comes from the 245-FIFO signal names in our notes; confirm it on the scope. <span class="unv">not yet measured</span></p>
 </section>
 
 <section>
-<h2>What the Pico then does on these wires</h2>
-<ol>
-<li>Pulls SS_n low. The FT232H lets go of MIOSIO0 at once; the Pico may only start driving it on the first clock edge.</li>
-<li>Clocks the command out on MIOSIO0 for 7 clocks, then gives 1 turnaround clock.</li>
-<li>Clocks 8 bits per byte for as long as SS_n stays low. MISO carries ACK or NAK for each byte.</li>
-<li>After a write, releases MIOSIO0 on the last clock, then raises SS_n.</li>
-</ol>
-<p>The chip picks the bus width from which MIOSIO lines are low on the first clock. D1–D7 are unconnected and pulled up inside the chip, which is what selects 1-bit, so leaving them open is the correct wiring and not a shortcut (AN_167 §4, §5.1).</p>
-</section>
-
-<section>
-<h2>Two judgement calls</h2>
+<h2>Where the bench stands</h2>
 <ul>
-<li><strong>Series resistors.</strong> The final board has 33 Ω in each FT1248 net. Here a resistor can simply replace each signal jumper. For the very first power-up I would use 330 Ω: if both ends ever drive MIOSIO0 at once the current stays near 10 mA, and at 1 MHz it costs nothing. Swap to 33 Ω or wire when you start raising the clock.</li>
-<li><strong>Speed.</strong> Start SCLK near 1 MHz and keep jumpers under 10 cm. A breadboard will prove the protocol and the macOS serial path; it will not tell you whether 25 MHz works on the PCB. If you do push it, add a second ground jumper on the left (Pico pin 18 to the breakout's other Gnd pad).</li>
+<li>EEPROM programmed for FT1248: clock idles low, MSB first, flow control on, serial <span class="m">BENCH1</span>.</li>
+<li>1-bit link clean at 30 MHz in both directions; reads need the RP2350 input synchroniser bypassed at that speed.</li>
+<li>100 MB sustained from Pico to Mac at 3.25 MB/s, every byte verified.</li>
 </ul>
 </section>
 
