@@ -317,4 +317,35 @@ is still a UART.
   some signal lines together on purpose. One Mac → Pico transfer failed (2591 bad 64 KB blocks
   from block 1505 on, data read as ff…); the harness recovered and the next transfers were
   clean. Exclude that one failure when judging the soak.
-  **Next:** read the soak result; then fold findings into main's notes.
+  **Soak result (stopped by the owner at 8 h 13 min, 2026-10-13 06:52; not the full 10 h).**
+  899 transfers of 256 MB, 203.7 GB verified. Records: `results-soak-log.jsonl`,
+  `results-soak-summary.txt`.
+
+  | Path | Perfect | Verified | Mean rate |
+  |---|---|---|---|
+  | Pico → Mac, libusb | 300 of 300 | 80.5 GB | 11.87 MB/s |
+  | Mac → Pico, Apple node | 298 of 299 (the 1 is the deliberate short) | 80.0 GB | 9.76 MB/s |
+  | Pico → Mac, Apple node | 161 of 300 | 43.2 GB | 5.47 MB/s |
+
+  The 139 Pico → Mac failures through Apple's serial node are **not explained**. What the log
+  shows:
+  - They come in episodes (about 43). Each starts with a stall: the Pico sees no progress for
+    5 s (FT232H keeps refusing bytes, so the host has stopped taking data) and gives up, either
+    within the first ~100 KB or tens of MB in. The Mac has then received a fixed amount less
+    than the Pico sent (17365 bytes in most episodes; 15819, 10719 or 5125 in the others).
+  - The next three Apple-node transfers after a stall usually complete at normal speed but are
+    wrong from byte 4 on, and identically wrong in every episode (same three CRCs:
+    0e36f87c with 494 extra bytes, 9f7fb376, 8ad4c7ea). The Pico's own CRC of what it sent is
+    correct each time. The fourth is clean again.
+  - The libusb transfers that run between those bad ones use the same Pico code and the same
+    wires and were all perfect.
+  So the fault follows the Apple serial node (or this harness's use of it: tty reader plus
+  `recover()`), not the FT1248 link. The huge "wrong bytes" total (26 billion) is those
+  follow-on transfers, not scattered bit errors. Unverified guesses: Apple's driver stops
+  reading for seconds at a time, and the reset in `recover()` leaves the tty path in a state
+  that takes a few opens to clear. The first stall came 20 s after the Mac's display turned
+  off (22:57:26), which may or may not matter. To find out, save the received stream of one
+  bad transfer and compare it with the reference (shift? inserted bytes?).
+
+  **Next:** fold findings into main's notes. For the host driver, this is an argument for
+  libusb/D2XX rather than the Apple serial node, on top of the speed difference.
