@@ -327,25 +327,65 @@ is still a UART.
   | Mac → Pico, Apple node | 298 of 299 (the 1 is the deliberate short) | 80.0 GB | 9.76 MB/s |
   | Pico → Mac, Apple node | 161 of 300 | 43.2 GB | 5.47 MB/s |
 
-  The 139 Pico → Mac failures through Apple's serial node are **not explained**. What the log
-  shows:
-  - They come in episodes (about 43). Each starts with a stall: the Pico sees no progress for
-    5 s (FT232H keeps refusing bytes, so the host has stopped taking data) and gives up, either
-    within the first ~100 KB or tens of MB in. The Mac has then received a fixed amount less
-    than the Pico sent (17365 bytes in most episodes; 15819, 10719 or 5125 in the others).
-  - The next three Apple-node transfers after a stall usually complete at normal speed but are
-    wrong from byte 4 on, and identically wrong in every episode (same three CRCs:
-    0e36f87c with 494 extra bytes, 9f7fb376, 8ad4c7ea). The Pico's own CRC of what it sent is
-    correct each time. The fourth is clean again.
-  - The libusb transfers that run between those bad ones use the same Pico code and the same
-    wires and were all perfect.
-  So the fault follows the Apple serial node (or this harness's use of it: tty reader plus
-  `recover()`), not the FT1248 link. The huge "wrong bytes" total (26 billion) is those
-  follow-on transfers, not scattered bit errors. Unverified guesses: Apple's driver stops
-  reading for seconds at a time, and the reset in `recover()` leaves the tty path in a state
-  that takes a few opens to clear. The first stall came 20 s after the Mac's display turned
-  off (22:57:26), which may or may not matter. To find out, save the received stream of one
-  bad transfer and compare it with the reference (shift? inserted bytes?).
+  The 139 Pico → Mac failures through the serial node were chased down afterwards; see
+  "The serial-node stall" below. They are a macOS serial-stack fault, not a link fault.
 
-  **Next:** fold findings into main's notes. For the host driver, this is an argument for
-  libusb/D2XX rather than the Apple serial node, on top of the speed difference.
+  **Next:** fold findings into main's notes.
+
+## The serial-node stall (2026-10-13)
+
+**Correction to everything above:** `/dev/cu.usbserial-BENCH1` is *not* Apple's driver. This Mac
+has FTDI's own VCP driver installed (`com.ftdi.vcp.dext` 1.1, class `NullDriver`), and it and
+Apple's `AppleUSBFTDI` both attach to the FT232H's one interface. FTDI's publishes
+`usbserial-BENCH1`; Apple's publishes `/dev/cu.usbserial-3`. Only one can be open at a time
+(the other gives "Resource busy"). So every "Apple node" result above was FTDI's driver. Both
+are subclasses of Apple's `IOUserUSBSerial` and sit on the same kernel code
+(`com.apple.driver.driverkit.serial`, IOSerialFamily). Through either node Pico → Mac tops out
+at the same ~5.5 MB/s. Check with
+`ioreg -r -c IOUserSerial -l | grep -E "IOUserClass|IOTTYSuffix|IOCalloutDevice"`.
+
+**What is wrong (macOS 26.6.2, build 25G83).** Receiving through the tty, the stream
+randomly stops for good:
+- Seen with both drivers (FTDI's and Apple's), so it is in what they share, not in either one.
+  Never seen through libusb (300 of 300 in the soak), which uses none of that code.
+- Rate: about one stall per 5 min of streaming at 5.5 MB/s (soak: 43 in 4 h of receive time),
+  and *more* often at 2.3 MB/s (13 in 45 min, `results-serial-stall-2.3MBps.txt`). No fixed
+  period; unrelated to the Mac's display sleeping.
+- At the stall every byte delivered so far is correct. `FIONREAD` is 0, yet the FT232H goes
+  on accepting about 18.4 KB more from the Pico before it fills. That data has left the chip
+  and is held in the driver stack, undelivered.
+- Nothing un-sticks it: waiting 20 s, `TIOCMGET`, `tcflow`, writing a byte (the write does
+  reach the Pico, so transmit still works), opening the node a second time, setting the speed
+  again, `tcflush` (`results-serial-stall-nudges.txt`). The driver processes do not crash or
+  restart.
+- Closing and reopening the port restarts reception, but the held data is gone. Measured
+  twice with identical numbers (`results-serial-stall-reopen.txt`): the first thing delivered
+  is 15300 zero bytes (30 USB packets of 510), then 63 correct bytes from 18392 past the
+  stall point, then 1993 bytes are skipped, then the stream is perfect to the end. Net:
+  20385 real bytes lost, 15300 zeros inserted.
+
+That fits a lost wakeup between the driver's receive queue and the kernel's tty reader, but
+that part is **inference**: the code involved is closed, and seeing where the threads sleep
+needs root (`sudo spindump` during a stall), which was not done.
+
+**How that produced the soak's numbers.**
+- The stalled transfer: the Pico gave up after 5 s with the Mac 17365 bytes short (close to the
+  18.4 KB above; the exact difference was not accounted for).
+- `recover()` in the soak took 5 s, not the 9.6 s it takes when its FT232H USB reset works, so
+  the reset was failing there (exception swallowed) and the driver processes were never
+  restarted. Why it failed in the soak and not in later replays is not known.
+- The stale ~20.4 KB then came out as zeros at the start of the next three receive sessions:
+  12240, 6646 and 1546 zero bytes (20432 in all), each followed by the complete, correct
+  stream. Those prefixes reproduce the soak's three recurring CRCs exactly (0e36f87c,
+  9f7fb376, 8ad4c7ea). A shifted stream compares wrong almost everywhere, hence "26 billion
+  wrong bytes". No transfer had a corrupted byte in the ordinary sense.
+- When the USB reset does work (new driver processes), the next transfer is clean.
+
+**Consequences.** The FT1248 link is cleared: every soak failure is this host-side fault or the
+deliberate short. For the host software, do not carry bulk data over the macOS serial node;
+use libusb/D2XX (also 2× faster). Having both FTDI's and Apple's driver bound is untidy but is
+not the cause.
+
+Tools: `chase_stall.py NODE MINUTES reopen|nudge|wait` loops transfers and diagnoses a stall
+in place (`PIO_HZ=25000000` throttles to 2.3 MB/s); `apple_chase.py` captures bad streams.
+

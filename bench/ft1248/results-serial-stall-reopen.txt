@@ -1,0 +1,14 @@
+07:59:57 run 1 STALL at 60097400 {'received': 60097400, 'extra': -74120328, 'wrong': 59855303, 'first_wrong': 0, 'leading_zeros': 0} FIONREAD 0 mode reopen
+08:00:00   waited 3 s more: +0 FIONREAD 0
+08:00:04   close + reopen, nothing else -> +22348773 in 4 s
+08:00:17   after the restart: 74115263 bytes; stream had 74120328 left at the stall, so net 5065 missing; ends with the true end of stream: True; saved after-76646-1.bin
+08:00:26   recover: 0 0
+08:00:52 run 2 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23962826 09d97f82 54"}
+08:01:18 run 3 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 24000516 09d97f82 54"}
+08:01:44 run 4 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23967445 09d97f82 54"}
+08:02:10 run 5 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23898738 09d97f82 55"}
+08:02:25 run 6 STALL at 66554490 {'received': 66554490, 'extra': -67663238, 'wrong': 0, 'first_wrong': None, 'leading_zeros': 4} FIONREAD 0 mode reopen
+08:02:28   waited 3 s more: +0 FIONREAD 0
+08:02:33   close + reopen, nothing else -> +22411503 in 4 s
+08:02:45   after the restart: 67658153 bytes; stream had 67663238 left at the stall, so net 5085 missing; ends with the true end of stream: True; saved after-76646-6.bin
+08:02:54   recover: 0 0

@@ -1,0 +1,42 @@
+07:49:37 run 1 STALL at 116284610 {'received': 116284610, 'extra': -17933118, 'wrong': 115816177, 'first_wrong': 0, 'leading_zeros': 0} FIONREAD 0 mode nudge
+07:49:40   waited 3 s more: +0 FIONREAD 0
+07:49:43   nudge TIOCMGET                   -> +0 in 3 s, FIONREAD 0
+07:49:46   nudge tcflow TCION               -> +0 in 3 s, FIONREAD 0
+07:49:49   nudge write one byte             -> +0 in 3 s, FIONREAD 0
+07:49:55   nudge second open of the node    -> +0 in 3 s, FIONREAD 0
+07:49:58   nudge IOSSIOSPEED 3000000 again  -> +0 in 3 s, FIONREAD 0
+07:49:58   driver processes: 75363 Tue Oct 13 07:49:04 2026     /Libr | 75364 Tue Oct 13 07:49:04 2026     /Syst | 
+07:50:02   tcflush(TCIFLUSH)              -> +0 in 4 s
+07:50:06   close + reopen (no flush call) -> +17927527 in 4 s
+07:50:08   stream came back at offset -1 = stall point + -116284611 (that many bytes were held and thrown away); 17927527 bytes after that, all correct: False, reaches the end: False
+07:50:18   recover: 1 0
+07:50:44 run 2 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23724733 09d97f82 53"}
+07:51:10 run 3 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23930832 09d97f82 56"}
+07:51:36 run 4 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23938117 09d97f82 54"}
+07:52:01 run 5 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23843211 09d97f82 54"}
+07:52:27 run 6 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23817076 09d97f82 55"}
+07:52:53 run 7 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23893923 09d97f82 56"}
+07:53:19 run 8 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23947421 09d97f82 53"}
+07:53:45 run 9 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23903372 09d97f82 52"}
+07:54:11 run 10 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23841546 09d97f82 57"}
+07:54:37 run 11 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23982089 09d97f82 56"}
+07:55:03 run 12 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23905627 09d97f82 53"}
+07:55:29 run 13 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23945906 09d97f82 53"}
+07:55:54 run 14 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23890942 09d97f82 54"}
+07:56:20 run 15 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23813784 09d97f82 56"}
+07:56:46 run 16 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23854729 09d97f82 50"}
+07:57:12 run 17 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23890552 09d97f82 52"}
+07:57:38 run 18 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23826316 09d97f82 57"}
+07:58:04 run 19 OK {"received": 134217728, "extra": 0, "wrong": 0, "first_wrong": null, "leading_zeros": 4, "pico": "TXS 134217728 23879597 09d97f82 55"}
+07:58:06 run 20 STALL at 96390 {'received': 96390, 'extra': -134121338, 'wrong': 0, 'first_wrong': None, 'leading_zeros': 4} FIONREAD 0 mode nudge
+07:58:09   waited 3 s more: +0 FIONREAD 0
+07:58:12   nudge TIOCMGET                   -> +0 in 3 s, FIONREAD 0
+07:58:16   nudge tcflow TCION               -> +0 in 3 s, FIONREAD 0
+07:58:19   nudge write one byte             -> +0 in 3 s, FIONREAD 0
+07:58:24   nudge second open of the node    -> +0 in 3 s, FIONREAD 0
+07:58:27   nudge IOSSIOSPEED 3000000 again  -> +0 in 3 s, FIONREAD 0
+07:58:27   driver processes: 75620 Tue Oct 13 07:50:09 2026     /Libr | 75621 Tue Oct 13 07:50:09 2026     /Syst | 
+07:58:31   tcflush(TCIFLUSH)              -> +0 in 4 s
+07:58:35   close + reopen (no flush call) -> +22438023 in 4 s
+07:58:58   stream came back at offset -1 = stall point + -96391 (that many bytes were held and thrown away); 134116253 bytes after that, all correct: False, reaches the end: False
+07:59:07   recover: 1 0
