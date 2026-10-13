@@ -133,5 +133,34 @@ is still a UART.
   - macOS shows two nodes for the one chip, `/dev/cu.usbserial-BENCH1` and
     `/dev/cu.usbserial-3`. Not investigated.
   Not measured: throughput, anything above ~5 kHz, the flush command's effect on latency.
-  **Next (owner to choose):** PIO version in MicroPython at real clock rates, or add the three
-  wires and try 4-bit, or move to pico-sdk.
+- 2026-10-12: **PIO 1-bit master at real clock rates** (`pio_ft1248.py` on the Pico, still
+  MicroPython; DMA feeds the FIFOs so Python is out of the data path; `speed_test.py` on the Mac
+  sends/receives a known pattern through `/dev/cu.usbserial-BENCH1` and counts wrong bytes).
+  clk_sys 150 MHz; SCLK = sm clock / (H + L). Breadboard, ~10 cm jumpers.
+
+  | SCLK | H, L | Pico → Mac (write) | Mac → Pico (read) | Read with input-sync bypass |
+  |---|---|---|---|---|
+  | 0.1–18.75 MHz | 4, 4 | clean | clean | |
+  | 25 MHz | 3, 3 | clean, 2.77 MB/s (2 × 2 MB) | clean, 3.0 MB/s (3 × 128 KB) | clean |
+  | 30 MHz (FTDI's max) | 3, 2 and 2, 3 | clean, 3.25 MB/s (2 × 2 MB) | **~97 % of bytes wrong** | clean, 3.5 MB/s (3 × 128 KB) |
+  | 37.5 MHz (out of spec) | 2, 2 | corrupt | corrupt | clean once (64 KB) |
+
+  "Clean" = zero wrong bytes in the amount shown; that is not a bit-error-rate measurement.
+  Findings:
+  - **Reads need INPUT_SYNC_BYPASS at 30 MHz and not at 25 MHz.** The program samples MIOSIO0
+    on the next rising edge; the 2-flop synchroniser makes that ~13 ns earlier, which is too
+    early at a 33 ns period. So FT232H clock-to-data plus wiring is somewhere between ~13 and
+    ~20 ns (inferred from pass/fail, not measured). NOTES on main already plans the bypass.
+  - Sampling on the next rising edge and testing MISO at the end of the first clock of a byte
+    both work; see the program comments. NAK → raise SS_n → wait for the status line → resend
+    the same byte was exercised constantly on writes (the 1 KB buffer fills) with no loss.
+  - Rates are the link's own ceiling (8 bits × (H + L) cycles + a few per byte), so in 1-bit
+    mode USB was never the limit. 1-bit at 25 MHz already beats R3's 1.5 MB/s.
+  - A failed read run leaves bytes in the FT232H, which makes every later run look corrupt.
+    `rx_test` now drains first. (This fooled me once.)
+  - The read and write programs are 21 + 28 instructions, so they are loaded one at a time
+    here. The final 4-bit pair must fit PIO1's 32 slots together or swap like this.
+  Not measured: sustained Mac → Pico rate beyond a 128 KB burst (the Pico's RAM limits the
+  verified size, and pyserial's write+flush takes 0.8 s for 128 KB, which I don't understand
+  yet); the USB-side ceiling, which only 4-bit mode can reach; the flush command.
+  **Next (owner to choose):** add D1–D3 jumpers and go 4-bit, or move to pico-sdk.
