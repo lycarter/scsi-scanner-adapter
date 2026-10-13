@@ -1,16 +1,16 @@
 P = 22
 COLS = {c: 120 + i * P for i, c in enumerate("abcde")}
 COLS.update({c: 274 + i * P for i, c in enumerate("fghij")})
-RAIL_L, RAIL_R = (28, 50), (432, 454)
+RAIL_L, RAIL_R = (28, 50), (466, 488)
 Y0, ROWS = 70, 36
-W, H = 482, Y0 + (ROWS - 1) * P + 36
+W, H = 516, Y0 + (ROWS - 1) * P + 36
 y = lambda r: Y0 + (r - 1) * P
 
 s = []
 a = s.append
 a(f'<svg viewBox="0 0 {W} {H}" role="img" aria-labelledby="dt dd">')
 a('<title id="dt">Breadboard wiring, Pico 2 W above an FT232H breakout</title>')
-a('<desc id="dd">Seven signal jumpers and one ground link. C0 to GP15, C1 to GP14, C2 to GP13, D0 to GP16, D1 to GP17, D2 to GP18, D3 to GP19, and both grounds to the right-hand ground rail.</desc>')
+a('<desc id="dd">Seven signal lines, each through a 33 ohm resistor, and one ground link. C0 to GP15, C1 to GP14, C2 to GP13, D0 to GP16, D1 to GP17, D2 to GP18, D3 to GP19, and both grounds to the right-hand ground rail. A dashed line shows the second step, which moves the D0 line from GP16 to GP26.</desc>')
 a(f'<rect class="bb" x="6" y="30" width="{W-12}" height="{H-36}" rx="10"/>')
 a(f'<rect class="chan" x="{COLS["e"]+14}" y="{Y0-14}" width="{COLS["f"]-COLS["e"]-28}" height="{(ROWS-1)*P+28}" rx="4"/>')
 # rails
@@ -51,7 +51,7 @@ def board(cls, r0, left, right, hot, name, sub, usb_top):
 pico_l = "GP0 GP1 GND GP2 GP3 GP4 GP5 GND GP6 GP7 GP8 GP9 GND GP10 GP11 GP12 GP13 GND GP14 GP15".split()
 pico_r = "VBUS VSYS GND 3V3_EN 3V3 VREF GP28 AGND GP27 GP26 RUN GP22 GND GP21 GP20 GP19 GP18 GND GP17 GP16".split()
 # only the row-18 right GND is used; mark by index after drawing
-t, b = board("pico", 1, pico_l, pico_r, {"GP13": "", "GP14": "", "GP15": "", "GP16": "", "GP17": "", "GP18": "", "GP19": ""}, "", "", True)
+t, b = board("pico", 1, pico_l, pico_r, {"GP13": "", "GP14": "", "GP15": "", "GP16": "", "GP17": "", "GP18": "", "GP19": "", "GP26": ""}, "", "", True)
 a(f'<text class="bname" x="{(XL+XR)/2}" y="{y(8)+4}" text-anchor="middle">Pico 2 W</text>')
 a(f'<text class="bsub" x="{(XL+XR)/2}" y="{y(9)+2}" text-anchor="middle">USB end up</text>')
 a(f'<rect class="pad on" x="{XR-4.5}" y="{y(18)-4.5}" width="9" height="9" rx="1.5"/>')
@@ -64,11 +64,20 @@ a(f'<text class="bname" x="{(XL+XR)/2}" y="{y(FT0+4)+4}" text-anchor="middle">FT
 a(f'<text class="bsub" x="{(XL+XR)/2}" y="{y(FT0+5)+2}" text-anchor="middle">USB-C end down</text>')
 a(f'<rect class="pad on" x="{XR-4.5}" y="{y(FT0+8)-4.5}" width="9" height="9" rx="1.5"/>')
 
-def bow(cls, x, r1, r2, k):
+def bow(cls, x, r1, r2, k, resistor=True, dashed=False):
     d = f'M{x},{y(r1)} C{x+k},{y(r1)} {x+k},{y(r2)} {x},{y(r2)}'
+    if dashed:
+        a(f'<path class="w {cls} dash" d="{d}"/>')
+        a(f'<circle class="we {cls}" cx="{x}" cy="{y(r1)}" r="4.2"/>')
+        return
     a(f'<path class="wu" d="{d}"/><path class="w {cls}" d="{d}"/>')
     for r in (r1, r2):
         a(f'<circle class="we {cls}" cx="{x}" cy="{y(r)}" r="4.2"/>')
+    if resistor:   # body at the apex of the bow, where the path runs vertically
+        mx, my = x + 0.75 * k, (y(r1) + y(r2)) / 2
+        a(f'<rect class="res" x="{mx-5}" y="{my-11}" width="10" height="22" rx="3"/>')
+        for dy in (-6, -2, 2):
+            a(f'<line class="band" x1="{mx-5}" y1="{my+dy}" x2="{mx+5}" y2="{my+dy}"/>')
 
 def stub(cls, x1, x2, r):
     a(f'<path class="wu" d="M{x1},{y(r)} H{x2}"/><path class="w {cls}" d="M{x1},{y(r)} H{x2}"/>')
@@ -85,7 +94,9 @@ bow("d3", J, 16, FT0 + 4, 84)
 bow("d2", J, 17, FT0 + 5, 66)
 bow("d1", J, 19, FT0 + 6, 48)
 bow("d0", J, 20, FT0 + 7, 30)
-a(f'<text class="note" x="{RAIL_R[1]+13}" y="{y(25)}" transform="rotate(90 {RAIL_R[1]+13} {y(25)})" text-anchor="middle">ground rail joins the two GND jumpers</text>')
+bow("d0", J, 10, FT0 + 7, 118, dashed=True)
+a(f'<text class="note step" x="{J+62}" y="{y(12)}" text-anchor="middle">step 2</text>')
+a(f'<text class="note" x="{RAIL_R[1]+13}" y="{y(28)}" transform="rotate(90 {RAIL_R[1]+13} {y(28)})" text-anchor="middle">ground rail joins the two GND jumpers</text>')
 a('</svg>')
 svg = "\n".join(s)
 

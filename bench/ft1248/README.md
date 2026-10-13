@@ -262,5 +262,14 @@ is still a UART.
   Still open: series resistors are not fitted on the breadboard; SS_n setup/hold margins and
   H/L splits other than (3, 2) at 30 MHz untested in 4-bit; no bit-error-rate figure, only
   "0 errors in N bytes"; flush command latency; Windows.
-  **Next (owner to choose):** fold the durable findings into `design_docs/3-driver/NOTES.md`,
-  `docs/decisions.md` and `USAGE.md` on main; or continue to pico-sdk firmware.
+- 2026-10-12: pre-order test plan agreed with the owner, current bench only (no RP2350B board,
+  microSD breakout or SCSI-channel protoboard: parts not to hand). `wiring.html` now shows:
+  step 1, a 33 Ω resistor in place of each of the 7 signal jumpers, then 4-bit at 30 and
+  37.5 MHz; step 2, the Pico end of MIOSIO0 moves GP16 → GP26 (ADC-capable pad, like GPIO 40/41
+  on the board), tested in **1-bit** at 30 MHz. A 4-bit test on ADC pads is impossible on a
+  Pico 2 W: only GP26–28 are ADC-capable and 4 consecutive GPIOs cannot reach them.
+  For step 2 the 1-bit program needs its data pin made a parameter and its shift direction
+  flipped for the LSB-first EEPROM.
+  Also planned on this bench: a 10 GB+ soak each way, and small-packet round-trip latency with
+  and without the flush command.
+  **Next:** owner fits the resistors (step 1) and says so.
