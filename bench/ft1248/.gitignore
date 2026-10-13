@@ -2,3 +2,4 @@
 firmware/*.uf2
 soak-log.jsonl
 soak-summary.txt
+soak-live.log

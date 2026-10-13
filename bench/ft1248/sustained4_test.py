@@ -37,6 +37,7 @@ def rx_reference(n):
     return out.astype("<u4").tobytes()
 
 
+progress = {"bytes": 0}   # payload bytes moved so far, updated live for soak.py's status line
 CLK_MHZ = 150      # --clk=N overclocks the Pico's system clock, so SCLK = N / (H + L)
 BYPASS = True      # --nobypass leaves the input synchroniser in
 
@@ -58,8 +59,11 @@ def recover():
     except Exception:
         pass
     from pyftdi.eeprom import FtdiEeprom
-    eeprom = FtdiEeprom(); eeprom.open("ftdi://ftdi:232h/1"); eeprom.reset_device()
-    time.sleep(3)
+    try:
+        eeprom = FtdiEeprom(); eeprom.open("ftdi://ftdi:232h/1"); eeprom.reset_device()
+    except Exception:
+        pass     # macOS sometimes reports "no such device" as the chip re-enumerates; harmless
+    time.sleep(4)
     out = subprocess.run([MPREMOTE, "connect", PICO, "exec",
                           "import machine, pio4_ft1248 as p; machine.freq(150000000); print(p.drain(), p.drain())"],
                          capture_output=True, text=True, timeout=60)
@@ -86,6 +90,7 @@ def run(direction, mb, sclk_mhz=30.0, H=3, L=2, quiet=False):
                 data = os.read(port.fd, 1 << 20) if ready else b""
                 if data:
                     got.extend(data); times.append(time.time()); idle = 0
+                    progress["bytes"] += len(data)
                 elif stop.is_set():
                     idle += 1
         thread = threading.Thread(target=reader); thread.start()
@@ -131,6 +136,7 @@ def run(direction, mb, sclk_mhz=30.0, H=3, L=2, quiet=False):
             view = memoryview(data)
             for i in range(0, n, 65536):
                 port.write(view[i:i + 65536])
+                progress["bytes"] += min(65536, n - i)
         except serial.SerialTimeoutException:
             res["mac_write"] = "timed out"
         res["mac_write_s"] = round(time.time() - t0, 3)
@@ -148,6 +154,55 @@ def run(direction, mb, sclk_mhz=30.0, H=3, L=2, quiet=False):
                 res["MB_per_s"] = round(n / int(us), 3)
                 res["ok"] = res["crc_match"] and int(bad) == 0
     port.close()
+    return res
+
+
+def run_tx_libusb(mb, sclk_mhz=30.0, H=3, L=2):
+    """Pico -> Mac through libusb (pyusb bulk reads) instead of Apple's serial node. Raw USB
+    packets are kept and the 2 FTDI status bytes per 512-byte packet stripped afterwards."""
+    from pyftdi.ftdi import Ftdi
+    n = max(BLOCK, int(mb * 1048576) // BLOCK * BLOCK)
+    res = {"dir": "tx_libusb", "MB": n / 1048576, "sclk_MHz": sclk_mhz, "H": H, "L": L, "ok": False}
+    ftdi = Ftdi(); ftdi.open_from_url("ftdi://ftdi:232h/1")
+    ftdi.set_latency_timer(2)
+    dev, raw, stop = ftdi.usb_dev, [], threading.Event()
+
+    def reader():
+        idle = 0
+        while idle < 20:
+            try:
+                chunk = dev.read(0x81, 1 << 16, 100)
+            except Exception:
+                chunk = b""
+            if len(chunk) > 2 or (len(chunk) and len(chunk) % 512 != 2):
+                raw.append(bytes(chunk)); idle = 0
+                progress["bytes"] += len(chunk) - 2 * ((len(chunk) + 511) // 512)
+            elif stop.is_set():
+                idle += 1
+    thread = threading.Thread(target=reader); thread.start()
+    args = "%d, freq=%d, H=%d, L=%d" % (n, int(sclk_mhz * 1e6 * (H + L)), H, L)
+    out = pico("p.tx_sustained(%s)" % args).communicate(timeout=1800)[0]
+    stop.set(); thread.join(); ftdi.close()
+    data = bytearray()
+    for chunk in raw:
+        for i in range(0, len(chunk), 512):
+            data += chunk[i + 2:i + 512]
+    line = [l for l in out.splitlines() if l.startswith("TXS")]
+    res["pico"] = line[0] if line else out.strip()[-300:]
+    res["received"] = len(data)
+    want = tx_reference(n)
+    res["bytewise_identical"] = bytes(data) == want
+    if not res["bytewise_identical"] and data:
+        m = min(len(data), n)
+        bad = np.flatnonzero(np.frombuffer(bytes(data[:m]), np.uint8) != np.frombuffer(want[:m], np.uint8))
+        res["wrong_bytes"] = int(len(bad)) + abs(n - len(data))
+    if line:
+        _, sent, us, crc, gap = line[0].split()
+        res["crc_match"] = crc == "%08x" % zlib.crc32(bytes(data))
+        if int(sent) == n:
+            res["seconds"] = round(int(us) / 1e6, 3)
+            res["MB_per_s"] = round(n / int(us), 3)
+            res["ok"] = res["bytewise_identical"] and res["crc_match"]
     return res
 
 

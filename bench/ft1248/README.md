@@ -307,7 +307,10 @@ is still a UART.
   stayed queued on the Mac side and made every later read look corrupt. `sustained4_test.py`
   now calls `recover()` (tty flush, FT232H USB reset, drain) after any failed run.
 
-  **10 h soak started 22:36** (`soak.py 10 30 3 2 256` under `caffeinate`): cycles 256 MB
-  Pico → Mac (Apple node), Pico → Mac (libusb), Mac → Pico (Apple node), every byte verified.
-  Progress in `soak-summary.txt`, per-transfer records in `soak-log.jsonl`.
+  **10 h soak started 22:40** (`caffeinate -is .venv/bin/python soak.py 10 30 3 2 256`): cycles
+  256 MB Pico → Mac (Apple node), Pico → Mac (libusb), Mac → Pico (Apple node), every byte
+  verified at the end of each transfer. Live status once a second (bytes transferred, rate over
+  the last 60 s, bytes verified, error counts): `tail -f soak-live.log`. Final and running
+  totals in `soak-summary.txt`, per-transfer records in `soak-log.jsonl` (all three git-ignored
+  while running).
   **Next:** read the soak result; then fold findings into main's notes.
