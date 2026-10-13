@@ -313,4 +313,8 @@ is still a UART.
   the last 60 s, bytes verified, error counts): `tail -f soak-live.log`. Final and running
   totals in `soak-summary.txt`, per-transfer records in `soak-log.jsonl` (all three git-ignored
   while running).
+  **Deliberate fault during the soak:** at about 7:40 elapsed (22:46–22:47) the owner shorted
+  some signal lines together on purpose. One Mac → Pico transfer failed (2591 bad 64 KB blocks
+  from block 1505 on, data read as ff…); the harness recovered and the next transfers were
+  clean. Exclude that one failure when judging the soak.
   **Next:** read the soak result; then fold findings into main's notes.
