@@ -107,4 +107,11 @@ is still a UART.
   idle high), so FT1248 mode and the flow-control polarity look right. Caveat: pyftdi's open()
   resets the bit mode first. **Still to do on the scope:** MISO (C2) high, then low after
   `printf x > /dev/cu.usbserial-BENCH1`.
+- 2026-10-12: **scope idle check passed** (owner, Pico unplugged): C2/MISO high and D0 low at
+  idle; after `printf x > /dev/cu.usbserial-BENCH1`, C2 goes low and stays low. So FT1248 mode
+  is active, EEPROM bit 0x04 set = flow control on, and Apple's serial node delivers bytes into
+  the FT1248 read buffer. Status lines are active-low like RXF#/TXE#.
+  **Open:** C2 high read **3.7 V** on the scope. Expected ~3.3 V. Check the breakout's 3V pad
+  with a multimeter before trusting it: the RP2350's limit for an *unpowered* GPIO is 3.63 V
+  (RP2350 datasheet "Digital IO (FT)" table, cited in the design review R110).
   After that: Pico firmware (pico-sdk, PIO 1-bit master), loopback to the Mac, then 4-bit.
