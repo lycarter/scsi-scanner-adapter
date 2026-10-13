@@ -114,4 +114,24 @@ is still a UART.
   **Open:** C2 high read **3.7 V** on the scope. Expected ~3.3 V. Check the breakout's 3V pad
   with a multimeter before trusting it: the RP2350's limit for an *unpowered* GPIO is 3.63 V
   (RP2350 datasheet "Digital IO (FT)" table, cited in the design review R110).
-  After that: Pico firmware (pico-sdk, PIO 1-bit master), loopback to the Mac, then 4-bit.
+- 2026-10-12: multimeter: 3V pad = 3.3 V, so the 3.7 V was a scope error (closed). Idle digital
+  pins read ~2.8 V (weak internal pull-ups).
+- 2026-10-12: Pico 2 W flashed with MicroPython v1.29.0 (`firmware/`, git-ignored; from
+  micropython.org/download/RPI_PICO2_W). `ft1248_bitbang.py` is a ~5 kHz bit-banged 1-bit
+  master. **1-bit FT1248 works in both directions:** `mac_loopback.py` sent all 256 byte values
+  plus a string (277 bytes) Mac → `/dev/cu.usbserial-BENCH1` → FT232H → Pico → FT232H → Mac and
+  got them back intact.
+  Findings:
+  - Command bits on the wire are CMD3, 0, 0, CMD2, 0, CMD1, CMD0, then one turnaround clock
+    (AN_167 Fig. 5.2/5.3). Read = 0x1, write = 0x0, flush = 0x4 all accepted.
+  - CPOL 0 / CPHA 1 as programmed: drive on the rising edge, sample on the falling edge.
+  - **ACK/NAK differs from AN_167's text:** MISO is low (ACK) only during the *first* clock of
+    each byte, then high for the other seven. A NAK is MISO high on that first clock. The PIO
+    program must sample MISO once per byte, on the first clock (`dbg_trace.py` prints the raw
+    per-clock trace). Not yet looked at: whether this differs in 4-bit mode (2 clocks per byte).
+  - A read past the end clocks out zeros with NAK; nothing breaks.
+  - macOS shows two nodes for the one chip, `/dev/cu.usbserial-BENCH1` and
+    `/dev/cu.usbserial-3`. Not investigated.
+  Not measured: throughput, anything above ~5 kHz, the flush command's effect on latency.
+  **Next (owner to choose):** PIO version in MicroPython at real clock rates, or add the three
+  wires and try 4-bit, or move to pico-sdk.

@@ -12,8 +12,10 @@ to clock idle low, MSB first, flow control on:
   - SS_n low, then 7 command clocks on MIOSIO0: CMD3, 0, 0, CMD2, 0, CMD1, CMD0. The master
     starts driving only at the first clock edge.
   - 1 turnaround clock with MIOSIO0 released.
-  - 8 clocks per byte, MSB first, for as long as SS_n stays low. MISO low = ACK, high = NAK
-    (ACK polarity is our reading of the figures; confirmed or corrected by the first run).
+  - 8 clocks per byte, MSB first, for as long as SS_n stays low. MISO low = ACK, high = NAK.
+    Measured 2026-10-12 (reads): MISO is ACK/NAK only on the FIRST clock of each byte and
+    then goes high for the other seven, although AN_167 says the status holds for the whole
+    data phase. A NAKed read still clocks out 8 bits (they came back as zeros).
   - The driving side changes MIOSIO0 on the rising edge; the receiving side samples on the
     falling edge.
 """
@@ -90,7 +92,8 @@ def write(data):
         nak = 0
         for i in range(7, -1, -1):
             _clock_out((byte >> i) & 1)
-            nak |= MISO.value()
+            if i == 7:
+                nak = MISO.value()   # sampled after the first clock of the byte, like read()
         if nak:
             break
         sent += 1
@@ -104,10 +107,11 @@ def read(max_bytes=64):
     out = bytearray()
     for _ in range(max_bytes):
         byte = nak = 0
-        for _ in range(8):
+        for i in range(8):
             bit, n = _clock_in()
             byte = (byte << 1) | bit
-            nak |= n
+            if i == 0:
+                nak = n              # MISO is ACK/NAK on the first clock of a byte only
         if nak:
             break
         out.append(byte)
