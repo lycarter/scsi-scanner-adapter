@@ -1,0 +1,8 @@
+SCLK 30.00 MHz (H=3 L=2), 104857600 bytes requested
+pico: TXR 104857600 32253504 f7c7ecfa 30334468
+mac received 104857600 bytes
+mac first-to-last read: 32.432 s
+longest gaps between reads: [0.502, 0.324, 0.323] s
+bytewise identical to the regenerated stream: True
+crc32 pico (generated) f7c7ecfa, mac (received) f7c7ecfa, match: True
+pico elapsed 32.254 s = 3.251 MB/s (26.0 Mbit/s); generation used 94.1 % of that

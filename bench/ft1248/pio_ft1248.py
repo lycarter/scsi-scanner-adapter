@@ -14,7 +14,9 @@ with the same byte, so back-pressure from USB never loses data.
 The read and write programs do not fit in one 32-instruction PIO block together (21 + 28), so
 only one is loaded at a time.
 """
+import binascii
 import machine
+import micropython
 import rp2
 import time
 from machine import Pin
@@ -177,6 +179,70 @@ def tx_test(n, freq=1_000_000, H=4, L=4, chunk=32768, timeout_ms=30000):
     dma.close()
     Pin(16, Pin.IN); Pin(14, Pin.IN); Pin(15, Pin.IN)
     print("TX", sent if done else -sent, time.ticks_diff(t1, t0))
+
+
+@micropython.viper
+def fill_random(buf, nwords: int, start: int):
+    """Fill buf with 32-bit words hash(start), hash(start + 1), ... (little-endian), where hash
+    is MurmurHash3's 32-bit finaliser. Counter-based, so the Mac can regenerate any part."""
+    p = ptr32(buf)
+    hi1 = 0x85EB                 # built at run time: viper cannot load a literal above 2**30
+    hi2 = 0xC2B2
+    c1 = (hi1 << 16) | 0xCA6B    # 0x85EBCA6B
+    c2 = (hi2 << 16) | 0xAE35    # 0xC2B2AE35
+    for i in range(nwords):
+        h = start + i
+        h ^= (h >> 16) & 0xFFFF
+        h = h * c1
+        h ^= (h >> 13) & 0x7FFFF
+        h = h * c2
+        h ^= (h >> 16) & 0xFFFF
+        p[i] = h
+
+
+def tx_random(n, freq=150_000_000, H=3, L=2, chunk=32768, stall_ms=5000):
+    """Send n pseudorandom bytes (n a multiple of chunk) to the Mac, generating each chunk and
+    folding it into a running CRC-32 while the previous chunk is on the wire.
+    Prints 'TXR n_sent elapsed_us crc32 gen_us' (gen_us = CPU time spent generating + CRC)."""
+    bufs = (bytearray(chunk), bytearray(chunk))
+    sm = _sm(make_write(H, L), freq)
+    dma = rp2.DMA()
+    ctrl = dma.pack_ctrl(size=0, inc_read=True, inc_write=False, treq_sel=DREQ_PIO0_TX0)
+    crc = sent = gen_us = 0
+    which = 0
+    fill_random(bufs[0], chunk // 4, 0)
+    crc = binascii.crc32(bufs[0], crc)
+    sm.active(1)
+    t0 = time.ticks_us()
+    sm.put(n - 1)
+    ok = True
+    while sent < n and ok:
+        dma.config(read=bufs[which], write=TXF0, count=chunk, ctrl=ctrl, trigger=True)
+        nxt = sent + chunk
+        if nxt < n:                       # prepare the next chunk while this one is sent
+            g0 = time.ticks_us()
+            fill_random(bufs[which ^ 1], chunk // 4, nxt // 4)
+            crc = binascii.crc32(bufs[which ^ 1], crc)
+            gen_us += time.ticks_diff(time.ticks_us(), g0)
+        last, since = chunk, time.ticks_ms()
+        while dma.active():
+            c = dma.count
+            if c != last:
+                last, since = c, time.ticks_ms()
+            elif time.ticks_diff(time.ticks_ms(), since) > stall_ms:
+                ok = False
+                break
+        sent += chunk - dma.count
+        which ^= 1
+    since = time.ticks_ms()
+    while ok and sm.rx_fifo() == 0 and time.ticks_diff(time.ticks_ms(), since) < stall_ms:
+        pass
+    t1 = time.ticks_us()
+    ok = ok and sm.rx_fifo() > 0
+    sm.active(0)
+    dma.close()
+    Pin(16, Pin.IN); Pin(14, Pin.IN); Pin(15, Pin.IN)
+    print("TXR", sent if ok else -sent, time.ticks_diff(t1, t0), "%08x" % crc, gen_us)
 
 
 def rx_test(n, freq=1_000_000, H=4, L=4, timeout_ms=30000):
