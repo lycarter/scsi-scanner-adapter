@@ -2275,7 +2275,7 @@
 		)
 		(uuid "05dccf1c-a942-51f0-9987-cea4bfa1e1ea")
 	)
-	(text "Current limit 1.22 A (1.06-1.39 A): >= 900 mA required, <= 1.5 A recommended (SCSI-2 5.4.3). True reverse blocking,\neven unpowered, so another device's TERMPWR can't back-feed the board."
+	(text "Current limit 1.23 A (1.07-1.40 A): >= 900 mA required, <= 1.5 A recommended (SCSI-2 5.4.3). True reverse blocking,\neven unpowered, so another device's TERMPWR can't back-feed the board."
 		(exclude_from_sim no)
 		(at 20.32 159.44 0)
 		(effects
@@ -2286,7 +2286,7 @@
 		)
 		(uuid "2ac382bb-633c-526e-8636-811162de4adf")
 	)
-	(text "Enabling through OVLO skips the dVdt ramp: TERMPWR\nrises at the 1.22 A limit (~0.2 ms into 50 uF). Harmless."
+	(text "Enabling through OVLO skips the dVdt ramp: TERMPWR\nrises at the 1.23 A limit (~0.2 ms into 50 uF). Harmless."
 		(exclude_from_sim no)
 		(at 320.04 154.94 0)
 		(effects
@@ -2406,7 +2406,7 @@
 		)
 		(uuid "aac83a7a-2978-5f21-9a56-f14b3e67c637")
 	)
-	(text "UVLO: on above\n1.20 x 54/15\n= 4.32 V"
+	(text "UVLO: on above\n1.20 x 71/20\n= 4.26 V"
 		(exclude_from_sim no)
 		(at 38.1 212.09 0)
 		(effects
@@ -2418,7 +2418,7 @@
 		)
 		(uuid "b797bedc-cd97-5362-b6d5-5dfbd53fd395")
 	)
-	(text "eFuse setting pins:\nC204 on DVDT (dV/dt, output voltage slew rate): turn-on\n  ramp, only at power-up; enabling through OVLO skips it.\nR217 + R218 on ILM (I-limit: sets the current limit, and the pin\n  voltage doubles as a load-current monitor): 1.22 A (R = 3334 / I).\n  2.73k from two no-fee parts; a single 2.4k could reach 1.59 A.\nC205 on ITIMER (I-timer: overcurrent blanking timer), DNP. Open =\n  limit strictly at 1.22 A, which suits SCSI-2's <= 1.5 A.\n  Fit ~1 nF (~0.84 ms) only if normal load steps trip it."
+	(text "eFuse setting pins:\nC204 on DVDT (dV/dt, output voltage slew rate): turn-on\n  ramp, only at power-up; enabling through OVLO skips it.\nR217 + R218 on ILM (I-limit: sets the current limit, and the pin\n  voltage doubles as a load-current monitor): 1.23 A (R = 3334 / I).\n  2.71k from two basic parts; a single 2.2k could reach 1.7 A.\nC205 on ITIMER (I-timer: overcurrent blanking timer), DNP. Open =\n  limit strictly at 1.23 A, which suits SCSI-2's <= 1.5 A.\n  Fit ~1 nF (~0.84 ms) only if normal load steps trip it."
 		(exclude_from_sim no)
 		(at 182.88 203.2 0)
 		(effects
@@ -5814,7 +5814,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "15k"
+		(property "Value" "20k"
 			(at 27.94 204.47 0)
 			(effects
 				(font
@@ -5850,7 +5850,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25756"
+		(property "LCSC" "C25765"
 			(at 30.48 203.2 0)
 			(effects
 				(font
@@ -6408,7 +6408,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 149.86 207.01 0)
 			(effects
 				(font
@@ -6435,7 +6435,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1531"
+		(property "LCSC" "C1604"
 			(at 149.86 207.01 0)
 			(effects
 				(font
@@ -6792,7 +6792,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "330R"
+		(property "Value" "510R"
 			(at 157.48 220.98 0)
 			(effects
 				(font
@@ -6819,7 +6819,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "R_ILM (2.4k + 330 = 2.73k)"
+		(property "Description" "R_ILM (2.2k + 510 = 2.71k)"
 			(at 160.02 219.71 0)
 			(effects
 				(font
@@ -6828,7 +6828,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25104"
+		(property "LCSC" "C25123"
 			(at 160.02 219.71 0)
 			(effects
 				(font
@@ -7605,7 +7605,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "39k"
+		(property "Value" "51k"
 			(at 27.94 191.77 0)
 			(effects
 				(font
@@ -7641,7 +7641,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25783"
+		(property "LCSC" "C25794"
 			(at 30.48 190.5 0)
 			(effects
 				(font
@@ -7986,7 +7986,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 76.2 190.5 0)
 			(effects
 				(font
@@ -8013,7 +8013,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25796"
+		(property "LCSC" "C23206"
 			(at 76.2 190.5 0)
 			(effects
 				(font
@@ -8130,7 +8130,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "2.4k"
+		(property "Value" "2.2k"
 			(at 157.48 208.28 0)
 			(effects
 				(font
@@ -8157,7 +8157,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "R_ILM (2.4k + 330 = 2.73k)"
+		(property "Description" "R_ILM (2.2k + 510 = 2.71k)"
 			(at 160.02 207.01 0)
 			(effects
 				(font
@@ -8166,7 +8166,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25882"
+		(property "LCSC" "C25879"
 			(at 160.02 207.01 0)
 			(effects
 				(font

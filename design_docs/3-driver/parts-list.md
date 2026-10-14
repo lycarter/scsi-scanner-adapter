@@ -18,8 +18,8 @@ Columns:
 |---|---|---|---|---|---|---|
 | 1 | Bench 5 V terminal | 2-pin 5.08 mm screw terminal (Kangnex WJ500V-5.08-2P) | C8465 | E | Hand | Plus a test loop per pole (any 0.1" loop, hand-soldered) |
 | 2 | Bench-input eFuse; TERMPWR switch | TI TPS259470ARPWR | C3662799 | E | JLC | Bench: OVLO 5.35 V, ILIM 2.22 A, UVLO 4.22 V, EN Zener. TERMPWR: OVLO (via 56 k/47 k) = active-low enable, ILIM 1.22 A, UVLO 4.32 V |
-| 1 | Power mux U1 (bench priority) | TI TPS2116DRLR | C3235557 | E | JLC | **Replaces the LM66200 (C3235556), 2026-09-26 (R068).** VIN1 = bench eFuse out, VIN2 = VBUS, MODE = VIN1, PR1 100 k/39 k, ST → expander P11 |
-| 2 | 3.3 V rail; terminator 2.83 V | TI TPS73701DCQR | C56848 | E | JLC | 3.3 V = 47 k / 27 k (+ DNP 0603 across R2). 2.83 V = (39 k + 5.6 k) / 33 k. EN = 100 k / 75 k from IN |
+| 1 | Power mux U1 (bench priority) | TI TPS2116DRLR | C3235557 | E | JLC | **Replaces the LM66200 (C3235556), 2026-09-26 (R068).** VIN1 = bench eFuse out, VIN2 = VBUS, MODE = VIN1, PR1 51 k/20 k (was 100 k/39 k until 2026-10-14), ST → expander P11 |
+| 2 | 3.3 V rail; terminator 2.83 V | TI TPS73701DCQR | C56848 | E | JLC | 3.3 V = 47 k / (33 k ‖ 150 k 0603). 2.83 V = (39 k + 5.6 k, both 0603) / 33 k. EN = 20 k / 15 k from IN |
 | 1 | CC detection | onsemi LM393DR2G | C7955 | B | JLC | Supply from 5 V; thresholds 0.661 V rising / 0.651 V falling; outputs drive the TERMPWR enable node |
 | 1 | CC threshold reference | CJ431 (TL431-type) SOT-23 | C3113 | B | JLC | 2.500 V from 3.3 V through **470 Ω**. **No cap on the cathode.** Rank (0.5 % / 1 %) unknown: check the reel |
 | 1 | Bench eFuse EN clamp | BZT52C5V6, SOD-123 | C19077402 | P | JLC | EN/UVLO to GND (R057) |
@@ -41,7 +41,7 @@ Columns:
 | 1 | 1 Ω 1 % 0603 | | C22936 | B | VBUS snubber |
 | 1 | 22 µF 25 V X5R 0805 | Samsung CL21A226MAQNNNE | C45783 | B | +5V_SYS bulk (TPS2116 VOUT) |
 | 2 | 10 µF 25 V X5R 0805 | | C15850 | B | LDO outputs (3.3 V, 2.83 V) |
-| 2 | 2.2 nF X7R 50 V 0402 | | C1531 | P | eFuse dVdt, bench and TERMPWR (~5.5 ms ramp) |
+| 2 | 2.2 nF X7R 50 V **0603** | | C1604 | B | eFuse dVdt, bench and TERMPWR (~5.5 ms ramp) |
 | 0 (2 DNP) | 0402 pad, ~1 nF if fitted | — | — | — | eFuse ITIMER, open by default |
 | 1 | 270 Ω 1 % 0603 (100 mW) | | C22966 | B | Terminator-rail bleed (10.5 mA, 30 mW) |
 | — | 100 nF 50 V X7R 0402 | | C307331 | B | Bench eFuse IN, TERMPWR eFuse IN, TPS2116 VOUT, LM393, TERMPWR ADC pin (counted in the decoupling total, §5) |
@@ -125,21 +125,21 @@ LA 100 Ω, 220 Ω terminators, 33 Ω, 12 k, 2.2 k, 3.3 k CS1, …) aren't repeat
 | Qty | Value | LCSC | Tier | Where |
 |---|---|---|---|---|
 | 1 | 47 kΩ | C25792 | B | 3.3 V LDO R1 |
-| 1 | 27 kΩ | C25771 | P | 3.3 V LDO R2 (+ 1 DNP 0603 pad in parallel for trim, R030) |
-| 1 | 39 kΩ + 1 × 5.6 kΩ | C25783, C25908 | P, P | 2.83 V LDO R1 (in series) |
+| 1 | 33 kΩ | C25779 | B | 3.3 V LDO R2, with 150 kΩ 0603 (R115, C22807) in parallel = 27.05 kΩ. R115 was the DNP trim pad (R030) |
+| 1 | 39 kΩ + 1 × 5.6 kΩ, both **0603** | C23153, C23189 | B, B | 2.83 V LDO R1 (in series) |
 | 1 | 33 kΩ | C25779 | B | 2.83 V LDO R2 |
-| 2 | 75 kΩ | C25798 | P | LDO EN dividers (bottom) |
-| 6 | 100 kΩ | C25741 | B | LDO EN dividers (top) ×2, TPS2116 PR1 top, bench-FET gate pull-down, TERMPWR ADC divider ×2 |
-| 1 | 510 kΩ | C11616 | P | Bench eFuse string R1 (only ~8.5k in stock; fine at our volume) |
-| 1 + 1 | 39 kΩ + 3.9 kΩ | C25783, C51721 | P, P | Bench eFuse string R2 = 42.9 k |
-| 1 + 1 | 150 kΩ + 10 kΩ | C25755, C25744 | P, B | Bench eFuse string R3 = 160 k |
+| 2 | 15 kΩ | C25756 | B | LDO EN dividers (bottom); the tops are 20 kΩ (C25765) |
+| 3 | 100 kΩ | C25741 | B | Bench-FET gate pull-down, TERMPWR ADC divider ×2 |
+| 4 | 20 kΩ | C25765 | B | LDO EN dividers (top) ×2, TPS2116 PR1 bottom, TERMPWR eFuse UVLO bottom |
+| 2 | 51 kΩ | C25794 | B | TPS2116 PR1 top, TERMPWR eFuse UVLO top |
+| 1 | 510 kΩ **0603** | C23192 | B | Bench eFuse string R1. 0603 since 2026-10-13: the 0402 (C11616, preferred) fell to 10 in stock at JLC and no basic 0402 exists |
+| 1 + 1 | 33 kΩ + 10 kΩ | C25779, C25744 | B, B | Bench eFuse string R2 = 43 k |
+| 1 + 1 | 150 kΩ **0603** + 10 kΩ | C22807, C25744 | B, B | Bench eFuse string R3 = 160 k |
 | 1 | 1.5 kΩ | C25867 | B | Bench eFuse R_ILM (2.22 A) |
-| 1 | 39 kΩ | C25783 | P | TERMPWR eFuse UVLO top |
-| 1 | 15 kΩ | C25756 | P | TERMPWR eFuse UVLO bottom |
-| 1 + 1 | 2.4 kΩ + 330 Ω | C25882, C25104 | P, B | TERMPWR eFuse R_ILM (1.22 A) |
-| 1 | 56 kΩ | C25796 | P | TERMPWR OVLO divider top (node → OVLO) |
+| — | 51 kΩ / 20 kΩ | C25794, C25765 | B, B | TERMPWR eFuse UVLO top / bottom, 4.26 V (counted in the 51 kΩ and 20 kΩ rows above) |
+| 1 + 1 | 2.2 kΩ + 510 Ω | C25879, C25123 | B, B | TERMPWR eFuse R_ILM (1.23 A) |
+| 1 | 56 kΩ **0603** | C23206 | B | TERMPWR OVLO divider top (node → OVLO) |
 | 1 | 47 kΩ | C25792 | B | TERMPWR OVLO divider bottom |
-| 1 | 39 kΩ | C25783 | P | TPS2116 PR1 bottom |
 | 18 | 10 kΩ | C25744 | B | Terminator /OE pull-up (to 2.83 V); enable-node pull-up; CC filters ×2; CC ref top (with 3.3 k); bench-FET gate series; SDIO pull-ups ×5; FT232H RESET#; FT232H EEPROM DO; FT232H WR#, SIWU# ×2; expander INT; TPS2116 ST; TERMPWR-present LED |
 | 1 | 3.3 kΩ | C25890 | B | CC reference top (10 k + 3.3 k = 13.3 k) |
 | 3 | 4.7 kΩ | C25900 | B | CC reference bottom; I²C SDA/SCL |

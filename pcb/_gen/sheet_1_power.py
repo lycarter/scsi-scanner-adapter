@@ -17,6 +17,7 @@ def build(out_path):
 
     R0402, R0603 = "Resistor_SMD:R_0402_1005Metric", "Resistor_SMD:R_0603_1608Metric"
     C0402, C0805 = "Capacitor_SMD:C_0402_1005Metric", "Capacitor_SMD:C_0805_2012Metric"
+    C0603 = "Capacitor_SMD:C_0603_1608Metric"
 
 
     def props(fp, lcsc, dnp=False, note="", fit="JLC"):
@@ -75,8 +76,8 @@ def build(out_path):
 
     # ============ Bench 5 V input and eFuse ============
     heading("Bench 5 V input", 20.32, 20.32,
-            "Set the bench supply to 5.0 V (5.1 V max). eFuse: OVLO 5.35 V, UVLO 4.22 V, ILIM 2.22 A, auto-retry.\n"
-            "String R101-R105: UV = 1.2 x 712.9k/202.9k, OV = 1.2 x 712.9k/160k. D102 keeps EN <= 6.5 V abs max on a 24 V mistake.")
+            "Set the bench supply to 5.0 V (5.1 V max). eFuse: OVLO 5.35 V, UVLO 4.21 V, ILIM 2.22 A, auto-retry.\n"
+            "String R101-R105: UV = 1.2 x 713k/203k, OV = 1.2 x 713k/160k. D102 keeps EN <= 6.5 V abs max on a 24 V mistake.")
 
     s.part("Connector:Screw_Terminal_01x02", "J101", "Bench 5V", 55.88, 45.72,
            {"1": "BENCH_RAW", "2": "GND"},
@@ -109,7 +110,7 @@ def build(out_path):
         s.wire(UX + dx, UY + 10.16, UX + dx, UY + 12.7)
         s.intended[(ref, "1")] = net
     s.intended[("U101", "7")], s.intended[("U101", "9")], s.intended[("U101", "10")] = "DVDT", "ILM", "ITIMER"
-    C("C103", "2.2nF", "C1531", UX - 12.7, BY, None, "GND", note="dVdt: ~5.5 ms ramp")
+    C("C103", "2.2nF", "C1604", UX - 12.7, BY, None, "GND", fp=C0603, note="dVdt: ~5.5 ms ramp")
     R("R106", "1.5k", "C25867", UX - 2.54, BY, None, "GND", note="R_ILM: 2.22 A")
     C("C104", "1nF", "", UX + 7.62, BY, None, "GND", dnp=True, note="ITIMER: open by default")
     s.note("eFuse setting pins:\n"
@@ -121,28 +122,28 @@ def build(out_path):
     C("C105", "1uF 25V", "C52923", 193.04, 132.08, "BENCH_5V", "GND", note="eFuse OUT / TPS2116 VIN1")
 
     # UVLO/OVLO string as a vertical chain, EN clamp beside it
-    chain(127.0, 86.36, [("R", "R101", "510k", "C11616", {"note": "String R1"}),
-                        ("R", "R102", "39k", "C25783", {"note": "String R2 (39k + 3.9k)"}),
-                        ("R", "R103", "3.9k", "C51721", {"note": "String R2 (39k + 3.9k)"}),
-                        ("R", "R104", "150k", "C25755", {"note": "String R3 (150k + 10k)"}),
+    chain(127.0, 86.36, [("R", "R101", "510k", "C23192", {"fp": R0603, "note": "String R1"}),
+                        ("R", "R102", "33k", "C25779", {"note": "String R2 (33k + 10k)"}),
+                        ("R", "R103", "10k", "C25744", {"note": "String R2 (33k + 10k)"}),
+                        ("R", "R104", "150k", "C22807", {"fp": R0603, "note": "String R3 (150k + 10k)"}),
                         ("R", "R105", "10k", "C25744", {"note": "String R3 (150k + 10k)"})],
           "BENCH_RAW", "GND", taps={0: "BENCH_EFUSE_EN", 2: "BENCH_EFUSE_OV"})
-    # nominal tap voltages (BENCH_RAW = 5.0 V, 7.01 uA through 712.9k)
-    for ty, v in ((92.71, "1.42 V"), (105.41, "1.15 V"), (118.11, "1.12 V"), (130.81, "0.07 V")):
+    # nominal tap voltages (BENCH_RAW = 5.0 V, 7.01 uA through 713k)
+    for ty, v in ((92.71, "1.42 V"), (105.41, "1.19 V"), (118.11, "1.12 V"), (130.81, "0.07 V")):
         s.note(v, 115.57, ty - 0.635)
     s.note(
-        "UVLO/OVLO string R101-R105 (712.9k total). Tap voltages at left are nominal for BENCH_RAW = 5.0 V (7.0 uA).\n"
+        "UVLO/OVLO string R101-R105 (713k total). Tap voltages at left are nominal for BENCH_RAW = 5.0 V (7.0 uA).\n"
         "EN/UVLO and OVLO share one threshold: 1.20 V rising, 1.09 V falling (typ; 1.183-1.223 / 1.076-1.116 V).\n"
-        "BENCH_EFUSE_EN = BENCH_RAW x (R102..R105 = 202.9k) / 712.9k\n"
-        "    turns on above 1.20 x 712.9 / 202.9 = 4.22 V, off below 1.09 x 712.9 / 202.9 = 3.83 V.\n"
+        "BENCH_EFUSE_EN = BENCH_RAW x (R102..R105 = 203k) / 713k\n"
+        "    turns on above 1.20 x 713 / 203 = 4.21 V, off below 1.09 x 713 / 203 = 3.83 V.\n"
         "    1.42 V at 5.0 V: on, with 0.22 V margin.\n"
-        "BENCH_EFUSE_OV = BENCH_RAW x (R104 + R105 = 160k) / 712.9k\n"
-        "    trips off above 1.20 x 712.9 / 160 = 5.35 V, recovers below 1.09 x 712.9 / 160 = 4.86 V.\n"
+        "BENCH_EFUSE_OV = BENCH_RAW x (R104 + R105 = 160k) / 713k\n"
+        "    trips off above 1.20 x 713 / 160 = 5.35 V, recovers below 1.09 x 713 / 160 = 4.86 V.\n"
         "    1.12 V at 5.0 V: 78 mV under the trip, but inside the hysteresis band, so after a trip\n"
         "    the bench must come back below 4.86 V before the eFuse turns on again.\n"
         "Worst case (thresholds, 1 % R, +-0.1 uA pin leakage): UV 4.05-4.41 V, OV 5.14-5.59 V.\n"
-        "R102 + R103 = 42.9k and R104 + R105 = 160k: no 43k or 160k 0402 1 % part is JLC basic/preferred,\n"
-        "    so each is two no-fee parts. The unlabelled joints carry no function.\n"
+        "R102 + R103 = 43k (33k + 10k) and R104 + R105 = 160k (150k 0603 + 10k): no 43k or 160k part is JLC basic,\n"
+        "    so each is two basic parts. The unlabelled joints carry no function.\n"
         "R101 = 510k keeps the string >= 350k (TI's reverse-polarity guidance). Much bigger and the\n"
         "    +-0.1 uA pin leakage moves the OV trip enough to break the 5.5 V limit (NOTES, R059/R061).",
         20.32, 104.14)
@@ -152,7 +153,7 @@ def build(out_path):
 
     # ============ Power mux ============
     heading("Power mux (bench priority)", 226.06, 20.32,
-            "TPS2116 priority mode: MODE tied to VIN1. PR1 (MUX_BENCH_DETECT) = 0.281 x VIN1, so the bench wins above ~3.6 V.\n"
+            "TPS2116 priority mode: MODE tied to VIN1. PR1 (MUX_BENCH_DETECT) = 0.282 x VIN1, so the bench wins above ~3.6 V.\n"
             "ST (IS_BENCH_POWERED) is high while running on the bench. VBUS snubber R110 + C107 damps plug-in ringing (5.7 uF on VBUS total).")
     MX, MY = 294.64, 50.8
     s.part("Power_Management:TPS2116DRL", "U102", "TPS2116DRLR", MX, MY,
@@ -162,8 +163,8 @@ def build(out_path):
                       Datasheet="https://www.ti.com/lit/ds/symlink/tps2116.pdf"),
            fields=((MX - 7.62, MY - 8.89, "left"), (MX + 2.54, MY + 12.7, "left")))
     s.pwr_flag("#FLG103", "VBUS", 254.0, 38.1)
-    chain(241.3, 88.9, [("R", "R107", "100k", "C25741", {"note": "PR1 divider"}),
-                        ("R", "R108", "39k", "C25783", {"note": "PR1 divider"})],
+    chain(241.3, 88.9, [("R", "R107", "51k", "C25794", {"note": "PR1 divider"}),
+                        ("R", "R108", "20k", "C25765", {"note": "PR1 divider"})],
           "BENCH_5V", "GND", taps={0: "MUX_BENCH_DETECT"})
     C("C106", "1uF 25V", "C52923", 279.4, 95.25, "VBUS", "GND", note="VIN2")
     # VIN1's own bypass, added after the 2026-10-04 layout review: C105 sits at the eFuse, ~19 mm of track away
@@ -178,7 +179,7 @@ def build(out_path):
 
     # ============ 3.3 V LDO ============
     heading("3.3 V logic rail", 20.32, 165.1,
-            "Vout = 1.204 x (R113 + R114) / R114 = 3.30 V. EN on above ~4.0 V (100k/75k).\n"
+            "Vout = 1.204 x (R113 + R2) / R2 = 3.30 V, R2 = R114 || R115 = 27.05k. EN on above ~4.0 V (20k/15k).\n"
             "FEEDBACK: the LDO adjusts OUT until its FB pin sits at its 1.204 V reference, so the divider sets Vout.")
     LDO = props("Package_TO_SOT_SMD:SOT-223-6", "C56848")
     LDO["Datasheet"] = "https://www.ti.com/lit/ds/symlink/tps737.pdf"
@@ -188,14 +189,14 @@ def build(out_path):
            props=dict(LDO, Description="3.3 V logic LDO"),
            fields=((LX - 7.62, LY - 6.35, "left"), (LX + 10.16, LY + 7.62, "left")))
     C("C110", "1uF 25V", "C52923", 30.48, 212.09, "+5V_SYS", "GND", note="LDO C_IN")
-    chain(48.26, 205.74, [("R", "R111", "100k", "C25741", {"note": "EN divider"}),
-                          ("R", "R112", "75k", "C25798", {"note": "EN divider"})],
+    chain(48.26, 205.74, [("R", "R111", "20k", "C25765", {"note": "EN divider"}),
+                          ("R", "R112", "15k", "C25756", {"note": "EN divider"})],
           "+5V_SYS", "GND", taps={0: "LDO_3V3_EN"})
     chain(111.76, 205.74, [("R", "R113", "47k", "C25792", {"note": "FB R1"}),
-                           ("R", "R114", "27k", "C25771", {"note": "FB R2"})],
+                           ("R", "R114", "33k", "C25779", {"note": "FB R2 (33k || R115 150k)"})],
           "+3V3", "GND", taps={0: "LDO_3V3_FEEDBACK"})
-    R("R115", "1M", "", 149.86, 218.44, "LDO_3V3_FEEDBACK", "GND", fp=R0603, dnp=True, note="Trim, DNP")
-    s.note("R115 DNP: trim pad across R114. Fit ~1M if\n+3V3 measures low at bring-up (+55 mV).", 137.16, 233.68)
+    R("R115", "150k", "C22807", 149.86, 218.44, "LDO_3V3_FEEDBACK", "GND", fp=R0603, note="FB R2 (R114 33k || 150k)")
+    s.note("R115 across R114: 33k || 150k = 27.05k (no basic\n27k in 0402). Was a DNP trim pad until 2026-10-14.", 137.16, 233.68)
     C("C111", "10uF 25V", "C15850", 185.42, 212.09, "+3V3", "GND", fp=C0805, note="LDO C_OUT")
 
     # ============ 2.83 V terminator LDO ============
@@ -208,11 +209,11 @@ def build(out_path):
            props=dict(LDO, Description="2.83 V terminator LDO"),
            fields=((TX - 7.62, TY - 6.35, "left"), (TX + 10.16, TY + 7.62, "left")))
     C("C112", "1uF 25V", "C52923", 236.22, 212.09, "TERMPWR", "GND", note="LDO C_IN")
-    chain(256.54, 205.74, [("R", "R116", "100k", "C25741", {"note": "EN divider"}),
-                           ("R", "R117", "75k", "C25798", {"note": "EN divider"})],
+    chain(256.54, 205.74, [("R", "R116", "20k", "C25765", {"note": "EN divider"}),
+                           ("R", "R117", "15k", "C25756", {"note": "EN divider"})],
           "TERMPWR", "GND", taps={0: "LDO_TERMINATOR_EN"})
-    chain(335.28, 205.74, [("R", "R118", "39k", "C25783", {"note": "FB R1 (39k + 5.6k)"}),
-                          ("R", "R119", "5.6k", "C25908", {"note": "FB R1 (39k + 5.6k)"}),
+    chain(335.28, 205.74, [("R", "R118", "39k", "C23153", {"fp": R0603, "note": "FB R1 (39k + 5.6k)"}),
+                          ("R", "R119", "5.6k", "C23189", {"fp": R0603, "note": "FB R1 (39k + 5.6k)"}),
                           ("R", "R120", "33k", "C25779", {"note": "FB R2"})],
           "VTERMINATOR", "GND", taps={1: "LDO_TERMINATOR_FEEDBACK"})
     C("C113", "10uF 25V", "C15850", 375.92, 212.09, "VTERMINATOR", "GND", fp=C0805, note="LDO C_OUT")

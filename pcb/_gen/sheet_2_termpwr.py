@@ -18,6 +18,7 @@ def build(out_path):
 
     R0402 = "Resistor_SMD:R_0402_1005Metric"
     C0402 = "Capacitor_SMD:C_0402_1005Metric"
+    R0603, C0603 = "Resistor_SMD:R_0603_1608Metric", "Capacitor_SMD:C_0603_1608Metric"
 
 
     def props(fp, lcsc, dnp=False, note="", fit="JLC", ds=""):
@@ -188,7 +189,7 @@ def build(out_path):
 
     # ================= TERMPWR switch =================
     heading("TERMPWR switch (eFuse)", 20.32, 154.94,
-            "Current limit 1.22 A (1.06-1.39 A): >= 900 mA required, <= 1.5 A recommended (SCSI-2 5.4.3). True reverse blocking,\n"
+            "Current limit 1.23 A (1.07-1.40 A): >= 900 mA required, <= 1.5 A recommended (SCSI-2 5.4.3). True reverse blocking,\n"
             "even unpowered, so another device's TERMPWR can't back-feed the board.")
     UX, UY = 162.56, 190.5
     s.part("scsi-adapter:TPS259470A", "U201", "TPS259470ARPWR", UX, UY,
@@ -202,21 +203,21 @@ def build(out_path):
         s.wire(UX + dx, UY + 10.16, UX + dx, UY + 12.7)
         s.intended[(ref, pin)] = net
     s.intended[("U201", "7")], s.intended[("U201", "9")], s.intended[("U201", "10")] = "DVDT", "ILM", "ITIMER"
-    place("C204", Cp("2.2nF", "C1531", "dVdt"), UX - 12.7, BY, None, "GND")
-    chain(UX - 2.54, BY, [("R217", Rp("2.4k", "C25882", "R_ILM (2.4k + 330 = 2.73k)")),
-                          ("R218", Rp("330R", "C25104", "R_ILM (2.4k + 330 = 2.73k)"))], None, "GND")
+    place("C204", Cp("2.2nF", "C1604", "dVdt", fp=C0603), UX - 12.7, BY, None, "GND")
+    chain(UX - 2.54, BY, [("R217", Rp("2.2k", "C25879", "R_ILM (2.2k + 510 = 2.71k)")),
+                          ("R218", Rp("510R", "C25123", "R_ILM (2.2k + 510 = 2.71k)"))], None, "GND")
     place("C205", Cp("1nF", "", "ITIMER, DNP", dnp=True), UX + 7.62, BY, None, "GND")
     s.note("eFuse setting pins:\n"
            "C204 on DVDT (dV/dt, output voltage slew rate): turn-on\n  ramp, only at power-up; enabling through OVLO skips it.\n"
-           "R217 + R218 on ILM (I-limit: sets the current limit, and the pin\n  voltage doubles as a load-current monitor): 1.22 A (R = 3334 / I).\n"
-           "  2.73k from two no-fee parts; a single 2.4k could reach 1.59 A.\n"
-           "C205 on ITIMER (I-timer: overcurrent blanking timer), DNP. Open =\n  limit strictly at 1.22 A, which suits SCSI-2's <= 1.5 A.\n"
+           "R217 + R218 on ILM (I-limit: sets the current limit, and the pin\n  voltage doubles as a load-current monitor): 1.23 A (R = 3334 / I).\n"
+           "  2.71k from two basic parts; a single 2.2k could reach 1.7 A.\n"
+           "C205 on ITIMER (I-timer: overcurrent blanking timer), DNP. Open =\n  limit strictly at 1.23 A, which suits SCSI-2's <= 1.5 A.\n"
            "  Fit ~1 nF (~0.84 ms) only if normal load steps trip it.", 182.88, 203.2)
 
-    chain(30.48, 190.5, [("R213", Rp("39k", "C25783", "EN/UVLO top")), ("R214", Rp("15k", "C25756", "EN/UVLO bottom"))],
+    chain(30.48, 190.5, [("R213", Rp("51k", "C25794", "EN/UVLO top")), ("R214", Rp("20k", "C25765", "EN/UVLO bottom"))],
           "+5V_SYS", "GND", taps={0: "TERMPWR_EFUSE_EN"})
-    s.note("UVLO: on above\n1.20 x 54/15\n= 4.32 V", 38.1, 212.09)
-    chain(76.2, 190.5, [("R215", Rp("56k", "C25796", "OVLO divider top")), ("R216", Rp("47k", "C25792", "OVLO divider bottom"))],
+    s.note("UVLO: on above\n1.20 x 71/20\n= 4.26 V", 38.1, 212.09)
+    chain(76.2, 190.5, [("R215", Rp("56k", "C23206", "OVLO divider top", fp=R0603)), ("R216", Rp("47k", "C25792", "OVLO divider bottom"))],
           EN_NODE, "GND", taps={0: "TERMPWR_EFUSE_OV"})
     s.note("OVLO as active-low enable:\nnode high (~3.0 V) -> OVLO\n1.31-1.43 V > 1.22 V: off.\n"
            "node low (<= 0.7 V) -> OVLO\n<= 0.32 V < 1.08 V: on.", 83.82, 212.09)
@@ -254,7 +255,7 @@ def build(out_path):
            "Our non-terminator draw from TERMPWR: D202 0.35 mA +\n"
            "ADC divider (rp2350 sheet) 0.03 mA + eFuse leakage\n<= 0.44 mA = 0.82 mA, under SCSI-2's 1 mA.",
            332.74, 220.98)
-    s.note("Enabling through OVLO skips the dVdt ramp: TERMPWR\nrises at the 1.22 A limit (~0.2 ms into 50 uF). Harmless.",
+    s.note("Enabling through OVLO skips the dVdt ramp: TERMPWR\nrises at the 1.23 A limit (~0.2 ms into 50 uF). Harmless.",
            320.04, 154.94)
 
     s.write(out_path)

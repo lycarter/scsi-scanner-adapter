@@ -1833,7 +1833,7 @@
 		)
 		(uuid "05c2c8bd-57ca-5bb7-a8f1-146e465e51ca")
 	)
-	(text "R115 DNP: trim pad across R114. Fit ~1M if\n+3V3 measures low at bring-up (+55 mV)."
+	(text "R115 across R114: 33k || 150k = 27.05k (no basic\n27k in 0402). Was a DNP trim pad until 2026-10-14."
 		(exclude_from_sim no)
 		(at 137.16 233.68 0)
 		(effects
@@ -1880,7 +1880,7 @@
 		)
 		(uuid "1e892cf6-1c25-5277-80f5-29506ece97c0")
 	)
-	(text "Set the bench supply to 5.0 V (5.1 V max). eFuse: OVLO 5.35 V, UVLO 4.22 V, ILIM 2.22 A, auto-retry.\nString R101-R105: UV = 1.2 x 712.9k/202.9k, OV = 1.2 x 712.9k/160k. D102 keeps EN <= 6.5 V abs max on a 24 V mistake."
+	(text "Set the bench supply to 5.0 V (5.1 V max). eFuse: OVLO 5.35 V, UVLO 4.21 V, ILIM 2.22 A, auto-retry.\nString R101-R105: UV = 1.2 x 713k/203k, OV = 1.2 x 713k/160k. D102 keeps EN <= 6.5 V abs max on a 24 V mistake."
 		(exclude_from_sim no)
 		(at 20.32 24.82 0)
 		(effects
@@ -1891,7 +1891,7 @@
 		)
 		(uuid "2aee16ae-cd38-58da-8251-36f1858af3de")
 	)
-	(text "UVLO/OVLO string R101-R105 (712.9k total). Tap voltages at left are nominal for BENCH_RAW = 5.0 V (7.0 uA).\nEN/UVLO and OVLO share one threshold: 1.20 V rising, 1.09 V falling (typ; 1.183-1.223 / 1.076-1.116 V).\nBENCH_EFUSE_EN = BENCH_RAW x (R102..R105 = 202.9k) / 712.9k\n    turns on above 1.20 x 712.9 / 202.9 = 4.22 V, off below 1.09 x 712.9 / 202.9 = 3.83 V.\n    1.42 V at 5.0 V: on, with 0.22 V margin.\nBENCH_EFUSE_OV = BENCH_RAW x (R104 + R105 = 160k) / 712.9k\n    trips off above 1.20 x 712.9 / 160 = 5.35 V, recovers below 1.09 x 712.9 / 160 = 4.86 V.\n    1.12 V at 5.0 V: 78 mV under the trip, but inside the hysteresis band, so after a trip\n    the bench must come back below 4.86 V before the eFuse turns on again.\nWorst case (thresholds, 1 % R, +-0.1 uA pin leakage): UV 4.05-4.41 V, OV 5.14-5.59 V.\nR102 + R103 = 42.9k and R104 + R105 = 160k: no 43k or 160k 0402 1 % part is JLC basic/preferred,\n    so each is two no-fee parts. The unlabelled joints carry no function.\nR101 = 510k keeps the string >= 350k (TI's reverse-polarity guidance). Much bigger and the\n    +-0.1 uA pin leakage moves the OV trip enough to break the 5.5 V limit (NOTES, R059/R061)."
+	(text "UVLO/OVLO string R101-R105 (713k total). Tap voltages at left are nominal for BENCH_RAW = 5.0 V (7.0 uA).\nEN/UVLO and OVLO share one threshold: 1.20 V rising, 1.09 V falling (typ; 1.183-1.223 / 1.076-1.116 V).\nBENCH_EFUSE_EN = BENCH_RAW x (R102..R105 = 203k) / 713k\n    turns on above 1.20 x 713 / 203 = 4.21 V, off below 1.09 x 713 / 203 = 3.83 V.\n    1.42 V at 5.0 V: on, with 0.22 V margin.\nBENCH_EFUSE_OV = BENCH_RAW x (R104 + R105 = 160k) / 713k\n    trips off above 1.20 x 713 / 160 = 5.35 V, recovers below 1.09 x 713 / 160 = 4.86 V.\n    1.12 V at 5.0 V: 78 mV under the trip, but inside the hysteresis band, so after a trip\n    the bench must come back below 4.86 V before the eFuse turns on again.\nWorst case (thresholds, 1 % R, +-0.1 uA pin leakage): UV 4.05-4.41 V, OV 5.14-5.59 V.\nR102 + R103 = 43k (33k + 10k) and R104 + R105 = 160k (150k 0603 + 10k): no 43k or 160k part is JLC basic,\n    so each is two basic parts. The unlabelled joints carry no function.\nR101 = 510k keeps the string >= 350k (TI's reverse-polarity guidance). Much bigger and the\n    +-0.1 uA pin leakage moves the OV trip enough to break the 5.5 V limit (NOTES, R059/R061)."
 		(exclude_from_sim no)
 		(at 20.32 104.14 0)
 		(effects
@@ -1963,7 +1963,7 @@
 		)
 		(uuid "9deb5995-0450-5593-b2e6-4fb28e58a51b")
 	)
-	(text "Vout = 1.204 x (R113 + R114) / R114 = 3.30 V. EN on above ~4.0 V (100k/75k).\nFEEDBACK: the LDO adjusts OUT until its FB pin sits at its 1.204 V reference, so the divider sets Vout."
+	(text "Vout = 1.204 x (R113 + R2) / R2 = 3.30 V, R2 = R114 || R115 = 27.05k. EN on above ~4.0 V (20k/15k).\nFEEDBACK: the LDO adjusts OUT until its FB pin sits at its 1.204 V reference, so the divider sets Vout."
 		(exclude_from_sim no)
 		(at 20.32 169.6 0)
 		(effects
@@ -1974,7 +1974,7 @@
 		)
 		(uuid "cc18ecf3-3222-50c0-96b5-29b4c8b9fa4e")
 	)
-	(text "TPS2116 priority mode: MODE tied to VIN1. PR1 (MUX_BENCH_DETECT) = 0.281 x VIN1, so the bench wins above ~3.6 V.\nST (IS_BENCH_POWERED) is high while running on the bench. VBUS snubber R110 + C107 damps plug-in ringing (5.7 uF on VBUS total)."
+	(text "TPS2116 priority mode: MODE tied to VIN1. PR1 (MUX_BENCH_DETECT) = 0.282 x VIN1, so the bench wins above ~3.6 V.\nST (IS_BENCH_POWERED) is high while running on the bench. VBUS snubber R110 + C107 damps plug-in ringing (5.7 uF on VBUS total)."
 		(exclude_from_sim no)
 		(at 226.06 24.82 0)
 		(effects
@@ -1997,7 +1997,7 @@
 		)
 		(uuid "d925df4a-00b8-5812-8eb0-f830636a481c")
 	)
-	(text "1.15 V"
+	(text "1.19 V"
 		(exclude_from_sim no)
 		(at 115.57 104.775 0)
 		(effects
@@ -3743,7 +3743,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 335.28 205.74 0)
 			(effects
 				(font
@@ -3770,7 +3770,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25783"
+		(property "LCSC" "C23153"
 			(at 335.28 205.74 0)
 			(effects
 				(font
@@ -4013,7 +4013,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "75k"
+		(property "Value" "15k"
 			(at 45.72 219.71 0)
 			(effects
 				(font
@@ -4049,7 +4049,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25798"
+		(property "LCSC" "C25756"
 			(at 48.26 218.44 0)
 			(effects
 				(font
@@ -4481,7 +4481,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 335.28 218.44 0)
 			(effects
 				(font
@@ -4508,7 +4508,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25908"
+		(property "LCSC" "C23189"
 			(at 335.28 218.44 0)
 			(effects
 				(font
@@ -4808,7 +4808,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 127 86.36 0)
 			(effects
 				(font
@@ -4835,7 +4835,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C11616"
+		(property "LCSC" "C23192"
 			(at 127 86.36 0)
 			(effects
 				(font
@@ -5411,7 +5411,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "3.9k"
+		(property "Value" "10k"
 			(at 124.46 113.03 0)
 			(effects
 				(font
@@ -5438,7 +5438,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "String R2 (39k + 3.9k)"
+		(property "Description" "String R2 (33k + 10k)"
 			(at 127 111.76 0)
 			(effects
 				(font
@@ -5447,7 +5447,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C51721"
+		(property "LCSC" "C25744"
 			(at 127 111.76 0)
 			(effects
 				(font
@@ -5564,7 +5564,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "39k"
+		(property "Value" "20k"
 			(at 238.76 102.87 0)
 			(effects
 				(font
@@ -5600,7 +5600,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25783"
+		(property "LCSC" "C25765"
 			(at 241.3 101.6 0)
 			(effects
 				(font
@@ -5924,7 +5924,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 142.24 67.31 0)
 			(effects
 				(font
@@ -5951,7 +5951,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1531"
+		(property "LCSC" "C1604"
 			(at 142.24 67.31 0)
 			(effects
 				(font
@@ -8087,7 +8087,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "27k"
+		(property "Value" "33k"
 			(at 109.22 219.71 0)
 			(effects
 				(font
@@ -8114,7 +8114,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "FB R2"
+		(property "Description" "FB R2 (33k || R115 150k)"
 			(at 111.76 218.44 0)
 			(effects
 				(font
@@ -8123,7 +8123,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25771"
+		(property "LCSC" "C25779"
 			(at 111.76 218.44 0)
 			(effects
 				(font
@@ -8525,7 +8525,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "75k"
+		(property "Value" "15k"
 			(at 254 219.71 0)
 			(effects
 				(font
@@ -8561,7 +8561,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25798"
+		(property "LCSC" "C25756"
 			(at 256.54 218.44 0)
 			(effects
 				(font
@@ -8786,7 +8786,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "20k"
 			(at 254 207.01 0)
 			(effects
 				(font
@@ -8822,7 +8822,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25741"
+		(property "LCSC" "C25765"
 			(at 256.54 205.74 0)
 			(effects
 				(font
@@ -8873,7 +8873,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "39k"
+		(property "Value" "33k"
 			(at 124.46 100.33 0)
 			(effects
 				(font
@@ -8900,7 +8900,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "String R2 (39k + 3.9k)"
+		(property "Description" "String R2 (33k + 10k)"
 			(at 127 99.06 0)
 			(effects
 				(font
@@ -8909,7 +8909,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25783"
+		(property "LCSC" "C25779"
 			(at 127 99.06 0)
 			(effects
 				(font
@@ -9386,7 +9386,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 127 124.46 0)
 			(effects
 				(font
@@ -9413,7 +9413,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25755"
+		(property "LCSC" "C22807"
 			(at 127 124.46 0)
 			(effects
 				(font
@@ -9815,7 +9815,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "20k"
 			(at 45.72 207.01 0)
 			(effects
 				(font
@@ -9851,7 +9851,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25741"
+		(property "LCSC" "C25765"
 			(at 48.26 205.74 0)
 			(effects
 				(font
@@ -10197,7 +10197,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp yes)
+		(dnp no)
 		(uuid "f96eb0f6-487a-5204-9ad6-cb9f4cccf731")
 		(property "Reference" "R115"
 			(at 147.32 217.17 0)
@@ -10208,7 +10208,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "1M"
+		(property "Value" "150k"
 			(at 147.32 219.71 0)
 			(effects
 				(font
@@ -10235,7 +10235,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Trim, DNP"
+		(property "Description" "FB R2 (R114 33k || 150k)"
 			(at 149.86 218.44 0)
 			(effects
 				(font
@@ -10244,7 +10244,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" ""
+		(property "LCSC" "C22807"
 			(at 149.86 218.44 0)
 			(effects
 				(font
@@ -10253,7 +10253,7 @@
 				(hide yes)
 			)
 		)
-		(property "Fit" "DNP"
+		(property "Fit" "JLC"
 			(at 149.86 218.44 0)
 			(effects
 				(font
@@ -10580,7 +10580,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "51k"
 			(at 238.76 90.17 0)
 			(effects
 				(font
@@ -10616,7 +10616,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25741"
+		(property "LCSC" "C25794"
 			(at 241.3 88.9 0)
 			(effects
 				(font
