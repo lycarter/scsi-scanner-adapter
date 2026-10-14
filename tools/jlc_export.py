@@ -12,13 +12,15 @@ What JLC assembles is decided by the schematic's `Fit` field: only `Fit` = JLC p
 not DNP go into the BOM and CPL. Hand-fit parts (`Fit` = Hand) are left out even though
 KiCad doesn't mark them DNP.
 
-Rotations in the CPL are KiCad's, uncorrected. JLC's reel orientation differs for some
-packages, so check every polarised part in JLC's placement preview; put the corrections found
-there in ROTATION_OFFSET so the next export has them.
+JLC's library draws some parts turned or shifted relative to KiCad's footprint. The corrections
+seen in JLC's placement preview are in JLC_ROTATION and JLC_OFFSET, keyed by C-number, because a
+correction belongs to one JLC part on one KiCad footprint. Every part on the board was checked
+in the preview on 2026-10-14; a part added later has not been, so check it there and add it.
 """
 import argparse
 import csv
 import json
+import math
 import re
 import shutil
 import subprocess
@@ -36,8 +38,33 @@ KICAD_PYTHON = KICAD / "Frameworks/Python.framework/Versions/Current/bin/python3
 PROJECT = "scsi-adapter"
 LAYERS = "F.Cu,In1.Cu,In2.Cu,B.Cu,F.Paste,B.Paste,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts"
 
-# Degrees added to KiCad's rotation, per reference. Fill in from JLC's placement preview.
-ROTATION_OFFSET = {}
+# Degrees added to KiCad's rotation (counter-clockwise seen from the top), per JLC part.
+# From JLC's placement preview, 2026-10-14 (owner).
+JLC_ROTATION = {
+    "C8545": 180,       # 2N7002, SOT-23 (Q201)
+    "C15310": 180,      # FDV301N, SOT-23 (Q901...)
+    "C426705": 180,     # 74LVC1G17GW, SOT-353 (U901...)
+    "C190271": 180,     # 93LC56BT, SOT-23-6 (U702)
+    "C42411119": 180,   # Abracon AOTA-B201610 inductor (L401)
+    "C56848": 270,      # TPS73701DCQR, SOT-223-6 (U103, U104)
+    "C2652121": 270,    # SN74LVTH245APWR, TSSOP-20 (U301-U303)
+    "C465732": 270,     # TCA9555PWR, TSSOP-24 (U501)
+    "C97521": 270,      # W25Q128JVSIQ, SOIC-8 5.3 mm (U402)
+    "C5333729": 270,    # APS6404L, SOIC-8 3.9 mm (U403)
+    "C5373042": 270,    # CH334P, QFN-16 (U601)
+    "C3662799": 180,    # TPS259470ARPWR, VQFN-HR-10 (U201 seen; U101 is the same part)
+    "C7955": 270,       # LM393DR2G, SOIC-8 (U202)
+    "C3235557": 270,    # TPS2116DRLR, SOT-583 (U102)
+    "C3113": 180,       # CJ431, SOT-23 (U203)
+}
+
+# Where JLC's part origin sits in the KiCad footprint's own coordinates (mm, y down), per JLC part.
+# The position file gives the footprint origin; JLC centres its part on its own origin.
+JLC_OFFSET = {
+    # TF PUSH microSD socket (J501): our origin is on the locating pegs, JLC's is the centre of
+    # the pads, 5.5 mm toward the contact row. Confirmed in the preview.
+    "C393941": (0.0, -5.5),
+}
 
 REFILL = """
 import sys, pcbnew
@@ -134,10 +161,17 @@ def write_bom_and_cpl(parts, positions, out):
     with (out / f"{PROJECT}-cpl.csv").open("w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["Designator", "Mid X", "Mid Y", "Layer", "Rotation"])
-        for ref in sorted((p["Reference"] for p in fitted if p["Reference"] in positions), key=natural):
-            row = positions[ref]
-            rotation = (float(row["Rot"]) + ROTATION_OFFSET.get(ref, 0)) % 360
-            w.writerow([ref, f"{float(row['PosX']):.4f}mm", f"{float(row['PosY']):.4f}mm",
+        for p in sorted((p for p in fitted if p["Reference"] in positions), key=lambda p: natural(p["Reference"])):
+            row = positions[p["Reference"]]
+            if row["Side"] != "top" and (p["LCSC"] in JLC_ROTATION or p["LCSC"] in JLC_OFFSET):
+                problems.append(f"{p['Reference']}: JLC corrections are only worked out for the top side")
+            angle = math.radians(float(row["Rot"]))
+            dx, dy = JLC_OFFSET.get(p["LCSC"], (0.0, 0.0))
+            # footprint frame (y down, rotated counter-clockwise) -> position file frame (y up)
+            x = float(row["PosX"]) + dx * math.cos(angle) + dy * math.sin(angle)
+            y = float(row["PosY"]) + dx * math.sin(angle) - dy * math.cos(angle)
+            rotation = (float(row["Rot"]) + JLC_ROTATION.get(p["LCSC"], 0)) % 360
+            w.writerow([p["Reference"], f"{x:.4f}mm", f"{y:.4f}mm",
                         "Top" if row["Side"] == "top" else "Bottom", f"{rotation:g}"])
     return fitted, groups, problems
 
